@@ -4,7 +4,8 @@
   "description": "Productivity manager",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "webpack --mode development",
+    // "build": "webpack --mode production"
   },
   "repository": {
     "type": "git",
@@ -26,6 +27,7 @@
     "babel-preset-react": "^6.23.0"
   },
   "dependencies": {
+    "active-win": "^3.0.0",
     "axios": "^0.18.0",
     "body-parser": "^1.18.2",
     "cron": "^1.3.0",
