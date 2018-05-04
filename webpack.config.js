@@ -10,21 +10,17 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.js(x)$/,
+        test: /\.jsx/,
         exclude: /node_modules/,
         use: {
           loader: 'babel-loader'
-        },
-      },
-      {
-        test: /\.css$/,
-        use: ['style-loader', 'css-loader']
+        }
       }
     ]
   },
   plugins: [
     new HtmlWebpackPlugin({
-      template: path.join(__dirname, './react-client/src/index.html')
-    })
+      template: './react-client/src/index_template.html'
+      })
   ]
 };
