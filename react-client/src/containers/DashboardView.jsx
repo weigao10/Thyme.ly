@@ -2,8 +2,8 @@ import { withRouter } from 'react-router-dom';
 import ReactDOM from 'react-dom';
 import React from 'react';
 
-import ActivityContainer from './DashboardView/ActivityContainer.jsx';
-import ProductivityScore from './DashboardView/ProductivityScore.jsx';
+import ActivityContainer from './ActivityContainer.jsx';
+import ProductivityScore from '../components/DashboardView/ProductivityScore.jsx';
 
 class DashboardView extends React.Component {
   constructor(props) {
@@ -18,7 +18,7 @@ class DashboardView extends React.Component {
   render() {
     return (
       <div>
-        <h3> HELLO! </h3>
+        <h3> Dashboard! </h3>
         <ActivityContainer />
         <ProductivityScore />
       </div>
