@@ -14,13 +14,13 @@ module.exports = {
         exclude: /node_modules/,
         use: {
           loader: 'babel-loader'
-        }
+        },
       }
     ]
   },
   plugins: [
     new HtmlWebpackPlugin({
-      template: './react-client/src/index_template.html'
-      })
+      template: path.join(__dirname, './react-client/src/index_template.html')
+    })
   ]
 };
