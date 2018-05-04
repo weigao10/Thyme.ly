@@ -1,5 +1,9 @@
 {
+<<<<<<< HEAD
 “presets”: [
   “env”
   ]
+=======
+"presets": ["env", "react"]
+>>>>>>> webpack-config
 }
