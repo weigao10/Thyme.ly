@@ -12,7 +12,6 @@ class App extends React.Component {
   }
 
   render() {
-    // return ( <div>we haz webpack</div>
     return(  <div>
         <Router>
           <div>

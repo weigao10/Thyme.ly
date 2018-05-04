@@ -5,6 +5,7 @@ class ActivityContainer extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      activities: temp
     }
   }
   
@@ -15,9 +16,15 @@ class ActivityContainer extends React.Component {
     return (
       <div>
         <h3> ActivityContainer! </h3>
-        <ActivityGroup />
+        <ActivityGroup activities={this.state.activities}/>
       </div>
     )
   }
 }
 export default ActivityContainer;
+
+const temp = [
+  {'app': 'Chrome', 'title': 'Youtube', 'duration': '1'},
+  {'app': 'Chrome', 'title': 'Netflix', 'duration': '2'},
+  {'app': 'Chrome', 'title': 'Facebook', 'duration': '3'},
+]
