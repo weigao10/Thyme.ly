@@ -11,7 +11,7 @@ const timestamp = () => { //can change moment format for ease of manipulation
   return moment().format('MMMM Do YYYY, h:mm:ss a');
 };
 
-let counter = 0;
+let counter = 0; //closure variable for monitor
 const monitor = async () => {
   try {
     let activity = await activeWin();
@@ -24,6 +24,8 @@ const monitor = async () => {
   } catch(e) {
     counter++;
     e.time = timestamp();
+    console.log('error is', e);
+    console.log('error message is', e.message);
     errors.push(JSON.stringify(e)); //TODO: this loses some info but full error objects apparently can't be stored in an array
     if (counter % 1000 === 0) {
       console.log('just assuring you that monitor is still running', errors);
@@ -31,18 +33,18 @@ const monitor = async () => {
   }
 };
 
-let workerId;
+let workerId; //closure variable for below functions
 const getTestData = (interval) => {
   workerId = setInterval(monitor, interval);
 };
+
 const stopMonitor = () => {
+  //assemble data ()
   //print activities and errors
   console.log('activities for this session are', JSON.stringify(activities));
   console.log('errors for this session are', JSON.stringify(errors));
   clearInterval(workerId);
-}
-
-// getTestData(10000);
+};
 
 exports.getTestData = getTestData;
 exports.stopMonitor = stopMonitor;

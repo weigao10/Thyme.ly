@@ -18,8 +18,7 @@ app.get('/stoptest', (req, res) => {
   stopMonitor();
   console.log('stopped activity monitor!');
   res.send('stopped activity monitor!');
-})
-
+});
 
 let server = app.listen(port, () => {
   console.log(`listening on port ${port}`);
