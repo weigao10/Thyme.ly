@@ -3,6 +3,7 @@ const path = require('path');
 const bodyParser = require('body-parser');
 const app = express();
 const port = process.env.PORT || 3000;
+const db = require('../database/index.js');
 
 app.use(express.static(path.join(__dirname, '/../react-client/dist')));
 app.use(bodyParser.json());
