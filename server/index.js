@@ -1,9 +1,9 @@
- const express = require('express');
+const express = require('express');
 const path = require('path');
 const bodyParser = require('body-parser');
 const app = express();
 const port = process.env.PORT || 3000;
-const { startMonitor, stopMonitor } = require('./helpers/activityData.js');
+// const { startMonitor, stopMonitor} = require('./helpers/activityData.js');
 
 app.use(express.static(path.join(__dirname, '/../react-client/dist')));
 app.use(bodyParser.json());
@@ -22,3 +22,10 @@ app.get('/stopmonitor', (req, res) => {
 let server = app.listen(port, () => {
   console.log(`listening on port ${port}`);
 });
+
+//sockets
+
+const io = require('socket.io')(server);
+exports.io = io;
+const {connectToSocket} = require('./helpers/activityData.js');
+connectToSocket();
