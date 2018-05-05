@@ -1,9 +1,6 @@
 //file to get sample data chunks
 const activeWin = require('active-win');
 const moment = require('moment');
-//closure variables
-let activities = [];
-let errors = [];
 
 const timestamp = () => { //can change moment format for ease of manipulation
   return moment().format('MMMM Do YYYY, h:mm:ss a');
@@ -17,7 +14,7 @@ const assembleActivity = (activeWinObj) => {
   };
 };
 
-const monitor = async () => {
+const monitorSocket = async (socket) => {
   try {
     let newActivity = assembleActivity(await activeWin());
     let lastActivity = activities[activities.length - 1];
@@ -27,6 +24,7 @@ const monitor = async () => {
       const time = timestamp();
       if (lastActivity) {
         lastActivity.endTime = time;
+        socket.emit('new activity', {activity: lastActivity})
       }      
       newActivity.startTime = time;
       activities.push(newActivity);
@@ -38,11 +36,10 @@ const monitor = async () => {
   }
 };
 
-let intervalId; //closure variable for below functions
-const startMonitor = (interval) => {
+const startSocketMonitor = (socket, interval) => {
   activities = [];
   errors = [];
-  intervalId = setInterval(monitor, interval);
+  intervalId = setInterval(() => {monitorSocket(socket)}, interval);
 };
 
 const stopMonitor = () => {
@@ -53,5 +50,11 @@ const stopMonitor = () => {
   return JSON.stringify(activities);
 };
 
-exports.startMonitor = startMonitor;
-exports.stopMonitor = stopMonitor;
+const {io} = require('../index.js');
+const connectToSocket = (interval) => {
+  io.on('connection', (socket) => {
+    startSocketMonitor(socket, interval);
+  });
+};
+
+exports.connectToSocket = connectToSocket;
