@@ -1,8 +1,12 @@
 import { GET_ACTIVITIES, POST_ACTIVITIES, PATCH_ACTIVITY } from '../actions/types'; 
 
 const initialState = {
-  activities: {},
-  activity: []
+  activities: [
+    {'app': 'Chrome', 'title': 'Youtube', 'duration': '1'},
+    {'app': 'Chrome', 'title': 'Netflix', 'duration': '2'},
+    {'app': 'Chrome', 'title': 'Facebook', 'duration': '3'},
+  ],
+  activity: {}
 }
 
 export default function (state = initialState, action) {
