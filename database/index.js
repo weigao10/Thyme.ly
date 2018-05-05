@@ -188,8 +188,8 @@ const getErrors = () => {
 
 const insertError = () => {
   let query = 
-  `INSERT INTO public.errors
-  VALUES (1, 'testing this out and this is a sample message');`
+  `INSERT INTO public.errors(error_msg)
+  VALUES ('testing this out and this is a sample message');`
   
   pool.query(query, (err, res) => {
     if (err) {
@@ -201,6 +201,9 @@ const insertError = () => {
     }
   })
 }
+
+// insertError();
+getErrors();
 
 //close the connection
 pool.end();
