@@ -1,15 +1,12 @@
 import React from 'react';
+import { connect } from 'react-redux';
+import { getActivities  } from '../../actions/activityActions.jsx';
 import ActivityGroup from '../components/DashboardView/ActivityGroup.jsx'
 
 class ActivityContainer extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      activities: temp
-    }
-  }
   
   componentDidMount() {
+    this.props.getActivities();
   }
 
   render() {
@@ -21,7 +18,13 @@ class ActivityContainer extends React.Component {
     )
   }
 }
-export default ActivityContainer;
+
+const mapStateToProps = state => ({
+  
+})
+
+export default connect(null, { getActivities })(ActivityContainer) 
+// export default ActivityContainer;
 
 const temp = [
   {'app': 'Chrome', 'title': 'Youtube', 'duration': '1'},
