@@ -1,0 +1,5 @@
+export const GET_ACTIVITIES = 'GET_ACTIVITIES';
+export const POST_ACTIVITIES = 'POST_ACTIVITIES';
+export const PATCH_ACTIVITY = 'PATCH_ACTIVITY';
+
+
