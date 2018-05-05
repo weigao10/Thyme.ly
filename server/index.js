@@ -1,24 +1,21 @@
- const express = require('express');
+const express = require('express');
 const path = require('path');
 const bodyParser = require('body-parser');
 const app = express();
 const port = process.env.PORT || 3000;
-const { startMonitor, stopMonitor } = require('./helpers/activityData.js');
 
 app.use(express.static(path.join(__dirname, '/../react-client/dist')));
 app.use(bodyParser.json());
 
-app.get('/startmonitor', (req, res) => {
-  startMonitor(1000);
-  console.log('started up activity monitor!');
-  res.send('started up activity monitor!');
-});
-
-app.get('/stopmonitor', (req, res) => {
-  console.log('stopping activity monitor!');
-  res.send(stopMonitor());
-});
-
 let server = app.listen(port, () => {
   console.log(`listening on port ${port}`);
 });
+
+//sockets
+
+const io = require('socket.io')(server);
+exports.io = io;
+const {connectToSocket} = require('./helpers/activityData.js');
+connectToSocket(1000);
+//start up process that sends new activities to client via sockets
+//1000 is the interval of the active window monitor
