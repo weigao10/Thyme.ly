@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { getActivities  } from '../../actions/activityActions.jsx';
+import { getActivities  } from '../actions/activityActions.js'
 import ActivityGroup from '../components/DashboardView/ActivityGroup.jsx'
 
 class ActivityContainer extends React.Component {
@@ -13,21 +13,15 @@ class ActivityContainer extends React.Component {
     return (
       <div>
         <h3> ActivityContainer! </h3>
-        <ActivityGroup activities={this.state.activities}/>
+        <ActivityGroup activities={this.props.activities}/>
       </div>
     )
   }
 }
 
 const mapStateToProps = state => ({
-  
+  activities: state.activities //from index.js (root reducer)
 })
 
-export default connect(null, { getActivities })(ActivityContainer) 
+export default connect(mapStateToProps, { getActivities })(ActivityContainer) 
 // export default ActivityContainer;
-
-const temp = [
-  {'app': 'Chrome', 'title': 'Youtube', 'duration': '1'},
-  {'app': 'Chrome', 'title': 'Netflix', 'duration': '2'},
-  {'app': 'Chrome', 'title': 'Facebook', 'duration': '3'},
-]
