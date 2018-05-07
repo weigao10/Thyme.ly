@@ -10,7 +10,6 @@ const monitorSocket = async (socket) => {
     if (needToInitializeChunk(lastActivity)) activities.push(newActivity);
     else if (chunkComplete(lastActivity, newActivity)) {
       lastActivity.endTime = timestamp();
-      console.log('TRYING TO EMIT CHUNK')
       socket.emit('new chunk', {activity: lastActivity});
       activities.push(newActivity);
     }
@@ -43,9 +42,8 @@ const chunkComplete = (lastActivity, newActivity) => {
   return (lastActivity.app !== newActivity.app) || (lastActivity.title !== newActivity.title);
 };
 
-//functions that start and pause the monitor
+//functions that start, pause, and restart the monitor
 
-//THIS IS REALLY INITIALIZE, WRITE AN INITIALIZE/PAUSE/RESTART? OR JUST ASSUME CLIENT HAS IT ALL?
 const startSocketMonitor = (socket, interval) => {
   activities = [];
   errors = [];
@@ -64,17 +62,20 @@ const pauseSocketMonitor = (socket, intervalId) => {
   clearInterval(intervalId);
 };
 
-//socket connection
+//socket connection/controller
 
 const {io} = require('../index.js');
 const connectToSocket = (interval) => {
   io.on('connection', (socket) => {
-    const intervalId = startSocketMonitor(socket, interval);
+    let intervalId = startSocketMonitor(socket, interval);
     //on disconnect, clear the interval and send the last chunk
     socket.on('pause', () => {
       console.log('socket detected a pause!');
       pauseSocketMonitor(socket, intervalId);
     });
+    socket.on('restart', (socket) => {
+      intervalId = startSocketMonitor(socket, interval);
+    })
   });
 };
 
