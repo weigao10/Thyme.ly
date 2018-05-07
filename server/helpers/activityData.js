@@ -2,31 +2,15 @@
 const activeWin = require('active-win');
 const moment = require('moment');
 
-const timestamp = () => { //can change moment format for ease of manipulation
-  return moment().format('MMMM Do YYYY, h:mm:ss a');
-};
-
-const assembleActivity = (activeWinObj) => {
-  return {
-    id: activeWinObj.id,
-    app: activeWinObj.owner.name,
-    title: activeWinObj.title
-  };
-};
-
+//monitor function that runs on interval
 const monitorSocket = async (socket) => {
   try {
     let newActivity = assembleActivity(await activeWin());
     let lastActivity = activities[activities.length - 1];
-    //check to see if a new activity chunk is needed or if the most recent chunk needs to be updated
-    if (!lastActivity || (newActivity.app !== lastActivity.app
-      || newActivity.title !== lastActivity.title)) {
-      const time = timestamp();
-      if (lastActivity) {
-        lastActivity.endTime = time;
-        socket.emit('new activity', {activity: lastActivity})
-      }      
-      newActivity.startTime = time;
+    if (needToInitializeChunk(lastActivity)) activities.push(newActivity);
+    else if (chunkComplete(lastActivity, newActivity)) {
+      lastActivity.endTime = timestamp();
+      socket.emit('new chunk', {activity: lastActivity});
       activities.push(newActivity);
     }
   } catch(e) {
@@ -36,25 +20,65 @@ const monitorSocket = async (socket) => {
   }
 };
 
+const timestamp = () => { //can change moment format for ease of manipulation
+  return moment().format('MMMM Do YYYY, h:mm:ss a');
+};
+
+const assembleActivity = (activeWinObj) => {
+  return {
+    id: activeWinObj.id,
+    app: activeWinObj.owner.name,
+    title: activeWinObj.title,
+    startTime: timestamp()
+  };
+};
+
+const needToInitializeChunk = (lastActivity) => {
+  return !lastActivity;
+};
+
+const chunkComplete = (lastActivity, newActivity) => {
+  if (needToInitializeChunk(lastActivity)) return false;
+  return (lastActivity.app !== newActivity.app) || (lastActivity.title !== newActivity.title);
+};
+
+//functions that start, pause, and restart the monitor
+
 const startSocketMonitor = (socket, interval) => {
   activities = [];
   errors = [];
   intervalId = setInterval(() => {monitorSocket(socket)}, interval);
+  return intervalId;
 };
 
-const stopMonitor = () => {
-  activities[activities.length - 1].endTime = timestamp();
-  console.log('activities for this session are', JSON.stringify(activities));
-  console.log('errors for this session are', JSON.stringify(errors));
+const pauseSocketMonitor = (socket, intervalId) => {
+  //emit the last activity and then clear interval
+  // CAN BE OWN HALPER
+  let lastActivity = activities[activities.length - 1];
+  lastActivity.endTime = timestamp();
+  console.log('last activity before pause is', {activity: lastActivity});
+  socket.emit('new chunk', {activity: lastActivity});
+  //HALPER
   clearInterval(intervalId);
-  return JSON.stringify(activities);
 };
+
+//socket connection/controller
 
 const {io} = require('../index.js');
 const connectToSocket = (interval) => {
   io.on('connection', (socket) => {
-    startSocketMonitor(socket, interval);
+    let intervalId = startSocketMonitor(socket, interval);
+    //on disconnect, clear the interval and send the last chunk
+    socket.on('pause', () => {
+      console.log('socket detected a pause!');
+      pauseSocketMonitor(socket, intervalId);
+    });
+    socket.on('restart', (socket) => {
+      intervalId = startSocketMonitor(socket, interval);
+    })
   });
 };
 
 exports.connectToSocket = connectToSocket;
+
+//ideas for tests: make sure chunks are properly assembled by making sure it's not making a new chunk every second
