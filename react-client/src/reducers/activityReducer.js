@@ -1,4 +1,4 @@
-import { GET_ACTIVITIES, POST_ACTIVITIES, PATCH_ACTIVITY } from '../actions/types'; 
+import { GET_ACTIVITIES, ADD_ACTIVITY, PATCH_ACTIVITY } from '../actions/types'; 
 
 const initialState = {
   activities: [
@@ -15,7 +15,7 @@ export default function (state = initialState, action) {
         ...state, 
         activities: [... state.activities, action.payload]
       }
-    case POST_ACTIVITIES:
+    case ADD_ACTIVITY:
       return {
         ...state,
         activities: [... state.activities, action.payload]
