@@ -1,4 +1,4 @@
-import { GET_ACTIVITIES, POST_ACTIVITIES, PATCH_ACTIVITY, DELETE_ACTIVITY } from './types'; 
+import { GET_ACTIVITIES, ADD_ACTIVITY, PATCH_ACTIVITY, DELETE_ACTIVITY } from './types'; 
 import thunk from 'redux-thunk';
 
 export const getActivities = () => (dispatch) => {
@@ -9,14 +9,10 @@ export const getActivities = () => (dispatch) => {
   // })
 }
 
-// export const postActivities = (data) => {
-//   console.log('data in post', data);
-// }
-
-export const postActivities = (data) => (dispatch) => {
-  console.log('data in post', data.activity);
+export const addActivity = (data) => (dispatch) => {
+  // console.log('data in post', data.activity);
   dispatch({
-    type: POST_ACTIVITIES,
+    type: ADD_ACTIVITY,
     payload: data.activity
   })
 }

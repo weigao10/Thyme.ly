@@ -1,4 +1,5 @@
 import React from 'react';
+import { connect } from 'react-redux';
 
 const renderActivities = (category, activities) => {
   return (
@@ -25,4 +26,9 @@ const Activity = ({activities}) => {
   )
 }
 
-export default Activity;
+
+const mapStateToProps = state => ({
+  activities: state.activities
+})
+
+export default connect(mapStateToProps)(Activity) 
