@@ -1,22 +1,30 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import moment from 'moment';
 
 const renderActivities = (category, activities) => {
-  return (
-    <div>
+
+  return <div>
       <h4>{category}</h4>
-      {activities[category].map((activity) => {
+      {activities[category].map(activity => {
+
+        let duration = moment
+          .duration(
+            moment(activity.endTime, "MMMM Do YYYY, h:mm:ss a")
+            .diff(moment(activity.startTime, "MMMM Do YYYY, h:mm:ss a"))
+          )
+          .asSeconds();
+
         return <div>
-          app: {activity.app} <br/>
-          window_title: {activity.title} &nbsp;
-        </div>
+            app: {activity.app} <br />
+            window_title: {activity.title} <br />
+            duration: {duration} seconds
+          </div>;
       })}
-    </div>
-  )
+    </div>;
 }
 
 const Activity = ({activities}) => {
-  console.log('activities in activity.jsx', activities)
   return (
     <div>
       {renderActivities('neutral', activities)}
