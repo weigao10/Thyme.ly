@@ -10,9 +10,10 @@ import ProductivityScore from '../components/DashboardView/ProductivityScore.jsx
 class DashboardView extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
-    }
+    this.state = {};
+    this.socket = null;
     this.connectSocket = this.connectSocket.bind(this);
+    this.pauseSocket = this.pauseSocket.bind(this);
   }
   
   componentDidMount() {
@@ -22,16 +23,26 @@ class DashboardView extends React.Component {
   connectSocket() {
     this.socket = window.io.connect('http://127.0.0.1:3000/');
     console.log('connected to socket!');
-    this.socket.on('new activity', (data) => {
-      console.log('getting new activity!');
+    this.socket.on('new chunk', (data) => {
+      console.log('getting new activity chunk!');
       console.log(data);
     });
+  }
+
+  restartSocket() {
+    this.socket.emit('restart');
+  }
+
+  pauseSocket() {
+    this.socket.emit('pause');
   }
 
   render() {
     return (
       <div>
         <h3> Dashboard! </h3>
+        <button onClick={this.pauseSocket}>test pause monitor button</button>
+        <button onClick={this.connectSocket}>test restart monitor button</button>
         <ActivityContainer />
         <ProductivityScore />
       </div>
