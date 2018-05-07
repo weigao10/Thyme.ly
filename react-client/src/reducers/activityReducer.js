@@ -2,15 +2,15 @@ import { GET_ACTIVITIES, ADD_ACTIVITY, PATCH_ACTIVITY, CATEGORIZE_ACTIVITY } fro
 
 const initialState = {
   neutral: [
-      {'app': 'System Preferences', 'title': 'Control Panel', 'duration': '2'},
+      {'app': 'System Preferences', 'title': 'Control Panel', 'startTime': "May 7th 2018, 5:51:26 pm", 'endTime': "May 7th 2018, 5:51:46 pm"},
   ],
   productive: [
-    {'app': 'Atom', 'title': 'productive.js', 'duration': '3'},
-    {'app': 'Chrome', 'title': 'Youtube - WTF IS REDUX', 'duration': '3'},
+    {'app': 'Atom', 'title': 'productive.js', 'startTime': "May 7th 2018, 6:51:26 pm", 'endTime': "May 7th 2018, 7:51:46 pm"},
+    {'app': 'Chrome', 'title': 'Youtube - WTF IS REDUX', 'startTime': "May 7th 2018, 5:55:26 pm", 'endTime': "May 7th 2018, 5:59:46 pm"},
   ],
   distracting: [
-    {'app': 'Chrome', 'title': 'Facebook', 'duration': '3'},
-    {'app': 'Chrome', 'title': 'gchat', 'duration': '3'},
+    {'app': 'Chrome', 'title': 'Facebook', 'startTime': "May 7th 2018, 5:51:26 pm", 'endTime': "May 7th 2018, 5:51:46 pm"},
+    {'app': 'Chrome', 'title': 'gchat', 'startTime': "May 7th 2018, 5:51:26 pm", 'endTime': "May 7th 2018, 5:51:47 pm"},
   ]
 }
 
