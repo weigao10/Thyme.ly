@@ -24,49 +24,31 @@ const client = new Client({
 const getActivities = () => {
   let query = `SELECT * FROM public.activities;`;
 
-  pool.query(query, (err, res) => {
-    if (err) {
-      // console.log( chalk.black.bgYellow('error is', err.stack) );
- 
-
-    } else {
-      // console.log( chalk.black.bgYellow(JSON.stringify(res)) );
-    }
-  })
+  pool.query(query)
+  .then((data) => console.log( chalk.black.bgYellow(JSON.stringify(data.rows))))
+  .catch((err) => console.log( chalk.red.bgYellow(err)));
 
 }
 
 const insertActivity = () => {
   let query = 
   `INSERT INTO public.activities
-    VALUES (1, 2:30, 2:31, 'chrome', 'reddit', 'abc', 'xyz', 'www.random.com');`;
+    VALUES ('1999-01-08 04:05:06', '1999-01-08 04:05:06', 'chrome', 'reddit', 'abc', 'xyz', 'www.random.com');`;
 
-  pool.query(query, (err, res) => {
-    if (err) {
-      console.log( chalk.black.bgGreen('error is', err.stack) );
- 
-
-    } else {
-      console.log( chalk.black.bgGreen(JSON.stringify(res)) );
-    }
-  })
+    pool.query(query)
+    .then((data) => console.log( chalk.black.bgGreen(JSON.stringify(data))) )
+    .catch((err) => console.log( chalk.red.bgGreen(err)));
 }
 
-const updateActivity = () => {
+const updateActivity = (activity_id, newCategory) => {
   let query = 
   `UPDATE public.activities
-	SET app_name='random app'
-  WHERE app_name='chrome';`
+	SET category='${newCategory}'
+  WHERE activity_id='${activity_id};`
   
-  pool.query(query, (err, res) => {
-    if (err) {
-      console.log( chalk.white.bgBlue('error is', err.stack) );
- 
-
-    } else {
-      console.log( chalk.white.bgBlue(JSON.stringify(res)) );
-    }
-  })
+  pool.query(query)
+  .then((data) => console.log( chalk.black.bgBlue(JSON.stringify(data))) )
+  .catch((err) => console.log( chalk.red.bgBlue(err)));
 
 }
 
@@ -75,15 +57,9 @@ const deleteActivity = () => {
   `DELETE FROM public.activities'
   WHERE app_name='chrome';`
   
-  pool.query(query, (err, res) => {
-    if (err) {
-      console.log( chalk.white.bgRed('error is', err.stack) );
- 
-
-    } else {
-      console.log( chalk.white.bgRed(JSON.stringify(res)) );
-    }
-  })
+  pool.query(query)
+  .then((data) => console.log( chalk.black.bgRed(JSON.stringify(data))) )
+  .catch((err) => console.log( chalk.red.bgRed(err)));
 }
 
 
@@ -92,15 +68,9 @@ const deleteActivity = () => {
 const getUsers = () => {
   let query = `SELECT * FROM public.users;`;
 
-  pool.query(query, (err, res) => {
-    if (err) {
-      // console.log( chalk.black.bgYellow('error is', err.stack) );
- 
-
-    } else {
-      // console.log( chalk.black.bgYellow(JSON.stringify(res)) );
-    }
-  })
+  pool.query(query)
+  .then((data) => console.log( chalk.black.bgYellow(JSON.stringify(data))))
+  .catch((err) => console.log( chalk.red.bgYellow(err)));
 } 
 
 const insertUser = () => {
@@ -109,14 +79,9 @@ const insertUser = () => {
     username, hash, user_id)
     VALUES ('johndoe1', null, '2');`;
 
-  pool.query(query, (err, res) => {
-    if (err) {
-      console.log( chalk.black.bgGreen('error is', err.stack) );
-
-    } else {
-      console.log( chalk.black.bgGreen(JSON.stringify(res)) );
-    }
-  })
+  pool.query(query)
+  .then((data) => console.log( chalk.black.bgGreen(JSON.stringify(data))) )
+  .catch((err) => console.log( chalk.red.bgGreen(err)));
 }
 
 const updateUser = () => {
@@ -125,14 +90,9 @@ const updateUser = () => {
 	SET username='janedoe1'
 	WHERE username='johndoe1';`;
 
-  pool.query(query, (err, res) => {
-    if (err) {
-      console.log( chalk.white.bgBlue('error is', err.stack) );
-
-    } else {
-      console.log( chalk.white.bgBlue(JSON.stringify(res)) );
-    }
-  })
+  pool.query(query)
+  .then((data) => console.log( chalk.black.bgBlue(JSON.stringify(data))) )
+  .catch((err) => console.log( chalk.red.bgBlue(err)));
 
 }
 
@@ -141,14 +101,9 @@ const deleteUser = () => {
   `DELETE FROM public.users
 	WHERE username='janedoe1';`;
 
-  pool.query(query, (err, res) => {
-    if (err) {
-      console.log( chalk.white.bgRed('error is', err.stack) );
-
-    } else {
-      console.log( chalk.white.bgRed(JSON.stringify(res)) );
-    }
-  })
+  pool.query(query)
+  .then((data) => console.log( chalk.white.bgRed(JSON.stringify(data))) )
+  .catch((err) => console.log( chalk.red.bgRed(err)) );
 }
 
 //----User Metrics Helper Functions----
@@ -173,37 +128,26 @@ To be filled out later
 const getErrors = () => {
   let query = 
   `SELECT * FROM public.errors;`
-  
-  pool.query(query, (err, res) => {
-    if (err) {
-      // console.log( chalk.black.bgYellow('error is', err.stack) );
- 
 
-    } else {
-      // console.log( chalk.black.bgYellow(JSON.stringify(res)) );
-    }
-  })
+  pool.query(query)
+  .then((data) => console.log( chalk.black.bgYellow(JSON.stringify(data))) )
+  .catch((err) => console.log( chalk.red.bgYellow(err)));
 
 }
 
 const insertError = () => {
   let query = 
   `INSERT INTO public.errors(error_msg)
-  VALUES ('testing this out and this is a sample message');`
+  VALUES ('this is a sample message');`
   
-  pool.query(query, (err, res) => {
-    if (err) {
-      console.log( chalk.black.bgGreen('error is', err.stack) );
- 
+  pool.query(query)
+  .then((data) => console.log( chalk.black.bgGreen(JSON.stringify(data))) )
+  .catch((err) => console.log( chalk.red.bgGreen(err)));
 
-    } else {
-      console.log( chalk.black.bgGreen(JSON.stringify(res)) );
-    }
-  })
 }
 
-// insertError();
-getErrors();
+insertActivity();
+getActivities();
 
 //close the connection
 pool.end();
