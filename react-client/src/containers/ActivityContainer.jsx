@@ -13,7 +13,7 @@ class ActivityContainer extends React.Component {
     return (
       <div>
         <h3> ActivityContainer! </h3>
-        <ActivityGroup activities={this.props.activities}/>
+        <ActivityGroup activities={this.props.activities} data={this.props.data}/>
       </div>
     )
   }
@@ -24,4 +24,3 @@ const mapStateToProps = state => ({
 })
 
 export default connect(mapStateToProps, { getActivities })(ActivityContainer) 
-// export default ActivityContainer;

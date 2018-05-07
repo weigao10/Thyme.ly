@@ -26,11 +26,11 @@ const getActivities = () => {
 
   pool.query(query, (err, res) => {
     if (err) {
-      console.log( chalk.black.bgYellow('error is', err.stack) );
+      // console.log( chalk.black.bgYellow('error is', err.stack) );
  
 
     } else {
-      console.log( chalk.black.bgYellow(JSON.stringify(res)) );
+      // console.log( chalk.black.bgYellow(JSON.stringify(res)) );
     }
   })
 
@@ -94,11 +94,11 @@ const getUsers = () => {
 
   pool.query(query, (err, res) => {
     if (err) {
-      console.log( chalk.black.bgYellow('error is', err.stack) );
+      // console.log( chalk.black.bgYellow('error is', err.stack) );
  
 
     } else {
-      console.log( chalk.black.bgYellow(JSON.stringify(res)) );
+      // console.log( chalk.black.bgYellow(JSON.stringify(res)) );
     }
   })
 } 
@@ -176,11 +176,11 @@ const getErrors = () => {
   
   pool.query(query, (err, res) => {
     if (err) {
-      console.log( chalk.black.bgYellow('error is', err.stack) );
+      // console.log( chalk.black.bgYellow('error is', err.stack) );
  
 
     } else {
-      console.log( chalk.black.bgYellow(JSON.stringify(res)) );
+      // console.log( chalk.black.bgYellow(JSON.stringify(res)) );
     }
   })
 
