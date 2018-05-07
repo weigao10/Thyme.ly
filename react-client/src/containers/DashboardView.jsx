@@ -28,6 +28,9 @@ class DashboardView extends React.Component {
     this.socket.on('new chunk', (data) => {
       console.log('getting new activity chunk!');
       console.log(data);
+      //check if data.app and data.title already exist in state
+        //if so, update duration
+        //else post activity
       this.props.postActivities(data);
     });
   }
