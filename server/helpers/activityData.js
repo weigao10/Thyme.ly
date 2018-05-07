@@ -2,6 +2,25 @@
 const activeWin = require('active-win');
 const moment = require('moment');
 
+//monitor function that runs on interval
+const monitorSocket = async (socket) => {
+  try {
+    let newActivity = assembleActivity(await activeWin());
+    let lastActivity = activities[activities.length - 1];
+    if (needToInitializeChunk(lastActivity)) activities.push(newActivity);
+    else if (chunkComplete(lastActivity, newActivity)) {
+      lastActivity.endTime = timestamp();
+      console.log('TRYING TO EMIT CHUNK')
+      socket.emit('new chunk', {activity: lastActivity});
+      activities.push(newActivity);
+    }
+  } catch(e) {
+    e.time = timestamp();
+    e.description = e.message; //not sure why I need to do this
+    errors.push(e); //TODO: this loses some info but full error objects apparently can't be stored in an array
+  }
+};
+
 const timestamp = () => { //can change moment format for ease of manipulation
   return moment().format('MMMM Do YYYY, h:mm:ss a');
 };
@@ -10,7 +29,8 @@ const assembleActivity = (activeWinObj) => {
   return {
     id: activeWinObj.id,
     app: activeWinObj.owner.name,
-    title: activeWinObj.title
+    title: activeWinObj.title,
+    startTime: timestamp()
   };
 };
 
@@ -23,48 +43,41 @@ const chunkComplete = (lastActivity, newActivity) => {
   return (lastActivity.app !== newActivity.app) || (lastActivity.title !== newActivity.title);
 };
 
-const monitorSocket = async (socket) => {
-  try {
-    let newActivity = assembleActivity(await activeWin());
-    let lastActivity = activities[activities.length - 1];
-    if (needToInitializeChunk(lastActivity)) {
-      newActivity.startTime = timestamp();
-      activities.push(newActivity);
-    } else if (chunkComplete(lastActivity, newActivity)) {
-      lastActivity.endTime = timestamp();
-      socket.emit('new chunk', {activity: lastActivity});
-      newActivity.startTime = timestamp();
-      activities.push(newActivity);
-    }
-  } catch(e) {
-    e.time = timestamp();
-    e.description = e.message; //not sure why I need to do this
-    errors.push(e); //TODO: this loses some info but full error objects apparently can't be stored in an array
-  }
-};
+//functions that start and pause the monitor
 
+//THIS IS REALLY INITIALIZE, WRITE AN INITIALIZE/PAUSE/RESTART? OR JUST ASSUME CLIENT HAS IT ALL?
 const startSocketMonitor = (socket, interval) => {
   activities = [];
   errors = [];
   intervalId = setInterval(() => {monitorSocket(socket)}, interval);
+  return intervalId;
 };
 
-//create a pause fn
-
-const pauseMonitor = () => {
-  activities[activities.length - 1].endTime = timestamp();
-  console.log('activities for this session are', JSON.stringify(activities));
-  console.log('errors for this session are', JSON.stringify(errors));
+const pauseSocketMonitor = (socket, intervalId) => {
+  //emit the last activity and then clear interval
+  // CAN BE OWN HALPER
+  let lastActivity = activities[activities.length - 1];
+  lastActivity.endTime = timestamp();
+  console.log('last activity before pause is', {activity: lastActivity});
+  socket.emit('new chunk', {activity: lastActivity});
+  //HALPER
   clearInterval(intervalId);
-  return JSON.stringify(activities);
 };
+
+//socket connection
 
 const {io} = require('../index.js');
 const connectToSocket = (interval) => {
   io.on('connection', (socket) => {
-    startSocketMonitor(socket, interval);
-    //on disconnect, clear the interval and send any remaining data
+    const intervalId = startSocketMonitor(socket, interval);
+    //on disconnect, clear the interval and send the last chunk
+    socket.on('pause', () => {
+      console.log('socket detected a pause!');
+      pauseSocketMonitor(socket, intervalId);
+    });
   });
 };
 
 exports.connectToSocket = connectToSocket;
+
+//ideas for tests: make sure chunks are properly assembled by making sure it's not making a new chunk every second

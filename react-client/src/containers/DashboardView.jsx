@@ -10,9 +10,10 @@ import ProductivityScore from '../components/DashboardView/ProductivityScore.jsx
 class DashboardView extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
-    }
+    this.state = {};
+    this.socket = null;
     this.connectSocket = this.connectSocket.bind(this);
+    this.pauseSocket = this.pauseSocket.bind(this);
   }
   
   componentDidMount() {
@@ -28,10 +29,16 @@ class DashboardView extends React.Component {
     });
   }
 
+  pauseSocket() {
+    this.socket.emit('pause');
+  }
+
   render() {
     return (
       <div>
         <h3> Dashboard! </h3>
+        <button onClick={this.pauseSocket}>test pause monitor button</button>
+        <button onClick={this.connectSocket}>test restart monitor button</button>
         <ActivityContainer />
         <ProductivityScore />
       </div>
