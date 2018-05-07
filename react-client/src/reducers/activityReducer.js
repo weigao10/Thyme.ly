@@ -1,4 +1,4 @@
-import { GET_ACTIVITIES, POST_ACTIVITIES, PATCH_ACTIVITY, CATEGORIZE_ACTIVITY } from '../actions/types'; 
+import { GET_ACTIVITIES, ADD_ACTIVITY, PATCH_ACTIVITY, CATEGORIZE_ACTIVITY } from '../actions/types'; 
 
 const initialState = {
   neutral: [
@@ -16,12 +16,12 @@ const initialState = {
 
 export default function (state = initialState, action) {
   switch(action.type){
-    // case GET_ACTIVITIES: 
-    //   return {
-    //     ...state, 
-    //     activities: [... state.activities, action.payload]
-    //   }
-    case POST_ACTIVITIES:
+    case GET_ACTIVITIES: 
+      return {
+        ...state, 
+        activities: [... state.activities, action.payload]
+      }
+    case ADD_ACTIVITY:
       return {
         ...state,
         neutral: [... state.neutral, action.payload]
