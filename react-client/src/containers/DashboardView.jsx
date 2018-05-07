@@ -22,8 +22,8 @@ class DashboardView extends React.Component {
   connectSocket() {
     this.socket = window.io.connect('http://127.0.0.1:3000/');
     console.log('connected to socket!');
-    this.socket.on('new activity', (data) => {
-      console.log('getting new activity!');
+    this.socket.on('new chunk', (data) => {
+      console.log('getting new activity chunk!');
       console.log(data);
     });
   }
