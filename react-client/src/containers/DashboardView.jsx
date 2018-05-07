@@ -1,17 +1,17 @@
 import { withRouter } from 'react-router-dom';
+import { connect } from 'react-redux';
 import ReactDOM from 'react-dom';
 import React from 'react';
 import io from 'socket.io-client';
 window.io = io;
 
+import { postActivities } from '../actions/activityActions'
 import ActivityContainer from './ActivityContainer.jsx';
 import ProductivityScore from '../components/DashboardView/ProductivityScore.jsx';
 
 class DashboardView extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
-    }
     this.connectSocket = this.connectSocket.bind(this);
   }
   
@@ -23,8 +23,10 @@ class DashboardView extends React.Component {
     this.socket = window.io.connect('http://127.0.0.1:3000/');
     console.log('connected to socket!');
     this.socket.on('new activity', (data) => {
+      
       console.log('getting new activity!');
       console.log(data);
+      this.props.postActivities(data);
     });
   }
 
@@ -32,11 +34,21 @@ class DashboardView extends React.Component {
     return (
       <div>
         <h3> Dashboard! </h3>
-        <ActivityContainer />
+        <ActivityContainer activities={this.props.activities}/>
         <ProductivityScore />
       </div>
     )
   }
 }
 
-export default withRouter(DashboardView);
+const mapStateToProps = state => ({
+  activities: state.activities
+})
+
+const mapDispatchToProps = dispatch => ({
+  postActivities: postActivities
+})
+
+// export default withRouter(DashboardView);
+export default connect(mapDispatchToProps, {postActivities}) (withRouter (DashboardView))
+
