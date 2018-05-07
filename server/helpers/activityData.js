@@ -14,19 +14,26 @@ const assembleActivity = (activeWinObj) => {
   };
 };
 
+const needToInitializeChunk = (lastActivity) => {
+  return !lastActivity;
+};
+
+const chunkComplete = (lastActivity, newActivity) => {
+  if (needToInitializeChunk(lastActivity)) return false;
+  return (lastActivity.app !== newActivity.app) || (lastActivity.title !== newActivity.title);
+};
+
 const monitorSocket = async (socket) => {
   try {
     let newActivity = assembleActivity(await activeWin());
     let lastActivity = activities[activities.length - 1];
-    //check to see if a new activity chunk is needed or if the most recent chunk needs to be updated
-    if (!lastActivity || (newActivity.app !== lastActivity.app
-      || newActivity.title !== lastActivity.title)) {
-      const time = timestamp();
-      if (lastActivity) {
-        lastActivity.endTime = time;
-        socket.emit('new activity', {activity: lastActivity})
-      }      
-      newActivity.startTime = time;
+    if (needToInitializeChunk(lastActivity)) {
+      newActivity.startTime = timestamp();
+      activities.push(newActivity);
+    } else if (chunkComplete(lastActivity, newActivity)) {
+      lastActivity.endTime = timestamp();
+      socket.emit('new chunk', {activity: lastActivity});
+      newActivity.startTime = timestamp();
       activities.push(newActivity);
     }
   } catch(e) {
@@ -42,7 +49,9 @@ const startSocketMonitor = (socket, interval) => {
   intervalId = setInterval(() => {monitorSocket(socket)}, interval);
 };
 
-const stopMonitor = () => {
+//create a pause fn
+
+const pauseMonitor = () => {
   activities[activities.length - 1].endTime = timestamp();
   console.log('activities for this session are', JSON.stringify(activities));
   console.log('errors for this session are', JSON.stringify(errors));
@@ -54,6 +63,7 @@ const {io} = require('../index.js');
 const connectToSocket = (interval) => {
   io.on('connection', (socket) => {
     startSocketMonitor(socket, interval);
+    //on disconnect, clear the interval and send any remaining data
   });
 };
 
