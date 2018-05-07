@@ -1,4 +1,5 @@
 import { GET_ACTIVITIES, POST_ACTIVITIES, PATCH_ACTIVITY, DELETE_ACTIVITY } from './types'; 
+import thunk from 'redux-thunk';
 
 export const getActivities = () => (dispatch) => {
   //axios request to db
@@ -7,5 +8,19 @@ export const getActivities = () => (dispatch) => {
   //   payload: data
   // })
 }
+
+// export const postActivities = (data) => {
+//   console.log('data in post', data);
+// }
+
+export const postActivities = (data) => (dispatch) => {
+  console.log('data in post', data.activity);
+  dispatch({
+    type: POST_ACTIVITIES,
+    payload: data.activity
+  })
+}
+
+
 
 
