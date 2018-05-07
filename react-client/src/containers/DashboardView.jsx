@@ -29,6 +29,10 @@ class DashboardView extends React.Component {
     });
   }
 
+  restartSocket() {
+    this.socket.emit('restart');
+  }
+
   pauseSocket() {
     this.socket.emit('pause');
   }
