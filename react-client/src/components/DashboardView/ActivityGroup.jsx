@@ -1,8 +1,10 @@
 import React from 'react';
 import Activity from './Activity.jsx'
 
-const ActivityGroup = (props) => (<div>
+const ActivityGroup = (props) => {
+  // console.log('props', props.data.activities)
+  return (<div>
   <Activity activities={props.activities}/>
-</div>)
+</div>)}
 
 export default ActivityGroup;
