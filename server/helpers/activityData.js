@@ -2,8 +2,29 @@
 const activeWin = require('active-win');
 const moment = require('moment');
 
+//closure variables to store activities and errors
+let activities = [];
+let errors = [];
+
+//functions that start, pause, and restart the monitor
+const startSocketMonitor = (socket, interval) => {
+  let storage = { //point to closure variables
+    activities,
+    errors
+  };
+  return setInterval(() => {monitorSocket(socket, storage)}, interval);
+};
+
+const pauseSocketMonitor = (socket, intervalId) => {
+  //emit the last activity and then clear interval
+  let lastActivity = activities[activities.length - 1]; //HOW CAN I ACCESS THIS WO CLOSURE?
+  lastActivity.endTime = timestamp();
+  socket.emit('new chunk', {activity: lastActivity});
+  clearInterval(intervalId);
+};
+
 //monitor function that runs on interval
-const monitorSocket = async (socket) => {
+const monitorSocket = async (socket, { activities, errors }) => {
   try {
     let newActivity = assembleActivity(await activeWin());
     let lastActivity = activities[activities.length - 1];
@@ -15,12 +36,12 @@ const monitorSocket = async (socket) => {
     }
   } catch(e) {
     e.time = timestamp();
-    e.description = e.message; //not sure why I need to do this
+    e.description = e.message;
     errors.push(e); //TODO: this loses some info but full error objects apparently can't be stored in an array
   }
 };
 
-const timestamp = () => { //can change moment format for ease of manipulation
+const timestamp = () => {
   return moment().format('MMMM Do YYYY, h:mm:ss a');
 };
 
@@ -42,26 +63,6 @@ const chunkComplete = (lastActivity, newActivity) => {
   return (lastActivity.app !== newActivity.app) || (lastActivity.title !== newActivity.title);
 };
 
-//functions that start, pause, and restart the monitor
-
-const startSocketMonitor = (socket, interval) => {
-  activities = [];
-  errors = [];
-  intervalId = setInterval(() => {monitorSocket(socket)}, interval);
-  return intervalId;
-};
-
-const pauseSocketMonitor = (socket, intervalId) => {
-  //emit the last activity and then clear interval
-  // CAN BE OWN HALPER
-  let lastActivity = activities[activities.length - 1];
-  lastActivity.endTime = timestamp();
-  console.log('last activity before pause is', {activity: lastActivity});
-  socket.emit('new chunk', {activity: lastActivity});
-  //HALPER
-  clearInterval(intervalId);
-};
-
 //socket connection/controller
 
 const {io} = require('../index.js');
@@ -81,4 +82,8 @@ const connectToSocket = (interval) => {
 
 exports.connectToSocket = connectToSocket;
 
-//ideas for tests: make sure chunks are properly assembled by making sure it's not making a new chunk every second
+/*
+ideas for tests:
+make sure chunks are properly assembled by making sure it's not making a new chunk every second
+make sure entire time period is covered by chunks
+*/
