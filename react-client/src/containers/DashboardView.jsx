@@ -8,14 +8,24 @@ window.io = io;
 import { addActivity } from '../actions/activityActions'
 import ActivityContainer from './ActivityContainer.jsx';
 import ProductivityScore from '../components/DashboardView/ProductivityScore.jsx';
+import Paper from 'material-ui/Paper';
+import AppBar from 'material-ui/AppBar';
+import FlatButton from 'material-ui/FlatButton';
+import Divider from 'material-ui/Divider';
+//import RaisedButton from 'material-ui/RaisedButton';
 
 class DashboardView extends React.Component {
   constructor(props) {
     super(props);
 
+    this.state = {
+      showTimerButton: true
+    }
+
     this.socket = null;
     this.connectSocket = this.connectSocket.bind(this);
     this.pauseSocket = this.pauseSocket.bind(this);
+    this.toggleTimerButton = this.toggleTimerButton.bind(this);
   }
   
   componentDidMount() {
@@ -39,14 +49,35 @@ class DashboardView extends React.Component {
     this.socket.emit('pause');
   }
 
+  toggleTimerButton() {
+    console.error('toggleTimerButton was clicked!');
+    let toggle = !this.state.showTimerButton;
+
+    this.setState({
+      showTimerButton: toggle
+    })
+
+    if (!toggle) {
+      this.pauseSocket;
+    } else {
+      this.connectSocket;
+    }
+  }
+
   render() {
     return (
       <div>
-        <h3> Dashboard! </h3>
-        <button onClick={this.pauseSocket}>test pause monitor button</button>
-        <button onClick={this.connectSocket}>test restart monitor button</button>
-        <ActivityContainer />
-        <ProductivityScore />
+        <AppBar 
+          title='Dashboard'
+          style={{background: '#2196F3', margin: '0px'}}
+          iconElementRight={this.state.showTimerButton ? <FlatButton label="Pause Tracker"/> : <FlatButton label="Restart Tracker" />}
+          onRightIconButtonClick={this.toggleTimerButton}
+        />
+        <Paper style={{display: 'table', background: '#E3F2FD', margin: '0', padding: '5px'}}>
+          
+          <ActivityContainer />
+          
+        </Paper>
       </div>
     )
   }
