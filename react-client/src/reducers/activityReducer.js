@@ -9,12 +9,12 @@ const initialState = {
     {'app': 'Chrome', 'title': 'Youtube - WTF IS REDUX', 'startTime': "May 7th 2018, 5:55:26 pm", 'endTime': "May 7th 2018, 5:59:46 pm"},
   ],
   distracting: [
-    {'app': 'Chrome', 'title': 'Facebook', 'startTime': "May 7th 2018, 5:51:26 pm", 'endTime': "May 7th 2018, 5:51:46 pm"},
-    {'app': 'Chrome', 'title': 'gchat', 'startTime': "May 7th 2018, 5:51:26 pm", 'endTime': "May 7th 2018, 5:51:47 pm"},
+    {'app': 'Google Chrome', 'title': '', 'startTime': "May 7th 2018, 5:51:26 pm", 'endTime': "May 7th 2018, 5:51:46 pm"},
+    {'app': 'Google Chrome', 'title': 'Store - Redux', 'startTime': "May 7th 2018, 5:51:26 pm", 'endTime': "May 7th 2018, 5:51:47 pm"},
   ]
 }
 
-export default function (state = initialState, action) {
+const activities = (state = initialState, action) => {
   switch(action.type){
     case GET_ACTIVITIES: 
       return {
@@ -32,6 +32,9 @@ export default function (state = initialState, action) {
     //     activities: [... state.activities, action.payload]
     //   }
     default: 
+      console.log('default', state)
       return state;
   }
 }
+
+export default activities;
