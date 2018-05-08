@@ -24,14 +24,12 @@ const renderActivities = (category, activities) => {
         {category[0].toUpperCase() + category.slice(1, category.length)}
       </Paper>
       {activities[category].map((activity, index) => {
-
         let duration = moment
           .duration(
             moment(activity.endTime, "MMMM Do YYYY, h:mm:ss a")
             .diff(moment(activity.startTime, "MMMM Do YYYY, h:mm:ss a"))
           )
           .asSeconds();
-
         let styleTick = {
           font: 'Arial', 
           background: '#FCE4EC', 
@@ -41,7 +39,6 @@ const renderActivities = (category, activities) => {
           color: 'black',
           fontSize: '80%',
         }
-
         let styleTock = {
           font: 'Arial', 
           background: '#F8BBD0', 
@@ -51,7 +48,6 @@ const renderActivities = (category, activities) => {
           color: 'black',
           fontSize: '80%',
         }
-
         return (
           <Paper
             key={activity.title + index}
@@ -62,7 +58,6 @@ const renderActivities = (category, activities) => {
             <i>{duration}</i> seconds <br/>
             <br/>
             <button>productive</button> <button>neutral</button> <button>distracting</button>
-
           </Paper>
         )
       })}

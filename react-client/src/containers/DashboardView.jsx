@@ -58,9 +58,9 @@ class DashboardView extends React.Component {
     })
 
     if (!toggle) {
-      this.pauseSocket;
+      this.pauseSocket();
     } else {
-      this.connectSocket;
+      this.connectSocket();
     }
   }
 
