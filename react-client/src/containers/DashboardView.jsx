@@ -7,7 +7,7 @@ window.io = io;
 
 import { addActivity } from '../actions/activityActions'
 import ActivityContainer from './ActivityContainer.jsx';
-import ProductivityScore from '../components/DashboardView/ProductivityScore.jsx';
+import ProductivityScore from './ProductivityScore.jsx';
 import Paper from 'material-ui/Paper';
 import AppBar from 'material-ui/AppBar';
 import FlatButton from 'material-ui/FlatButton';
@@ -50,7 +50,7 @@ class DashboardView extends React.Component {
   }
 
   toggleTimerButton() {
-    console.error('toggleTimerButton was clicked!');
+  
     let toggle = !this.state.showTimerButton;
 
     this.setState({
@@ -58,9 +58,9 @@ class DashboardView extends React.Component {
     })
 
     if (!toggle) {
-      this.pauseSocket;
+      this.pauseSocket();
     } else {
-      this.connectSocket;
+      this.connectSocket();
     }
   }
 
@@ -73,7 +73,7 @@ class DashboardView extends React.Component {
           iconElementRight={this.state.showTimerButton ? <FlatButton label="Pause Tracker"/> : <FlatButton label="Restart Tracker" />}
           onRightIconButtonClick={this.toggleTimerButton}
         />
-        <Paper style={{display: 'table', background: '#E3F2FD', margin: '0', padding: '5px'}}>
+        <Paper style={{display: 'table', background: '#AAA', margin: '0', padding: '5px'}}>
           
           <ActivityContainer />
           

@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import ProductivityScore from './ProductivityScore.jsx';
+import ProductivityScore from '../../containers/ProductivityScore.jsx';
 
 import Paper from 'material-ui/Paper';
 import Divider from 'material-ui/Divider';
@@ -13,7 +13,7 @@ const renderActivities = (category, activities) => {
     <div>
       <Paper 
         style={
-          {font: 'Garamond', 
+          {font: 'Open Sans', 
           background: '#00BCD4', 
           padding: '10px 5px 10px 5px',
           textAlign: 'center',
@@ -34,7 +34,8 @@ const renderActivities = (category, activities) => {
 
         let styleTick = {
           font: 'Arial', 
-          background: '#FCE4EC', 
+          //background: '#E8F5E9', 
+          background: '#DDD',
           padding: '10px 5px 10px 5px',
           margin: '10px 0px 10px 0px',
           textAlign: 'left',
@@ -44,7 +45,8 @@ const renderActivities = (category, activities) => {
 
         let styleTock = {
           font: 'Arial', 
-          background: '#F8BBD0', 
+          // background: '#C8E6C9', 
+          background: '#BBB',
           padding: '10px 5px 10px 5px',
           margin: '10px 0px 10px 0px',
           textAlign: 'left',
@@ -78,7 +80,9 @@ const Activity = ({activities}) => {
     width: 'calc(25% - 16px)',
     float: 'left',
     verticalAlign: 'top',
-    minHeight: '500px'
+    minHeight: '525px',
+    maxHeight: '525px',
+    overflowY: 'scroll',
   }
 
   return (
