@@ -1,14 +1,13 @@
 import React from 'react';
 import ActivityGroup from '../components/DashboardView/ActivityGroup.jsx'
 
+import Paper from 'material-ui/Paper';
+
 class ActivityContainer extends React.Component {
   
   render() {
     return (
-      <div>
-        <h3> ActivityContainer! </h3>
         <ActivityGroup />
-      </div>
     )
   }
 }
