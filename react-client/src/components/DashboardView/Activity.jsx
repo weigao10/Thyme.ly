@@ -57,10 +57,10 @@ const renderActivities = (category, activities) => {
             key={activity.title + index}
             style={index % 2 === 0 ? styleTick : styleTock}
           >
-            <b>{activity.app}</b> <br />
-            {activity.title} <br />
-            <i>{duration}</i> seconds <br />
-            <br />
+            <b>{activity.app}</b> <br/>
+            {activity.title} <br/>
+            <i>{duration}</i> seconds <br/>
+            <br/>
             <button>productive</button> <button>neutral</button> <button>distracting</button>
 
           </Paper>
