@@ -1,17 +1,15 @@
 import { GET_ACTIVITIES, ADD_ACTIVITY, PATCH_ACTIVITY, DELETE_ACTIVITY } from './types'; 
 import { createStore } from 'redux';
-import thunk from 'redux-thunk';
-import activities from '../reducers/activityReducer.js'
-import store from '../store.js'
-
+// import thunk from 'redux-thunk';
 
 export const getActivities = () => (dispatch) => {
   
 }
 
-export const addActivity = (data) => (dispatch) => {
+export const addActivity = (data) => (dispatch, getState) => {
 
-  let activityInState = checkState(data.activity)
+  const {activities} = getState()
+  let activityInState = checkState(data, activities)
   if(activityInState){
     console.log('already in state. update duration!')
   } else {
@@ -22,16 +20,15 @@ export const addActivity = (data) => (dispatch) => {
     })
   }
 }
-// const store = createStore(activities);
-const checkState = (activity) => {
 
-  let state = store.getState().activities
-  let title = activity.title;
-  let app = activity.app;
-console.log('state', state)
-  for (let category in state) {
-    for (let activity of state[category]) {
-      if (activity.title === title && activity.app === app) {
+const checkState = (data, activities) => {
+
+  console.log('activities', activities)
+
+  console.log('data', data)
+  for (let category in activities) {
+    for (let activity of activities[category]) {
+      if (activity.title === data.activity.title && activity.app === data.activity.app) {
         return true
       }
     }
