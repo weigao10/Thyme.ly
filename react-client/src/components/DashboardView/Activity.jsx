@@ -1,12 +1,29 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import moment from 'moment';
+import ProductivityScore from './ProductivityScore.jsx';
+
+import Paper from 'material-ui/Paper';
+import Divider from 'material-ui/Divider';
+import RaisedButton from 'material-ui/RaisedButton';
 
 const renderActivities = (category, activities) => {
 
-  return <div>
-      <h4>{category}</h4>
-      {activities[category].map(activity => {
+  return (
+    <div>
+      <Paper 
+        style={
+          {font: 'Garamond', 
+          background: '#00BCD4', 
+          padding: '10px 5px 10px 5px',
+          textAlign: 'center',
+          color: 'white',
+          fontWeight: 'bolder',
+          fontSize: '115%'}}
+      >
+        {category[0].toUpperCase() + category.slice(1, category.length)}
+      </Paper>
+      {activities[category].map((activity, index) => {
 
         let duration = moment
           .duration(
@@ -15,21 +32,69 @@ const renderActivities = (category, activities) => {
           )
           .asSeconds();
 
-        return <div>
-            app: {activity.app} <br />
-            window_title: {activity.title} <br />
-            duration: {duration} seconds
-          </div>;
+        let styleTick = {
+          font: 'Arial', 
+          background: '#FCE4EC', 
+          padding: '10px 5px 10px 5px',
+          margin: '10px 0px 10px 0px',
+          textAlign: 'left',
+          color: 'black',
+          fontSize: '80%',
+        }
+
+        let styleTock = {
+          font: 'Arial', 
+          background: '#F8BBD0', 
+          padding: '10px 5px 10px 5px',
+          margin: '10px 0px 10px 0px',
+          textAlign: 'left',
+          color: 'black',
+          fontSize: '80%',
+        }
+
+        return (
+          <Paper
+            key={activity.title + index}
+            style={index % 2 === 0 ? styleTick : styleTock}
+          >
+            <b>{activity.app}</b> <br/>
+            {activity.title} <br/>
+            <i>{duration}</i> seconds <br/>
+            <br/>
+            <button>productive</button> <button>neutral</button> <button>distracting</button>
+
+          </Paper>
+        )
       })}
-    </div>;
+    </div>
+  );
 }
 
 const Activity = ({activities}) => {
+
+  const style = {
+    margin: '8px',
+    padding: '10px',
+    width: 'calc(25% - 16px)',
+    float: 'left',
+    verticalAlign: 'top',
+    minHeight: '500px'
+  }
+
   return (
     <div>
-      {renderActivities('neutral', activities)}
-      {renderActivities('productive', activities)}
-      {renderActivities('distracting', activities)}
+      <Paper style={style}>
+        {renderActivities('productive', activities)}
+      </Paper>
+      <Paper style={style}>
+        {renderActivities('neutral', activities)}
+      </Paper>
+      <Paper style={style}>
+        {renderActivities('distracting', activities)}
+      </Paper>
+      <Paper style={style}>
+        <ProductivityScore />
+      </Paper>
     </div>
   )
 }

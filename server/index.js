@@ -8,6 +8,14 @@ const db = require('../database/index.js');
 app.use(express.static(path.join(__dirname, '/../react-client/dist')));
 app.use(bodyParser.json());
 
+//update product class when cards are switched
+app.patch('/activities', (req, res) => {
+  // let newCategory = req.body.params.category;
+  let newCategory = 'neutral';
+
+  db.updateActivity(newCategory);
+})
+
 let server = app.listen(port, () => {
   console.log(`listening on port ${port}`);
 });
