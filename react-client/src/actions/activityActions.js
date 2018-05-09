@@ -1,4 +1,4 @@
-import { GET_ACTIVITIES, ADD_ACTIVITY, PATCH_ACTIVITY, DELETE_ACTIVITY } from './types'; 
+import { GET_ACTIVITIES, ADD_ACTIVITY, PATCH_ACTIVITY, CATEGORIZE_ACTIVITY } from './types'; 
 import thunk from 'redux-thunk';
 import store from '../store';
 
@@ -25,9 +25,11 @@ export const addActivity = (data) => (dispatch, getState) => {
   }
 }
 
-const changeCategory = (activity, oldCat, newCat) => (dispatch, getState) => {
+export const changeCategory = (activity, oldCat, newCat) => (dispatch, getState) => {
   const {activities} = getState();
   const {[oldCat]: oldCat, [newCat]: newCat} = activities; //destructuring using variable keys
+  console.log('oldCat is', oldCat);
+  console.log('newCat is', newCat);
   //dispatch updated oldCat and newCat pieces of the activities obj?
   /*
   payload : {
