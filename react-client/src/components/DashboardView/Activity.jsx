@@ -24,12 +24,12 @@ const renderActivities = (category, activities) => {
         {category[0].toUpperCase() + category.slice(1, category.length)}
       </Paper>
       {activities[category].map((activity, index) => {
-        let duration = moment
-          .duration(
-            moment(activity.endTime, "MMMM Do YYYY, h:mm:ss a")
-            .diff(moment(activity.startTime, "MMMM Do YYYY, h:mm:ss a"))
-          )
-          .asSeconds();
+        // let duration = moment
+        //   .duration(
+        //     moment(activity.endTime, "MMMM Do YYYY, h:mm:ss a")
+        //     .diff(moment(activity.startTime, "MMMM Do YYYY, h:mm:ss a"))
+        //   )
+        //   .asSeconds();
         let styleTick = {
           font: 'Arial', 
           //background: '#E8F5E9', 
@@ -57,7 +57,7 @@ const renderActivities = (category, activities) => {
           >
             <b>{activity.app}</b> <br/>
             {activity.title} <br/>
-            <i>{duration}</i> seconds <br/>
+            <i>{activity.duration}</i> seconds <br/>
             <br/>
             <button>productive</button> <button>neutral</button> <button>distracting</button>
           </Paper>
