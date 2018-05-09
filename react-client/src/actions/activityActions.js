@@ -37,7 +37,12 @@ const checkState = (data, activities) => {
     let activity = activities[category]
     for (let i = 0; i < activity.length; i++) {
       if (activity[i].title === data.activity.title && activity[i].app === data.activity.app) {
-        return [activity[i], category, i]
+        //return [activity[i], category, i]
+        return {
+          'activity': activity[i],
+          'category': category,
+          'index': i
+        }
       }
     }
   }
@@ -46,14 +51,12 @@ const checkState = (data, activities) => {
 
 //patch activity
 //perhaps data should include more info ??
-export const patchActivity = (activityInState, data) => (dispatch, getState) => {
+export const patchActivity = ({activity, category, index}, data) => (dispatch, getState) => {
                               //[activity[i], category, i]
-  let copySpurts = activityInState[0].spurts.slice()
+  let copySpurts = activity.spurts.slice()
   let updatedActivity = Object.assign({
     spurts: copySpurts
-  }, activityInState[0]);
-  let category = activityInState[1];
-  let index = activityInState[2];
+  }, activity);
 
   updatedActivity.spurts.push({'startTime': data.activity.startTime, 'endTime': data.activity.endTime})
   updatedActivity.duration += 20
