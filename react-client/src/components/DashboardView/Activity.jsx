@@ -63,7 +63,6 @@ const renderActivities = (category, activities, changeCategory) => {
             <i>{activity.duration}</i> seconds <br/>
             <br/>
             <button name="productive" onClick={(e) => {
-                console.log('trying to send with', activity.id, category, 'productive')
                 changeCategory(activity.id, category, 'productive')}
               }>productive</button>
             <button onClick={() => {changeCategory(activity.id, category, 'neutral')}}>neutral</button>
@@ -87,8 +86,6 @@ const Activity = ({ activities, clickHandler }) => {
     maxHeight: '525px',
     overflowY: 'scroll',
   }
-
-  console.log('clickhandler inside activity is', clickHandler)
 
   return (
     <div>
