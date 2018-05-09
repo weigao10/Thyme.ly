@@ -2,6 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import ProductivityScore from '../../containers/ProductivityScore.jsx';
+import {changeCategory} from '../../actions/activityActions';
 
 import Paper from 'material-ui/Paper';
 import Divider from 'material-ui/Divider';
@@ -59,7 +60,13 @@ const renderActivities = (category, activities) => {
             {activity.title} <br/>
             <i>{activity.duration}</i> seconds <br/>
             <br/>
-            <button>productive</button> <button>neutral</button> <button>distracting</button>
+            <button name="productive" onClick={(e) => {
+                // console.log(e.target.name);
+                recategorize(activity.app, activity.title, 'productive')}
+              }>productive</button>
+            <button onClick={() => {recategorize(activity.app, activity.title, 'neutral')}}>neutral</button>
+            <button onClick={() => {recategorize(activity.app, activity.title, 'distracting')}}>distracting</button>
+
           </Paper>
         )
       })}
@@ -98,9 +105,19 @@ const Activity = ({activities}) => {
   )
 }
 
+const recategorize = (app, title, cat) => {
+  console.log(`Trying to recategorize ${app}-${title} to ${cat}`);
+  changeCategory(app, title, cat);
+}
+
 
 const mapStateToProps = state => ({
   activities: state.activities
 })
 
-export default connect(mapStateToProps)(Activity) 
+//FIX
+const mapDispatchToProps = (dispatch) => ({
+  changeCategory: changeCategory
+})
+
+export default connect(mapStateToProps, {changeCategory})(Activity) 
