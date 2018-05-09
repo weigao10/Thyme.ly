@@ -8,7 +8,9 @@ import Paper from 'material-ui/Paper';
 import Divider from 'material-ui/Divider';
 import RaisedButton from 'material-ui/RaisedButton';
 
-const renderActivities = (category, activities) => {
+// console.log(changeCategory); //works
+
+const renderActivities = (category, activities, changeCategory) => {
 
   return (
     <div>
@@ -61,11 +63,11 @@ const renderActivities = (category, activities) => {
             <i>{activity.duration}</i> seconds <br/>
             <br/>
             <button name="productive" onClick={(e) => {
-                // console.log(e.target.name);
-                recategorize(activity.app, activity.title, 'productive')}
+                console.log('trying to send with', activity.id, category, 'productive')
+                changeCategory(activity.id, category, 'productive')}
               }>productive</button>
-            <button onClick={() => {recategorize(activity.app, activity.title, 'neutral')}}>neutral</button>
-            <button onClick={() => {recategorize(activity.app, activity.title, 'distracting')}}>distracting</button>
+            <button onClick={() => {changeCategory(activity.id, category, 'neutral')}}>neutral</button>
+            <button onClick={() => {changeCategory(activity.id, category, 'distracting')}}>distracting</button>
 
           </Paper>
         )
@@ -74,8 +76,7 @@ const renderActivities = (category, activities) => {
   );
 }
 
-const Activity = ({activities}) => {
-
+const Activity = ({ activities, clickHandler }) => {
   const style = {
     margin: '8px',
     padding: '10px',
@@ -87,16 +88,18 @@ const Activity = ({activities}) => {
     overflowY: 'scroll',
   }
 
+  console.log('clickhandler inside activity is', clickHandler)
+
   return (
     <div>
       <Paper style={style}>
-        {renderActivities('productive', activities)}
+        {renderActivities('productive', activities, clickHandler)}
       </Paper>
       <Paper style={style}>
-        {renderActivities('neutral', activities)}
+        {renderActivities('neutral', activities, clickHandler)}
       </Paper>
       <Paper style={style}>
-        {renderActivities('distracting', activities)}
+        {renderActivities('distracting', activities, clickHandler)}
       </Paper>
       <Paper style={style}>
         <ProductivityScore />
@@ -105,19 +108,16 @@ const Activity = ({activities}) => {
   )
 }
 
-const recategorize = (app, title, cat) => {
-  console.log(`Trying to recategorize ${app}-${title} to ${cat}`);
-  changeCategory(app, title, cat);
-}
-
-
 const mapStateToProps = state => ({
   activities: state.activities
 })
 
-//FIX
-const mapDispatchToProps = (dispatch) => ({
-  changeCategory: changeCategory
-})
+const mapDispatchToProps = (dispatch) => {
+  return {
+    clickHandler: (id, oldCat, newCat) => {
+      if (oldCat !== newCat) dispatch(changeCategory(id, oldCat, newCat));
+    }
+  };
+}
 
-export default connect(mapStateToProps, {changeCategory})(Activity) 
+export default connect(mapStateToProps, mapDispatchToProps)(Activity) 

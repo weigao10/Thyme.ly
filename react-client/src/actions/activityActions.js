@@ -78,11 +78,21 @@ export const patchActivity = ({activity, category, index}, data) => (dispatch, g
   })
 }
 
-export const changeCategory = () => {
-  dispatch({
+export const changeCategory = (id, oldCatName, newCatName) => {
+  // const {activities} = getState();
+  // console.log('activities inside action creator', activities);
+  // const activityArr = activities[oldCatName].filter((activity) => activity.id === id)[0];
+  // const updatedOldCat = activities[oldCatName].filter((activity) => activity.id !== id);
+  // const updatedNewCat = [...activities[newCatName] , activity];
+  return {
     type: CATEGORIZE_ACTIVITY,
-    payload: {message: 'SUP FAM'}
-  })
+    payload: {
+      id,
+      oldCatName,
+      newCatName
+    }
+  }
+  // dispatch({type: CATEGORIZE_ACTIVITY, payload: {oldCatName, newCatName}})
 }
 
 
