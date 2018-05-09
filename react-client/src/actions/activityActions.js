@@ -1,4 +1,4 @@
-import { GET_ACTIVITIES, ADD_ACTIVITY, PATCH_ACTIVITY, DELETE_ACTIVITY } from './types'; 
+import { GET_ACTIVITIES, ADD_ACTIVITY, PATCH_ACTIVITY, CATEGORIZE_ACTIVITY } from './types'; 
 import { createStore } from 'redux';
 import moment from 'moment';
 // import thunk from 'redux-thunk';
@@ -12,10 +12,10 @@ export const addActivity = (data) => (dispatch, getState) => {
   const {activities} = getState()
   let activityInState = checkState(data, activities)
   if(activityInState){
-    console.log('already in state. update duration!')
+    // console.log('already in state. update duration!')
     dispatch(patchActivity(activityInState, data));
   } else {
-    console.log('not in state. update state!')
+    // console.log('not in state. update state!')
     // activities.nextId++
     let newData = {
       'id': activities.nextId++,
@@ -68,13 +68,20 @@ export const patchActivity = ({activity, category, index}, data) => (dispatch, g
   //         )
   //         .asSeconds();
   // updatedActivity.duration += duration;
-  console.log('updatedActivity', updatedActivity);
+  // console.log('updatedActivity', updatedActivity);
   // console.log('category', category);
   // console.log('index', index)
 
   dispatch({
     type: PATCH_ACTIVITY,
     payload: {'activity': updatedActivity, 'category': category, 'index': index}
+  })
+}
+
+export const changeCategory = () => {
+  dispatch({
+    type: CATEGORIZE_ACTIVITY,
+    payload: {message: 'SUP FAM'}
   })
 }
 

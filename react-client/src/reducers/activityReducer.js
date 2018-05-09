@@ -43,11 +43,9 @@ const activities = (state = initialState, action) => {
                     ...state[category].slice(index+1)
                     ]
       }
-    // case CATEGORIZE_ACTIVITY:
-    //   return {
-    //     ...state,
-    //     activities: [... state.activities, action.payload]
-    //   }
+    case CATEGORIZE_ACTIVITY:
+      console.log('categorize reached reducer!')
+      return state;
     default: 
       // console.log('default', state)
       return state;
