@@ -7,8 +7,13 @@ import Paper from 'material-ui/Paper';
 import Divider from 'material-ui/Divider';
 import RaisedButton from 'material-ui/RaisedButton';
 
-const renderActivities = (category, activities) => {
+const ipc = require('electron').ipcRenderer;
+ipc.on('ping', (event, message) => {
+  console.log(message);
+})
 
+const renderActivities = (category, activities) => {
+  // console.log('in activity!')
   return (
     <div>
       <Paper 

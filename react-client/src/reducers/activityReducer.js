@@ -1,3 +1,5 @@
+//pure, centralized updates to store
+
 import { GET_ACTIVITIES, ADD_ACTIVITY, PATCH_ACTIVITY, CATEGORIZE_ACTIVITY } from '../actions/types'; 
 
 const initialState = {
@@ -27,7 +29,6 @@ const activities = (state = initialState, action) => {
         activities: [... state.activities, action.payload]
       }
     case ADD_ACTIVITY:
-      console.log('prev state', state)
       return {
         ...state,
         neutral: [... state.neutral, action.payload.activity],
