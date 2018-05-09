@@ -13,9 +13,9 @@ ipc.on('ping', (event, message) => {
 })
 
 const renderActivities = (category, activities) => {
-  // console.log('in activity!')
   return (
     <div>
+
       <Paper 
         style={
           {font: 'Open Sans', 
