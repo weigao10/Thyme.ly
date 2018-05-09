@@ -6,6 +6,7 @@ import Paper from 'material-ui/Paper';
 class ActivityContainer extends React.Component {
   
   render() {
+    // console.log('in activity container')
     return (
         <ActivityGroup />
     )

@@ -1,12 +1,14 @@
+//action is description of how state should "change"
+//does not actually manipulate store
 import { GET_ACTIVITIES, ADD_ACTIVITY, PATCH_ACTIVITY, DELETE_ACTIVITY } from './types'; 
 import { createStore } from 'redux';
 import moment from 'moment';
-// import thunk from 'redux-thunk';
 
 export const getActivities = () => (dispatch) => {
   
 }
 
+//look into react-redux to avoid using dispatch -- ?
 export const addActivity = (data) => (dispatch, getState) => {
 
   const {activities} = getState()
@@ -16,7 +18,6 @@ export const addActivity = (data) => (dispatch, getState) => {
     dispatch(patchActivity(activityInState, data));
   } else {
     console.log('not in state. update state!')
-    // activities.nextId++
     let newData = {
       'id': activities.nextId++,
       'app': data.activity.app,
@@ -37,7 +38,6 @@ const checkState = (data, activities) => {
     let activity = activities[category]
     for (let i = 0; i < activity.length; i++) {
       if (activity[i].title === data.activity.title && activity[i].app === data.activity.app) {
-        //return [activity[i], category, i]
         return {
           'activity': activity[i],
           'category': category,
@@ -52,8 +52,8 @@ const checkState = (data, activities) => {
 //patch activity
 //perhaps data should include more info ??
 export const patchActivity = ({activity, category, index}, data) => (dispatch, getState) => {
-                              //[activity[i], category, i]
   let copySpurts = activity.spurts.slice()
+  //consider using object spread operator?
   let updatedActivity = Object.assign({
     spurts: copySpurts
   }, activity);
@@ -69,8 +69,6 @@ export const patchActivity = ({activity, category, index}, data) => (dispatch, g
   //         .asSeconds();
   // updatedActivity.duration += duration;
   console.log('updatedActivity', updatedActivity);
-  // console.log('category', category);
-  // console.log('index', index)
 
   dispatch({
     type: PATCH_ACTIVITY,
