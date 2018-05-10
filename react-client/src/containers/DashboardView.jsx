@@ -31,9 +31,7 @@ class DashboardView extends React.Component {
     this.connectMonitor();
     ipcRenderer.on('activity', (event, message) => {
       let inState = this.checkState(message)
-      console.log('inState is', inState)
       this.props.activityHandler(message, inState)
-      // console.log('in com did mount', this.props);
     });
   }
 
@@ -48,7 +46,7 @@ class DashboardView extends React.Component {
   }
 
   toggleTimerButton() {
-    console.log('toggle!')
+    // console.log('toggle!')
     let toggle = !this.state.showTimerButton;
 
     this.setState({
@@ -63,13 +61,9 @@ class DashboardView extends React.Component {
   }
 
   checkState (data) {
-    // console.log('in check state', this.props.activities)
-
     for (let category in this.props.activities) {
       let activity = this.props.activities[category]
-      
       for (let i = 0; i < activity.length; i++) {
-        // console.log('activity', activity[i])
         if (activity[i].title === data.title && activity[i].app === data.app) {
           return {
             'activity': activity[i],
@@ -113,7 +107,5 @@ const mapDispatchToProps = (dispatch) => {
     } 
   };
 }
-
-// export default withRouter(DashboardView);
 export default connect(mapStateToProps, mapDispatchToProps) (DashboardView)
 

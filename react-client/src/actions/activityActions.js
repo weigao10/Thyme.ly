@@ -12,8 +12,6 @@ export const addActivity = (data) => {
   }
 }
 
-//patch activity
-//perhaps data should include more info ??
 export const patchActivity = ({ activity, category, index }, data) => {
   return {
     type: PATCH_ACTIVITY,
@@ -32,14 +30,3 @@ export const changeCategory = (id, oldCatName, newCatName) => {
     }
   }
 }
-
-  // let duration = moment
-  //         .duration(
-  //           moment(data.activity.endTime, "MMMM Do YYYY, h:mm:ss a")
-  //           .diff(moment(data.activity.startTime, "MMMM Do YYYY, h:mm:ss a"))
-  //         )
-  //         .asSeconds();
-  // updatedActivity.duration += duration;
-
-
-
