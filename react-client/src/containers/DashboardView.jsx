@@ -1,9 +1,9 @@
-import { withRouter } from 'react-router-dom';
+// import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import ReactDOM from 'react-dom';
 import React from 'react';
-import io from 'socket.io-client';
-window.io = io;
+// import io from 'socket.io-client';
+// window.io = io;
 
 import { addActivity } from '../actions/activityActions'
 import ActivityContainer from './ActivityContainer.jsx';
@@ -22,46 +22,46 @@ class DashboardView extends React.Component {
       showTimerButton: true
     }
 
-    this.socket = null;
-    this.connectSocket = this.connectSocket.bind(this);
-    this.pauseSocket = this.pauseSocket.bind(this);
+    // this.socket = null;
+    // this.connectSocket = this.connectSocket.bind(this);
+    // this.pauseSocket = this.pauseSocket.bind(this);
     this.toggleTimerButton = this.toggleTimerButton.bind(this);
   }
   
-  componentDidMount() {
-    this.connectSocket();
-  }
+  // componentDidMount() {
+  //   this.connectSocket();
+  // }
 
-  connectSocket() {
-    this.socket = window.io.connect('http://127.0.0.1:3000/');
-    console.log('connected to socket!');
-    this.socket.on('new chunk', (data) => {
-      // console.log('getting new activity chunk!', data);
-      this.props.addActivity(data);
-    });
-  }
+  // connectSocket() {
+  //   this.socket = window.io.connect('http://127.0.0.1:3000/');
+  //   console.log('connected to socket!');
+  //   this.socket.on('new chunk', (data) => {
+  //     console.log('getting new activity chunk!', data);
+  //     this.props.addActivity(data);
+  //   });
+  // }
 
-  restartSocket() {
-    this.socket.emit('restart');
-  }
+  // restartSocket() {
+  //   this.socket.emit('restart');
+  // }
 
-  pauseSocket() {
-    this.socket.emit('pause');
-  }
+  // pauseSocket() {
+  //   this.socket.emit('pause');
+  // }
 
   toggleTimerButton() {
-  
+    console.log('toggle!')
     let toggle = !this.state.showTimerButton;
 
     this.setState({
       showTimerButton: toggle
     })
 
-    if (!toggle) {
-      this.pauseSocket();
-    } else {
-      this.connectSocket();
-    }
+    // if (!toggle) {
+    //   this.pauseSocket();
+    // } else {
+    //   this.connectSocket();
+    // }
   }
 
   render() {
@@ -88,5 +88,5 @@ const mapDispatchToProps = dispatch => ({
 })
 
 // export default withRouter(DashboardView);
-export default connect(mapDispatchToProps, {addActivity}) (withRouter (DashboardView))
+export default connect(mapDispatchToProps, {addActivity}) (DashboardView)
 

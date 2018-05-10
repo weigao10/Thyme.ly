@@ -3,42 +3,44 @@ const activeWin = require('active-win');
 const moment = require('moment');
 
 //closure variables to store activities and errors
-let activities = [];
-let errors = [];
 
-//functions that start, pause, and restart the monitor
-const startSocketMonitor = (socket, interval) => {
-  let storage = { //point to closure variables
-    activities,
-    errors
-  };
-  return setInterval(() => {monitorSocket(socket, storage)}, interval);
-};
-
-const pauseSocketMonitor = (socket, intervalId) => {
-  //emit the last activity and then clear interval
-  let lastActivity = activities[activities.length - 1]; //HOW CAN I ACCESS THIS WO CLOSURE?
-  lastActivity.endTime = timestamp();
-  socket.emit('new chunk', {activity: lastActivity});
-  clearInterval(intervalId);
-};
 
 //monitor function that runs on interval
-const monitorSocket = async (socket, { activities, errors }) => {
-  try {
-    let newActivity = assembleActivity(await activeWin());
+// const monitorActivity = async (activities, errors) => {
+//   try {
+//     let newActivity = assembleActivity(await activeWin());
+//     let lastActivity = activities[activities.length - 1];
+//     if (needToInitializeChunk(lastActivity)) activities.push(newActivity);
+//     else if (chunkComplete(lastActivity, newActivity)) {
+//       lastActivity.endTime = timestamp();
+//       activities.push(newActivity);
+//       return newActivity;
+//     }
+//   } catch(e) {
+//     e.time = timestamp();
+//     e.description = e.message;
+//     errors.push(e); //TODO: this loses some info but full error objects apparently can't be stored in an array
+//   }
+// };
+
+const monitorActivity = (activities, errors) => {
+  // console.log('in monitor activity')
+  return activeWin()
+  .then((data) => {
+    let newActivity = assembleActivity(data);
     let lastActivity = activities[activities.length - 1];
     if (needToInitializeChunk(lastActivity)) activities.push(newActivity);
     else if (chunkComplete(lastActivity, newActivity)) {
       lastActivity.endTime = timestamp();
-      socket.emit('new chunk', {activity: lastActivity});
       activities.push(newActivity);
+      return lastActivity;
     }
-  } catch(e) {
+  })
+  .catch((e) => {
     e.time = timestamp();
     e.description = e.message;
     errors.push(e); //TODO: this loses some info but full error objects apparently can't be stored in an array
-  }
+  })
 };
 
 const timestamp = () => {
@@ -63,24 +65,20 @@ const chunkComplete = (lastActivity, newActivity) => {
   return (lastActivity.app !== newActivity.app) || (lastActivity.title !== newActivity.title);
 };
 
-//socket connection/controller
-
-const {io} = require('../index.js');
-const connectToSocket = (interval) => {
-  io.on('connection', (socket) => {
-    let intervalId = startSocketMonitor(socket, interval);
-    //on disconnect, clear the interval and send the last chunk
-    socket.on('pause', () => {
-      console.log('socket detected a pause!');
-      pauseSocketMonitor(socket, intervalId);
-    });
-    socket.on('restart', (socket) => {
-      intervalId = startSocketMonitor(socket, interval);
+exports.monitor = (mainWindow) => {
+  let activities = [];
+  let errors = [];
+  setInterval(() => {
+    monitorActivity(activities, errors)
+    .then((data) => {
+      // console.log('getting data in monitor',data)
+      if(data){
+        console.log('getting data in monitor', data)
+        mainWindow.webContents.send('ping', data)
+      }
     })
-  });
+  }, 1000)
 };
-
-exports.connectToSocket = connectToSocket;
 
 /*
 ideas for tests:
