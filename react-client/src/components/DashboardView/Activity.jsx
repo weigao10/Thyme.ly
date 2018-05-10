@@ -1,17 +1,14 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import { ipcRenderer } from 'electron';
 import moment from 'moment';
+
 import ProductivityScore from '../../containers/ProductivityScore.jsx';
 import {changeCategory} from '../../actions/activityActions';
 
 import Paper from 'material-ui/Paper';
 import Divider from 'material-ui/Divider';
 import RaisedButton from 'material-ui/RaisedButton';
-
-const ipc = require('electron').ipcRenderer;
-ipc.on('ping', (event, message) => {
-  console.log(message);
-})
 
 const renderActivities = (category, activities, changeCategory) => {
   return (

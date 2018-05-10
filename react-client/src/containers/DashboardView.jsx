@@ -2,8 +2,7 @@
 import { connect } from 'react-redux';
 import ReactDOM from 'react-dom';
 import React from 'react';
-// import io from 'socket.io-client';
-// window.io = io;
+import { ipcRenderer } from 'electron';
 
 import { addActivity } from '../actions/activityActions'
 import ActivityContainer from './ActivityContainer.jsx';
@@ -22,15 +21,28 @@ class DashboardView extends React.Component {
       showTimerButton: true
     }
 
-    // this.socket = null;
-    // this.connectSocket = this.connectSocket.bind(this);
-    // this.pauseSocket = this.pauseSocket.bind(this);
+    this.connectMonitor = this.connectMonitor.bind(this);
+    this.pauseMonitor = this.pauseMonitor.bind(this);
     this.toggleTimerButton = this.toggleTimerButton.bind(this);
   }
   
-  // componentDidMount() {
-  //   this.connectSocket();
-  // }
+  componentDidMount() {
+    this.connectMonitor();
+  }
+
+  connectMonitor() {
+    this.connected = true;
+    ipcRenderer.send('monitor', 'start');
+    ipcRenderer.on('activity', (event, message) => {
+      console.log(message);
+    });
+  }
+
+  pauseMonitor() {
+    this.connected = false;
+    ipcRenderer.send('monitor', 'pause');
+  }
+
 
   // connectSocket() {
   //   this.socket = window.io.connect('http://127.0.0.1:3000/');
@@ -40,15 +52,6 @@ class DashboardView extends React.Component {
   //     this.props.addActivity(data);
   //   });
   // }
-
-  // restartSocket() {
-  //   this.socket.emit('restart');
-  // }
-
-  // pauseSocket() {
-  //   this.socket.emit('pause');
-  // }
-
   toggleTimerButton() {
     console.log('toggle!')
     let toggle = !this.state.showTimerButton;
@@ -57,11 +60,11 @@ class DashboardView extends React.Component {
       showTimerButton: toggle
     })
 
-    // if (!toggle) {
-    //   this.pauseSocket();
-    // } else {
-    //   this.connectSocket();
-    // }
+    if (!toggle) {
+      this.pauseMonitor();
+    } else {
+      this.connectMonitor();
+    }
   }
 
   render() {
