@@ -7,44 +7,12 @@ export const getActivities = () => (dispatch) => {
 }
 
 //look into react-redux to avoid using dispatch -- ?
-export const addActivity = (data) => (dispatch, getState) => {
-
-  const {activities} = getState()
-  let activityInState = checkState(data, activities)
-  if(activityInState){
-    // console.log('already in state. update duration!')
-    dispatch(patchActivity(activityInState, data));
-  } else {
-    console.log('not in state. update state!')
-    let newData = {
-      'id': activities.nextId++,
-      'app': data.activity.app,
-      'title': data.activity.title,
-      'spurts': [{'startTime': data.activity.startTime, 'endTime': data.activity.endTime}],
-      'duration': 10 //function to calc duration
-    }
-    dispatch({
-      type: ADD_ACTIVITY,
-      payload: {'activity': newData, 'nextId': activities.nextId}
-    })
-
+export const addActivity = (data) => {
+  // console.log('data in add activity', data)
+  return {
+    type: ADD_ACTIVITY,
+    payload: data
   }
-}
-
-const checkState = (data, activities) => {
-  for (let category in activities) {
-    let activity = activities[category]
-    for (let i = 0; i < activity.length; i++) {
-      if (activity[i].title === data.activity.title && activity[i].app === data.activity.app) {
-        return {
-          'activity': activity[i],
-          'category': category,
-          'index': i
-        }
-      }
-    }
-  }
-  return false;
 }
 
 //patch activity

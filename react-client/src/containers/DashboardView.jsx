@@ -4,7 +4,7 @@ import ReactDOM from 'react-dom';
 import React from 'react';
 import { ipcRenderer } from 'electron';
 
-import { addActivity } from '../actions/activityActions'
+import { addActivity, patchActivity } from '../actions/activityActions'
 import ActivityContainer from './ActivityContainer.jsx';
 import ProductivityScore from './ProductivityScore.jsx';
 import Paper from 'material-ui/Paper';
@@ -29,7 +29,9 @@ class DashboardView extends React.Component {
   componentDidMount() {
     this.connectMonitor();
     ipcRenderer.on('activity', (event, message) => {
-      console.log(message);
+      // dispatch(addActivity(message));
+      this.props.activityHandler(message, false)
+      // console.log('in com did mount', this.props);
     });
   }
 
@@ -77,10 +79,23 @@ class DashboardView extends React.Component {
   }
 }
 
-const mapDispatchToProps = dispatch => ({
-  addActivity: addActivity
+// const mapDispatchToProps = dispatch => ({
+//   addActivity: addActivity
+// })
+
+const mapStateToProps = state => ({
+  activities: state.activities
 })
 
+const mapDispatchToProps = (dispatch) => {
+  return {
+    activityHandler: (data, inState) => {
+      if(inState) dispatch(patchActivity(data))
+      else dispatch(addActivity(data))
+    } 
+  };
+}
+
 // export default withRouter(DashboardView);
-export default connect(mapDispatchToProps, {addActivity}) (DashboardView)
+export default connect(mapStateToProps, mapDispatchToProps) (DashboardView)
 

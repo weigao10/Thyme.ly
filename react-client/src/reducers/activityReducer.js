@@ -22,18 +22,26 @@ const initialState = {
 }
 
 const activities = (state = initialState, action) => {
-  console.log('reached reducer');
+  // console.log('reached reducer');
   switch(action.type){
     case GET_ACTIVITIES: 
       return {
         ...state, 
-        activities: [... state.activities, action.payload]
+        // activities: [... state.activities, action.payload]
       }
     case ADD_ACTIVITY:
+      console.log('reducer add act', action.payload)
+      let newData = {
+        'id': state.nextId,
+        'app': action.payload.app,
+        'title': action.payload.title,
+        'spurts': [{'startTime': action.payload.startTime, 'endTime': action.payload.endTime}],
+        'duration': 10 //function to calc duration
+      }
       return {
         ...state,
-        neutral: [... state.neutral, action.payload.activity],
-        nextId: action.payload.nextId
+        neutral: [... state.neutral, newData],
+        nextId: ++state.nextId
       }
     case PATCH_ACTIVITY:
       let {category, index, activity} = action.payload
@@ -62,5 +70,6 @@ const activities = (state = initialState, action) => {
       return state;
   }
 }
+
 
 export default activities;
