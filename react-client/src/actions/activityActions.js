@@ -1,12 +1,12 @@
 import { GET_ACTIVITIES, ADD_ACTIVITY, PATCH_ACTIVITY, CATEGORIZE_ACTIVITY } from './types'; 
 import { createStore } from 'redux';
 import moment from 'moment';
-// import thunk from 'redux-thunk';
 
 export const getActivities = () => (dispatch) => {
   
 }
 
+//look into react-redux to avoid using dispatch -- ?
 export const addActivity = (data) => (dispatch, getState) => {
 
   const {activities} = getState()
@@ -15,8 +15,7 @@ export const addActivity = (data) => (dispatch, getState) => {
     // console.log('already in state. update duration!')
     dispatch(patchActivity(activityInState, data));
   } else {
-    // console.log('not in state. update state!')
-    // activities.nextId++
+    console.log('not in state. update state!')
     let newData = {
       'id': activities.nextId++,
       'app': data.activity.app,
@@ -37,7 +36,6 @@ const checkState = (data, activities) => {
     let activity = activities[category]
     for (let i = 0; i < activity.length; i++) {
       if (activity[i].title === data.activity.title && activity[i].app === data.activity.app) {
-        //return [activity[i], category, i]
         return {
           'activity': activity[i],
           'category': category,
@@ -52,8 +50,8 @@ const checkState = (data, activities) => {
 //patch activity
 //perhaps data should include more info ??
 export const patchActivity = ({activity, category, index}, data) => (dispatch, getState) => {
-                              //[activity[i], category, i]
   let copySpurts = activity.spurts.slice()
+  //consider using object spread operator?
   let updatedActivity = Object.assign({
     spurts: copySpurts
   }, activity);
@@ -68,9 +66,7 @@ export const patchActivity = ({activity, category, index}, data) => (dispatch, g
   //         )
   //         .asSeconds();
   // updatedActivity.duration += duration;
-  // console.log('updatedActivity', updatedActivity);
-  // console.log('category', category);
-  // console.log('index', index)
+  console.log('updatedActivity', updatedActivity);
 
   dispatch({
     type: PATCH_ACTIVITY,
@@ -79,11 +75,7 @@ export const patchActivity = ({activity, category, index}, data) => (dispatch, g
 }
 
 export const changeCategory = (id, oldCatName, newCatName) => {
-  // const {activities} = getState();
-  // console.log('activities inside action creator', activities);
-  // const activityArr = activities[oldCatName].filter((activity) => activity.id === id)[0];
-  // const updatedOldCat = activities[oldCatName].filter((activity) => activity.id !== id);
-  // const updatedNewCat = [...activities[newCatName] , activity];
+  console.log('activity action firing with', id, oldCatName, newCatName)
   return {
     type: CATEGORIZE_ACTIVITY,
     payload: {
@@ -92,7 +84,6 @@ export const changeCategory = (id, oldCatName, newCatName) => {
       newCatName
     }
   }
-  // dispatch({type: CATEGORIZE_ACTIVITY, payload: {oldCatName, newCatName}})
 }
 
 

@@ -1,9 +1,8 @@
-import { withRouter } from 'react-router-dom';
+// import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import ReactDOM from 'react-dom';
 import React from 'react';
-import io from 'socket.io-client';
-window.io = io;
+import { ipcRenderer } from 'electron';
 
 import { addActivity } from '../actions/activityActions'
 import ActivityContainer from './ActivityContainer.jsx';
@@ -22,35 +21,30 @@ class DashboardView extends React.Component {
       showTimerButton: true
     }
 
-    this.socket = null;
-    this.connectSocket = this.connectSocket.bind(this);
-    this.pauseSocket = this.pauseSocket.bind(this);
+    this.connectMonitor = this.connectMonitor.bind(this);
+    this.pauseMonitor = this.pauseMonitor.bind(this);
     this.toggleTimerButton = this.toggleTimerButton.bind(this);
   }
   
   componentDidMount() {
-    this.connectSocket();
-  }
-
-  connectSocket() {
-    this.socket = window.io.connect('http://127.0.0.1:3000/');
-    console.log('connected to socket!');
-    this.socket.on('new chunk', (data) => {
-      // console.log('getting new activity chunk!', data);
-      this.props.addActivity(data);
+    this.connectMonitor();
+    ipcRenderer.on('activity', (event, message) => {
+      console.log(message);
     });
   }
 
-  restartSocket() {
-    this.socket.emit('restart');
+  connectMonitor() {
+    this.connected = true;
+    ipcRenderer.send('monitor', 'start');
   }
 
-  pauseSocket() {
-    this.socket.emit('pause');
+  pauseMonitor() {
+    this.connected = false;
+    ipcRenderer.send('monitor', 'pause');
   }
 
   toggleTimerButton() {
-  
+    console.log('toggle!')
     let toggle = !this.state.showTimerButton;
 
     this.setState({
@@ -58,9 +52,9 @@ class DashboardView extends React.Component {
     })
 
     if (!toggle) {
-      this.pauseSocket();
+      this.pauseMonitor();
     } else {
-      this.connectSocket();
+      this.connectMonitor();
     }
   }
 
@@ -88,5 +82,5 @@ const mapDispatchToProps = dispatch => ({
 })
 
 // export default withRouter(DashboardView);
-export default connect(mapDispatchToProps, {addActivity}) (withRouter (DashboardView))
+export default connect(mapDispatchToProps, {addActivity}) (DashboardView)
 

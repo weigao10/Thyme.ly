@@ -1,6 +1,8 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import { ipcRenderer } from 'electron';
 import moment from 'moment';
+
 import ProductivityScore from '../../containers/ProductivityScore.jsx';
 import {changeCategory} from '../../actions/activityActions';
 
@@ -8,12 +10,10 @@ import Paper from 'material-ui/Paper';
 import Divider from 'material-ui/Divider';
 import RaisedButton from 'material-ui/RaisedButton';
 
-// console.log(changeCategory); //works
-
 const renderActivities = (category, activities, changeCategory) => {
-
   return (
     <div>
+
       <Paper 
         style={
           {font: 'Open Sans', 
@@ -112,6 +112,7 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = (dispatch) => {
   return {
     clickHandler: (id, oldCat, newCat) => {
+      console.log('trying to dispatch!')
       if (oldCat !== newCat) dispatch(changeCategory(id, oldCat, newCat));
     }
   };
