@@ -2,7 +2,7 @@
   "name": "productivity-manager",
   "version": "1.0.0",
   "description": "Productivity manager",
-  "main": "server/index.js",
+  "main": "main/index.js",
   "scripts": {
     "start": "electron .",
     "react-dev": "webpack -d --watch",
