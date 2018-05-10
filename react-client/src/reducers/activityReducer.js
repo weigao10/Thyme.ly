@@ -1,3 +1,5 @@
+//pure, centralized updates to store
+
 import { GET_ACTIVITIES, ADD_ACTIVITY, PATCH_ACTIVITY, CATEGORIZE_ACTIVITY } from '../actions/types'; 
 
 const initialState = {
@@ -20,6 +22,7 @@ const initialState = {
 }
 
 const activities = (state = initialState, action) => {
+  console.log('reached reducer');
   switch(action.type){
     case GET_ACTIVITIES: 
       return {
@@ -27,7 +30,6 @@ const activities = (state = initialState, action) => {
         activities: [... state.activities, action.payload]
       }
     case ADD_ACTIVITY:
-      // console.log('prev state', state)
       return {
         ...state,
         neutral: [... state.neutral, action.payload.activity],
@@ -44,7 +46,7 @@ const activities = (state = initialState, action) => {
                     ]
       }
     case CATEGORIZE_ACTIVITY:
-      // console.log('got dispatch', action.payload)
+      console.log('got dispatch', action.payload)
       let {id, oldCatName, newCatName} = action.payload;
       const movingActivity = state[oldCatName].filter((el) => el.id === id)[0];
       const updatedOldCat = state[oldCatName].filter((el) => el.id !== id);

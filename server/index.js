@@ -1,30 +1,74 @@
-const express = require('express');
+const electron = require('electron');
+const url = require('url');
 const path = require('path');
-const bodyParser = require('body-parser');
-const app = express();
-const port = process.env.PORT || 3000;
-const db = require('../database/index.js');
+const {monitor} = require('../server/helpers/activityData')
 
-app.use(express.static(path.join(__dirname, '/../react-client/dist')));
-app.use(bodyParser.json());
+const { app, BrowserWindow, Menu, ipcMain } = electron;
 
-//update product class when cards are switched
-app.patch('/activities', (req, res) => {
-  // let newCategory = req.body.params.category;
-  let newCategory = 'neutral';
+let mainWindow; 
+let addWindow;
 
-  db.updateActivity(newCategory);
-})
+app.on('ready', () => {
+  // console.log('path?', path.join(__dirname, '/../react-client/dist/index.html'))
+  mainWindow = new BrowserWindow({});
+  mainWindow.loadURL(url.format({ 
+    pathname: path.join(__dirname, '/../react-client/dist/index.html'),
+    protocol: 'file:',
+    slashes: true
+  }))
 
-let server = app.listen(port, () => {
-  console.log(`listening on port ${port}`);
-});
+  mainWindow.on('closed', () => app.quit()) 
 
-//sockets
+  const mainMenu = Menu.buildFromTemplate(mainMenuTemplate);
+  Menu.setApplicationMenu(mainMenu);
+  monitor(mainWindow)
+}) 
 
-const io = require('socket.io')(server);
-exports.io = io;
-const {connectToSocket} = require('./helpers/activityData.js');
-connectToSocket(1000);
-//start up process that sends new activities to client via sockets
-//1000 is the interval of the active window monitor
+const mainMenuTemplate = [
+  //if mac, need an empty object here
+  {
+    label: 'File', 
+    submenu: [ 
+      {
+        label: 'Add Item', 
+        click(){
+          createAddWindow();
+        }
+      }, 
+      {
+        label: 'Clear Items'
+      },
+      {
+        label: 'Quit',
+        accelerator: process.platform === 'darwin' ? 'Command+Q' : 'Ctrl+Q',
+        //darwin (mac), win32 (windows)
+        click(){
+          app.quit();
+        }
+      }
+    ]
+  }
+]
+
+if(process.platform === 'darwin'){
+  mainMenuTemplate.unshift({});
+}
+
+//devtools
+if(process.env.NODE_ENV !== 'production'){
+  mainMenuTemplate.push({
+    label: 'Developer Tools',
+    submenu: [
+      {
+        label: 'Toggle DevTools',
+        accelerator: process.platform === 'darwin' ? 'Command+I' : 'Ctrl+I',
+        click(item, focusedWindow){
+          focusedWindow.toggleDevTools(); 
+        }
+      },
+      {
+        role: 'reload'
+      }
+    ]
+  })
+}
