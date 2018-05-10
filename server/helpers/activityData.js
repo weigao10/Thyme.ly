@@ -1,46 +1,25 @@
 //file to get sample data chunks
 const activeWin = require('active-win');
 const moment = require('moment');
-
-//closure variables to store activities and errors
-
-
-//monitor function that runs on interval
-// const monitorActivity = async (activities, errors) => {
-//   try {
-//     let newActivity = assembleActivity(await activeWin());
-//     let lastActivity = activities[activities.length - 1];
-//     if (needToInitializeChunk(lastActivity)) activities.push(newActivity);
-//     else if (chunkComplete(lastActivity, newActivity)) {
-//       lastActivity.endTime = timestamp();
-//       activities.push(newActivity);
-//       return newActivity;
-//     }
-//   } catch(e) {
-//     e.time = timestamp();
-//     e.description = e.message;
-//     errors.push(e); //TODO: this loses some info but full error objects apparently can't be stored in an array
-//   }
-// };
+const { ipcMain } = require('electron');
 
 const monitorActivity = (activities, errors) => {
-  // console.log('in monitor activity')
   return activeWin()
-  .then((data) => {
-    let newActivity = assembleActivity(data);
-    let lastActivity = activities[activities.length - 1];
-    if (needToInitializeChunk(lastActivity)) activities.push(newActivity);
-    else if (chunkComplete(lastActivity, newActivity)) {
-      lastActivity.endTime = timestamp();
-      activities.push(newActivity);
-      return lastActivity;
-    }
-  })
-  .catch((e) => {
-    e.time = timestamp();
-    e.description = e.message;
-    errors.push(e); //TODO: this loses some info but full error objects apparently can't be stored in an array
-  })
+    .then((data) => {
+      let newActivity = assembleActivity(data);
+      let lastActivity = activities[activities.length - 1];
+      if (needToInitializeChunk(lastActivity)) activities.push(newActivity);
+      else if (chunkComplete(lastActivity, newActivity)) {
+        lastActivity.endTime = timestamp();
+        activities.push(newActivity);
+        return lastActivity;
+      }
+    })
+    .catch((e) => {
+      e.time = timestamp();
+      e.description = e.message;
+      errors.push(e); //TODO: this loses some info but full error objects apparently can't be stored in an array
+    })
 };
 
 const timestamp = () => {
@@ -65,19 +44,33 @@ const chunkComplete = (lastActivity, newActivity) => {
   return (lastActivity.app !== newActivity.app) || (lastActivity.title !== newActivity.title);
 };
 
+const startMonitor = (mainWindow, activities = [], errors = []) => {
+  return setInterval(() => {
+    monitorActivity(activities, errors)
+      .then((data) => {
+        if (data) {
+          mainWindow.sender.webContents.send('activity', data)
+        }
+      })
+      .catch((err) => console.error('error in activity monitor', err))
+  }, 1000)
+}
+
 exports.monitor = (mainWindow) => {
+  let intervalId = false;
   let activities = [];
   let errors = [];
-  setInterval(() => {
-    monitorActivity(activities, errors)
-    .then((data) => {
-      // console.log('getting data in monitor',data)
-      if(data){
-        console.log('getting data in monitor', data)
-        mainWindow.webContents.send('ping', data)
-      }
-    })
-  }, 1000)
+  ipcMain.on('monitor', (mainWindow, event, message) => {
+    if (event === 'start') {
+      console.log('main is trying to start monitor')
+      intervalId = startMonitor(mainWindow, activities, errors);
+    } else if (event === 'pause' && intervalId) {
+      console.log('main is trying to clear monitor')
+      clearInterval(intervalId);
+    } else {
+      console.error('activity monitor did not understand instruction', event, message);
+    }
+  });
 };
 
 /*
