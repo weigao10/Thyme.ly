@@ -28,14 +28,14 @@ class DashboardView extends React.Component {
   
   componentDidMount() {
     this.connectMonitor();
+    ipcRenderer.on('activity', (event, message) => {
+      console.log(message);
+    });
   }
 
   connectMonitor() {
     this.connected = true;
     ipcRenderer.send('monitor', 'start');
-    ipcRenderer.on('activity', (event, message) => {
-      console.log(message);
-    });
   }
 
   pauseMonitor() {
@@ -43,15 +43,6 @@ class DashboardView extends React.Component {
     ipcRenderer.send('monitor', 'pause');
   }
 
-
-  // connectSocket() {
-  //   this.socket = window.io.connect('http://127.0.0.1:3000/');
-  //   console.log('connected to socket!');
-  //   this.socket.on('new chunk', (data) => {
-  //     console.log('getting new activity chunk!', data);
-  //     this.props.addActivity(data);
-  //   });
-  // }
   toggleTimerButton() {
     console.log('toggle!')
     let toggle = !this.state.showTimerButton;
