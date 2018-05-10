@@ -1,7 +1,7 @@
 const electron = require('electron');
 const url = require('url');
 const path = require('path');
-const {monitor} = require('../server/helpers/activityData')
+const {monitor} = require('../main/helpers/activityData')
 
 const { app, BrowserWindow, Menu, ipcMain } = electron;
 
