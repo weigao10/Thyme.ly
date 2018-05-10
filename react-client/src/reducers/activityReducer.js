@@ -22,6 +22,7 @@ const initialState = {
 }
 
 const activities = (state = initialState, action) => {
+  console.log('reached reducer');
   switch(action.type){
     case GET_ACTIVITIES: 
       return {
@@ -45,7 +46,7 @@ const activities = (state = initialState, action) => {
                     ]
       }
     case CATEGORIZE_ACTIVITY:
-      // console.log('got dispatch', action.payload)
+      console.log('got dispatch', action.payload)
       let {id, oldCatName, newCatName} = action.payload;
       const movingActivity = state[oldCatName].filter((el) => el.id === id)[0];
       const updatedOldCat = state[oldCatName].filter((el) => el.id !== id);
