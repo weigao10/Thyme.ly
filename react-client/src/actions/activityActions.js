@@ -75,11 +75,7 @@ export const patchActivity = ({activity, category, index}, data) => (dispatch, g
 }
 
 export const changeCategory = (id, oldCatName, newCatName) => {
-  // const {activities} = getState();
-  // console.log('activities inside action creator', activities);
-  // const activityArr = activities[oldCatName].filter((activity) => activity.id === id)[0];
-  // const updatedOldCat = activities[oldCatName].filter((activity) => activity.id !== id);
-  // const updatedNewCat = [...activities[newCatName] , activity];
+  console.log('activity action firing with', id, oldCatName, newCatName)
   return {
     type: CATEGORIZE_ACTIVITY,
     payload: {
@@ -88,7 +84,6 @@ export const changeCategory = (id, oldCatName, newCatName) => {
       newCatName
     }
   }
-  // dispatch({type: CATEGORIZE_ACTIVITY, payload: {oldCatName, newCatName}})
 }
 
 

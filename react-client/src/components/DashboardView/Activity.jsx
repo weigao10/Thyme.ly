@@ -13,7 +13,7 @@ ipc.on('ping', (event, message) => {
   console.log(message);
 })
 
-const renderActivities = (category, activities) => {
+const renderActivities = (category, activities, changeCategory) => {
   return (
     <div>
 
@@ -115,6 +115,7 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = (dispatch) => {
   return {
     clickHandler: (id, oldCat, newCat) => {
+      console.log('trying to dispatch!')
       if (oldCat !== newCat) dispatch(changeCategory(id, oldCat, newCat));
     }
   };
