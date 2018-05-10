@@ -8,12 +8,15 @@ import Paper from 'material-ui/Paper';
 import Divider from 'material-ui/Divider';
 import RaisedButton from 'material-ui/RaisedButton';
 
-// console.log(changeCategory); //works
+const ipc = require('electron').ipcRenderer;
+ipc.on('ping', (event, message) => {
+  console.log(message);
+})
 
-const renderActivities = (category, activities, changeCategory) => {
-
+const renderActivities = (category, activities) => {
   return (
     <div>
+
       <Paper 
         style={
           {font: 'Open Sans', 
