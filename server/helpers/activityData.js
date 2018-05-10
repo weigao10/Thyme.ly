@@ -49,6 +49,7 @@ const startMonitor = (mainWindow, activities = [], errors = []) => {
     monitorActivity(activities, errors)
       .then((data) => {
         if (data) {
+          console.log(data);
           mainWindow.sender.webContents.send('activity', data)
         }
       })
@@ -67,6 +68,7 @@ exports.monitor = (mainWindow) => {
     } else if (event === 'pause' && intervalId) {
       console.log('main is trying to clear monitor')
       clearInterval(intervalId);
+      intervalId = false;
     } else {
       console.error('activity monitor did not understand instruction', event, message);
     }
