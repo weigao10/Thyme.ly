@@ -30,7 +30,7 @@ const activities = (state = initialState, action) => {
         // activities: [... state.activities, action.payload]
       }
     case ADD_ACTIVITY:
-      console.log('reducer add act', action.payload)
+      // console.log('reducer add act', action.payload)
       let newData = {
         'id': state.nextId,
         'app': action.payload.app,
@@ -45,14 +45,25 @@ const activities = (state = initialState, action) => {
       }
     case PATCH_ACTIVITY:
       let {category, index, activity} = action.payload
+
+      let copySpurts = activity.spurts.slice()
+      let updatedActivity = Object.assign({
+        spurts: copySpurts
+      }, activity);
+    
+      updatedActivity.spurts.push({'startTime': activity.startTime, 'endTime': activity.endTime})
+      updatedActivity.duration += 20
+      // console.log('updated act', updatedActivity)
+
       return {
         ...state,
         [category]: [
                     ...state[category].slice(0,index),
-                    activity,
+                    updatedActivity,
                     ...state[category].slice(index + 1)
                     ]
       }
+      // return state
     case CATEGORIZE_ACTIVITY:
       console.log('got dispatch', action.payload)
       let {id, oldCatName, newCatName} = action.payload;

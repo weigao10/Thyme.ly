@@ -5,10 +5,7 @@ import moment from 'moment';
 export const getActivities = () => (dispatch) => {
   
 }
-
-//look into react-redux to avoid using dispatch -- ?
 export const addActivity = (data) => {
-  // console.log('data in add activity', data)
   return {
     type: ADD_ACTIVITY,
     payload: data
@@ -17,29 +14,11 @@ export const addActivity = (data) => {
 
 //patch activity
 //perhaps data should include more info ??
-export const patchActivity = ({activity, category, index}, data) => (dispatch, getState) => {
-  let copySpurts = activity.spurts.slice()
-  //consider using object spread operator?
-  let updatedActivity = Object.assign({
-    spurts: copySpurts
-  }, activity);
-
-  updatedActivity.spurts.push({'startTime': data.activity.startTime, 'endTime': data.activity.endTime})
-  updatedActivity.duration += 20
-
-  // let duration = moment
-  //         .duration(
-  //           moment(data.activity.endTime, "MMMM Do YYYY, h:mm:ss a")
-  //           .diff(moment(data.activity.startTime, "MMMM Do YYYY, h:mm:ss a"))
-  //         )
-  //         .asSeconds();
-  // updatedActivity.duration += duration;
-  console.log('updatedActivity', updatedActivity);
-
-  dispatch({
+export const patchActivity = ({ activity, category, index }, data) => {
+  return {
     type: PATCH_ACTIVITY,
-    payload: {'activity': updatedActivity, 'category': category, 'index': index}
-  })
+    payload: {activity, category, index, data}
+  }
 }
 
 export const changeCategory = (id, oldCatName, newCatName) => {
@@ -54,7 +33,13 @@ export const changeCategory = (id, oldCatName, newCatName) => {
   }
 }
 
-
+  // let duration = moment
+  //         .duration(
+  //           moment(data.activity.endTime, "MMMM Do YYYY, h:mm:ss a")
+  //           .diff(moment(data.activity.startTime, "MMMM Do YYYY, h:mm:ss a"))
+  //         )
+  //         .asSeconds();
+  // updatedActivity.duration += duration;
 
 
 
