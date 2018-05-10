@@ -1,6 +1,7 @@
 //pure, centralized updates to store
 
 import { GET_ACTIVITIES, ADD_ACTIVITY, PATCH_ACTIVITY, CATEGORIZE_ACTIVITY } from '../actions/types'; 
+import moment from 'moment';
 
 const initialState = {
   neutral: [
@@ -30,13 +31,14 @@ const activities = (state = initialState, action) => {
         // activities: [... state.activities, action.payload]
       }
     case ADD_ACTIVITY:
-      // console.log('reducer add act', action.payload)
+      let {app, title, startTime, endTime} = action.payload
+      let duration = getDuration(startTime, endTime)
       let newData = {
         'id': state.nextId,
-        'app': action.payload.app,
-        'title': action.payload.title,
-        'spurts': [{'startTime': action.payload.startTime, 'endTime': action.payload.endTime}],
-        'duration': 10 //function to calc duration
+        'app': app,
+        'title': title,
+        'spurts': [{'startTime': startTime, 'endTime': endTime}],
+        'duration': duration
       }
       return {
         ...state,
@@ -44,16 +46,14 @@ const activities = (state = initialState, action) => {
         nextId: ++state.nextId
       }
     case PATCH_ACTIVITY:
-      let {category, index, activity} = action.payload
-
+      let {category, index, activity, data} = action.payload
       let copySpurts = activity.spurts.slice()
       let updatedActivity = Object.assign({
         spurts: copySpurts
       }, activity);
     
-      updatedActivity.spurts.push({'startTime': activity.startTime, 'endTime': activity.endTime})
-      updatedActivity.duration += 20
-      // console.log('updated act', updatedActivity)
+      updatedActivity.spurts.push({'startTime': data.startTime, 'endTime': data.endTime})
+      updatedActivity.duration += getDuration(data.startTime, data.endTime);
 
       return {
         ...state,
@@ -80,6 +80,15 @@ const activities = (state = initialState, action) => {
       // console.log('default', state)
       return state;
   }
+}
+
+const getDuration = (start, end) => {
+  return moment
+          .duration(
+            moment(end, "MMMM Do YYYY, h:mm:ss a")
+            .diff(moment(start, "MMMM Do YYYY, h:mm:ss a"))
+          )
+          .asSeconds();
 }
 
 
