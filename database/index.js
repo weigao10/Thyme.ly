@@ -1,5 +1,5 @@
 const chalk = require('chalk');
-const { Pool, Client } = require('pg')
+const { Pool, Client } = require('pg');
 
 //Create connection to AWS database
 
@@ -23,12 +23,77 @@ const client = new Client({
 
 const getActivities = () => {
   let query = `SELECT * FROM public.activities;`;
-
   pool.query(query)
-  .then((data) => console.log( chalk.black.bgYellow(JSON.stringify(data.rows))))
-  .catch((err) => console.log( chalk.red.bgYellow(err)));
+    .then((data) => {
+      console.log(chalk.black.bgYellow(JSON.stringify(data.rows)))
+    })
+    .catch((err) => console.log( chalk.red.bgYellow(err)));
+};
 
-}
+const getProductivityClass = (appName, title) => {
+  const queryStr = `SELECT prod_class FROM public.categories where\
+                    (app_name = $1) AND (window_title = $2)`;
+  const values = [appName, title];
+  return pool.query(queryStr, values)
+    .then((data) => {
+      if (data.rows.length) {
+        console.log('productivity class is', data.rows[0].prod_class)
+        return data.rows[0].prod_class
+      } else {
+        console.log('productivity class not found')
+        return null;
+      }
+    })
+    .catch(err => console.error('error in looking up prod_class', err)) 
+};
+
+const addOrChangeProductivity = (query) => {
+  console.log('inside add or change productivity')
+  const {app_name, window_title} = query;
+  return getProductivityClass(app_name, window_title) //add user here later
+    .then(result => {
+      if (result) {
+        console.log('gotta recategorize!')
+        return changeProductivityClass(query)
+      }
+      else {
+        console.log('gotta add productivity!')
+        return addProductivityClass(query);
+      }
+    })
+    .catch(err => console.log('error checking for productivity!'))
+};
+
+const addProductivityClass = ({user_name, app_name, window_title, prod_class}) => {
+  const queryStr = `INSERT INTO public.categories(user_name, app_name, window_title, prod_class)\
+                    VALUES ($1, $2, $3, $4)`;
+  const values = [user_name, app_name, window_title, prod_class];
+  console.log('values to add are', values)
+  return pool.query(queryStr, values)
+    .catch(err => console.error('error in adding prod_class', err)) 
+};
+
+const changeProductivityClass = ({user_name, app_name, window_title, prod_class}) => {
+  const queryStr = `UPDATE public.categories SET prod_class = $1\
+                    WHERE app_name = $2 AND window_title = $3`;
+  const values = [prod_class, app_name, window_title];
+  return pool.query(queryStr, values)
+    .catch(err => console.error('error in changing prod_class', err)) 
+};
+
+//changeProductivityClass
+
+//getActivitiesbyUser
+
+// const insertActivity = () => {
+//   let query = 
+//   `INSERT INTO public.activities
+//     VALUES ('1999-01-08 04:05:06', '1999-01-08 04:05:06', 'chrome', 'reddit', 'abc', 'xyz', 'www.random.com');`;
+
+//     pool.query(query)
+//     .then((data) => console.log( chalk.black.bgGreen(JSON.stringify(data))) )
+//     .catch((err) => console.log( chalk.red.bgGreen(err)));
+// }
 
 const insertActivity = () => {
   let query = 
@@ -146,11 +211,14 @@ const insertError = () => {
 
 }
 
-insertActivity();
-getActivities();
+exports.getActivities = getActivities;
+exports.getProductivityClass = getProductivityClass;
+exports.addOrChangeProductivity = addOrChangeProductivity;
+// insertActivity();
+// getActivities();
 
 //close the connection
-pool.end();
+// pool.end();
 
 
 

@@ -31,18 +31,20 @@ const activities = (state = initialState, action) => {
         // activities: [... state.activities, action.payload]
       }
     case ADD_ACTIVITY:
-      let {app, title, startTime, endTime} = action.payload
-      let duration = getDuration(startTime, endTime)
+      // console.log('reducer add act', action.payload)
+      // console.log(state)
       let newData = {
         'id': state.nextId,
-        'app': app,
-        'title': title,
-        'spurts': [{'startTime': startTime, 'endTime': endTime}],
-        'duration': duration
+        'app': action.payload.app,
+        'title': action.payload.title,
+        'spurts': [{'startTime': action.payload.startTime, 'endTime': action.payload.endTime}],
+        'duration': 10, //function to calc duration
+        'productivity': action.payload.productivity || 'neutral' //if null, make neutral for now
       }
+      console.log('productivity cat inside reducer is', newData.productivity);
       return {
         ...state,
-        neutral: [... state.neutral, newData],
+        [newData.productivity]: [... state[newData.productivity], newData],
         nextId: ++state.nextId
       }
     case PATCH_ACTIVITY:
@@ -65,7 +67,7 @@ const activities = (state = initialState, action) => {
       }
       // return state
     case CATEGORIZE_ACTIVITY:
-      console.log('got dispatch', action.payload)
+      // console.log('got dispatch', action.payload)
       let {id, oldCatName, newCatName} = action.payload;
       const movingActivity = state[oldCatName].filter((el) => el.id === id)[0];
       const updatedOldCat = state[oldCatName].filter((el) => el.id !== id);
