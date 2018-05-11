@@ -2,6 +2,8 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { ipcRenderer } from 'electron';
 import moment from 'moment';
+// import update from 'react-addons-update';
+import clone from 'clone';
 
 import ProductivityScore from '../../containers/ProductivityScore.jsx';
 import {changeCategory} from '../../actions/activityActions';
@@ -14,7 +16,6 @@ const renderActivities = (category, activities, changeCategory) => {
   let sortedActivities = sortByDuration(activities)
   return (
     <div>
-
       <Paper 
         style={
           {font: 'Open Sans', 
@@ -27,8 +28,8 @@ const renderActivities = (category, activities, changeCategory) => {
       >
         {category[0].toUpperCase() + category.slice(1, category.length)}
       </Paper>
-      {activities[category].map((activity, index) => {
-        console.log('activity', activity)
+      {sortedActivities[category].map((activity, index) => {
+        // console.log('activity', activity)
         let styleTick = {
           font: 'Arial', 
           //background: '#E8F5E9', 
@@ -72,13 +73,17 @@ const renderActivities = (category, activities, changeCategory) => {
 }
 
 const sortByDuration = (obj) => {
-  let newObj = {...obj};
+  let newObj = clone(obj)
   for(let key in newObj){
     if(Array.isArray(newObj[key])) {
       newObj[key].sort((a, b) => b.duration-a.duration)
     }
   }
   return newObj
+}
+
+const getTotalDuration = (activities) => {
+
 }
 
 const Activity = ({ activities, clickHandler }) => {
