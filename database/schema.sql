@@ -1,5 +1,6 @@
 DROP TABLE users;
 DROP TABLE activities;
+DROP TABLE categories;
 DROP TABLE user_metrics;
 DROP TABLE pomodoro_pref;
 DROP TABLE errors;
@@ -20,6 +21,14 @@ CREATE TABLE activities(
   category VARCHAR,
   prod_class VARCHAR,
   url VARCHAR,
+);
+
+CREATE TABLE categories(
+  activity_id serial NOT NULL PRIMARY KEY,
+  user_name VARCHAR,
+  app_name VARCHAR NOT NULL,
+  window_title VARCHAR NOT NULL,
+  prod_class VARCHAR NOT NULL CHECK (prod_class = 'productive' or prod_class = 'neutral' or prod_class = 'distracting')
 );
 
 CREATE TABLE user_metrics(

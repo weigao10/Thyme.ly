@@ -55,7 +55,7 @@ if(process.platform === 'darwin'){
 }
 
 //devtools
-if(process.env.NODE_ENV !== 'production'){
+if (process.env.NODE_ENV !== 'production'){
   mainMenuTemplate.push({
     label: 'Developer Tools',
     submenu: [
