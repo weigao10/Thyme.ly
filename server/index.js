@@ -19,8 +19,8 @@ app.post('/api/classifications', (req, res) => {
   return db.addOrChangeProductivity({
     user_name: 'brian',
     app_name: 'messages',
-    window_title: 'YOO',
-    prod_class: 'distracting'
+    window_title: 'YOOO',
+    prod_class: 'neutral'
   })
     .then(message => res.send(message))
     .catch(err => console.log(err))
