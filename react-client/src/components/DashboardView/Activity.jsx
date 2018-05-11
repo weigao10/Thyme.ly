@@ -4,13 +4,13 @@ import { ipcRenderer } from 'electron';
 import moment from 'moment';
 
 import ProductivityScore from '../../containers/ProductivityScore.jsx';
-import {changeCategory} from '../../actions/activityActions';
+import {changeCategory, deleteActivity} from '../../actions/activityActions';
 
 import Paper from 'material-ui/Paper';
 import Divider from 'material-ui/Divider';
 import RaisedButton from 'material-ui/RaisedButton';
 
-const renderActivities = (category, activities, changeCategory) => {
+const renderActivities = (category, activities, changeCategory, deleteActivity) => {
   return (
     <div>
 
@@ -22,7 +22,8 @@ const renderActivities = (category, activities, changeCategory) => {
           textAlign: 'center',
           color: 'white',
           fontWeight: 'bolder',
-          fontSize: '115%'}}
+          fontSize: '115%',
+          onMouseOver: '#FFF'}}
       >
         {category[0].toUpperCase() + category.slice(1, category.length)}
       </Paper>
@@ -60,7 +61,8 @@ const renderActivities = (category, activities, changeCategory) => {
           >
             <b>{activity.app}</b> <br/>
             {activity.title} <br/>
-            <i>{activity.duration}</i> seconds <br/>
+            <i>{activity.duration}</i> seconds 
+            <strong onClick={() => {deleteActivity(activity.id, category)}}>&nbsp;-delete-</strong> <br/>
             <br/>
             <button name="productive" onClick={(e) => {
                 changeCategory(activity, category, 'productive')}
@@ -75,7 +77,7 @@ const renderActivities = (category, activities, changeCategory) => {
   );
 }
 
-const Activity = ({ activities, clickHandler }) => {
+const Activity = ({ activities, clickHandler, deleteActivity }) => {
   const style = {
     margin: '8px',
     padding: '10px',
@@ -90,13 +92,13 @@ const Activity = ({ activities, clickHandler }) => {
   return (
     <div>
       <Paper style={style}>
-        {renderActivities('productive', activities, clickHandler)}
+        {renderActivities('productive', activities, clickHandler, deleteActivity)}
       </Paper>
       <Paper style={style}>
-        {renderActivities('neutral', activities, clickHandler)}
+        {renderActivities('neutral', activities, clickHandler, deleteActivity)}
       </Paper>
       <Paper style={style}>
-        {renderActivities('distracting', activities, clickHandler)}
+        {renderActivities('distracting', activities, clickHandler, deleteActivity)}
       </Paper>
       <Paper style={style}>
         <ProductivityScore />
@@ -114,6 +116,10 @@ const mapDispatchToProps = (dispatch) => {
     clickHandler: (activity, oldCat, newCat) => {
       console.log('trying to dispatch!')
       if (oldCat !== newCat) dispatch(changeCategory(activity, oldCat, newCat));
+    },
+    deleteActivity: (id, category) => {
+      console.log('trying to delete');
+      dispatch(deleteActivity(id, category));
     }
   };
 }
