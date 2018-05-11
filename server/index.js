@@ -9,16 +9,17 @@ const db = require('../database/index.js');
 app.use(bodyParser.json());
 
 app.get('/api/classifications', (req, res) => {
-  return db.getProductivityClass('messages', 'YYYO')
+  const {user_name, app_name, window_title} = req.query;
+  return db.getProductivityClass(app_name, window_title)
     .then((prod_class) => res.send(prod_class))
     .catch((err) => res.send(err));
 })
 
-app.get('/api/test', (req, res) => {
+app.post('/api/classifications', (req, res) => {
   return db.addOrChangeProductivity({
     user_name: 'brian',
     app_name: 'messages',
-    window_title: 'YO',
+    window_title: 'YOO',
     prod_class: 'distracting'
   })
     .then(message => res.send(message))
