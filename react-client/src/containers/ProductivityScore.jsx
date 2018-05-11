@@ -24,16 +24,16 @@ class ProductivityScore extends React.Component {
           // onmouseout: function (d, i) { console.log("onmouseout", d, i); }
       },
       gauge: {
-        //  label: {
-        //      format: function(value, ratio) {
-        //          return value;
-        //      },
-        //      show: false // to turn off the min/max labels.
-        //  },
+         label: {
+             format: function(value, ratio) {
+                 return value + '%';
+             },
+             show: false // to turn off the min/max labels.
+         },
   //    min: 0, // 0 is default, //can handle negative min e.g. vacuum / voltage / current flow / rate of change
   //    max: 100, // 100 is default
   //    units: ' %',
-       width: 45 // for adjusting arc thickness
+       width: 30 // for adjusting arc thickness
       },
       color: {
           pattern: ['#FF0000', '#F97600', '#F6C600', '#60B044'], // the three color levels for the percentage values.
@@ -44,7 +44,7 @@ class ProductivityScore extends React.Component {
           }
       },
       size: {
-          height: 200
+          height: 150
       }
   });
 
