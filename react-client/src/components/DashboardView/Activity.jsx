@@ -15,20 +15,25 @@ import RaisedButton from 'material-ui/RaisedButton';
 
 const renderActivities = (category, activities, changeCategory) => {
   let sortedActivities = sortByDuration(activities)
+
+  let styleCategory;
+  if (category === 'productive') {
+    styleCategory = styleCategoryP;
+  } else if (category === 'neutral') {
+    styleCategory = styleCategoryN;
+  } else if (category === 'distracting') {
+    styleCategory = styleCategoryD;
+  }
   return (
     <div>
-      <Paper 
-        style={
-          {font: 'Open Sans', 
-          background: '#00BCD4', 
-          padding: '10px 5px 10px 5px',
-          textAlign: 'left',
-          color: 'white',
-          fontWeight: 'bolder',
-          fontSize: '115%'}}
-      >
+      <Paper style={styleCategory}>
         {category[0].toUpperCase() + category.slice(1, category.length)} &nbsp;
-        {getTotalDuration(sortedActivities[category])}
+        <span style={
+          {
+            fontSize: "75%",
+            fontStyle: "italic"
+          }
+        }>{getTotalDuration(sortedActivities[category])}</span>
       </Paper>
       {sortedActivities[category].map((activity, index) => {
         let formatDuration = moment.duration(activity.duration, "seconds").format("h[h], m[m] s[s]")
@@ -94,16 +99,6 @@ const getTotalDuration = (activities) => {
 }
 
 const Activity = ({ activities, clickHandler }) => {
-  const style = {
-    margin: '8px',
-    padding: '10px',
-    width: 'calc(25% - 16px)',
-    float: 'left',
-    verticalAlign: 'top',
-    minHeight: '525px',
-    maxHeight: '525px',
-    overflowY: 'scroll',
-  }
 
   return (
     <div>
@@ -116,7 +111,7 @@ const Activity = ({ activities, clickHandler }) => {
       <Paper style={style}>
         {renderActivities('distracting', activities, clickHandler)}
       </Paper>
-      <Paper style={style}>
+      <Paper style={styleScore}>
         <ProductivityScore />
       </Paper>
     </div>
@@ -137,3 +132,59 @@ const mapDispatchToProps = (dispatch) => {
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Activity) 
+
+let styleCategoryP = {
+  font: 'Open Sans',
+  background: '#43A047',
+  padding: '10px 5px 10px 5px',
+  textAlign: 'center',
+  color: 'white',
+  fontWeight: 'bolder',
+  fontSize: '115%',
+  onMouseOver: '#FFF'
+ };
+ 
+ let styleCategoryN = {
+  font: 'Open Sans',
+  background: '#00BCD4',
+  padding: '10px 5px 10px 5px',
+  textAlign: 'center',
+  color: 'white',
+  fontWeight: 'bolder',
+  fontSize: '115%',
+  onMouseOver: '#FFF'
+ };
+ 
+ let styleCategoryD = {
+  font: 'Open Sans',
+  background: '#FF5722',
+  padding: '10px 5px 10px 5px',
+  textAlign: 'center',
+  color: 'white',
+  fontWeight: 'bolder',
+  fontSize: '115%',
+  onMouseOver: '#FFF'
+ };
+ 
+ const style = {
+  margin: '8px',
+  padding: '10px',
+  width: 'calc(25% - 16px)',
+  float: 'left',
+  verticalAlign: 'top',
+  minHeight: '475px',
+  maxHeight: '475px',
+  overflowY: 'scroll',
+  background: '#E0F2F1'
+ }
+ 
+ const styleScore = {
+  margin: '8px',
+  padding: '10px',
+  width: 'calc(25% - 16px)',
+  float: 'left',
+  verticalAlign: 'top',
+  minHeight: '475px',
+  maxHeight: '475px',
+  background: '#E0F2F1'
+ }
