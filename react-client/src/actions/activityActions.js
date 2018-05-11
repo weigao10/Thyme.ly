@@ -1,6 +1,7 @@
 import { GET_ACTIVITIES, ADD_ACTIVITY, PATCH_ACTIVITY, CATEGORIZE_ACTIVITY } from './types'; 
 import { createStore } from 'redux';
 import moment from 'moment';
+import axios from 'axios';
 
 export const getActivities = () => (dispatch) => {
   
@@ -23,6 +24,7 @@ export const patchActivity = ({ activity, category, index }, data) => {
 
 export const changeCategory = (id, oldCatName, newCatName) => {
   console.log('activity action firing with', id, oldCatName, newCatName)
+  //get entire activity
   return {
     type: CATEGORIZE_ACTIVITY,
     payload: {
