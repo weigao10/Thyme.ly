@@ -49,7 +49,7 @@ const startMonitor = (mainWindow, activities = [], errors = []) => {
     monitorActivity(activities, errors)
       .then((data) => {
         if (data) {
-          // console.log(data);
+          console.log(data);
           mainWindow.sender.webContents.send('activity', data)
         }
       })

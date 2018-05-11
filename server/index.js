@@ -1,6 +1,7 @@
 const electron = require('electron');
 const url = require('url');
 const path = require('path');
+const windowStateKeeper = require('electron-window-state')
 const {monitor} = require('../server/helpers/activityData')
 
 const { app, BrowserWindow, Menu, ipcMain } = electron;
@@ -9,13 +10,32 @@ let mainWindow;
 let addWindow;
 
 app.on('ready', () => {
+
+  let winState = windowStateKeeper({
+    defaultWidth: 1200,
+    defaultHeight: 900
+  })
   // console.log('path?', path.join(__dirname, '/../react-client/dist/index.html'))
-  mainWindow = new BrowserWindow({});
+  mainWindow = new BrowserWindow({
+        width: winState.width,
+        height: winState.height,
+        x: winState.x,
+        y: winState.y,
+        minWidth: 400,
+        minHeight: 300,
+        show: false
+        //make non resizable?
+  });
+
+  winState.manage(mainWindow);
+
   mainWindow.loadURL(url.format({ 
     pathname: path.join(__dirname, '/../react-client/dist/index.html'),
     protocol: 'file:',
     slashes: true
   }))
+
+  mainWindow.once('ready-to-show', () => mainWindow.show())
 
   mainWindow.on('closed', () => app.quit()) 
 

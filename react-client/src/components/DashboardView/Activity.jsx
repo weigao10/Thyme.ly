@@ -11,6 +11,7 @@ import Divider from 'material-ui/Divider';
 import RaisedButton from 'material-ui/RaisedButton';
 
 const renderActivities = (category, activities, changeCategory) => {
+  let sortedActivities = sortByDuration(activities)
   return (
     <div>
 
@@ -27,12 +28,7 @@ const renderActivities = (category, activities, changeCategory) => {
         {category[0].toUpperCase() + category.slice(1, category.length)}
       </Paper>
       {activities[category].map((activity, index) => {
-        // let duration = moment
-        //   .duration(
-        //     moment(activity.endTime, "MMMM Do YYYY, h:mm:ss a")
-        //     .diff(moment(activity.startTime, "MMMM Do YYYY, h:mm:ss a"))
-        //   )
-        //   .asSeconds();
+        console.log('activity', activity)
         let styleTick = {
           font: 'Arial', 
           //background: '#E8F5E9', 
@@ -73,6 +69,16 @@ const renderActivities = (category, activities, changeCategory) => {
       })}
     </div>
   );
+}
+
+const sortByDuration = (obj) => {
+  let newObj = {...obj};
+  for(let key in newObj){
+    if(Array.isArray(newObj[key])) {
+      newObj[key].sort((a, b) => b.duration-a.duration)
+    }
+  }
+  return newObj
 }
 
 const Activity = ({ activities, clickHandler }) => {
