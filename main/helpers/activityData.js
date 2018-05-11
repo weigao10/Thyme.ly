@@ -27,13 +27,10 @@ const monitorActivity = (activities, errors) => {
       return axios.get(server + '/api/classifications', {params: qs})
         .then((resp) => {
           console.log('classification data is', resp.data)
-          //STAMP THIS WITH PRODUCTIVITY CLASS FROM RESP.DATA W SPREAD OPERATOR
-          // console.log(resp);
-          console.log({
+          return {
             ...lastActivity,
-            productivity: resp.data
-          })
-          return lastActivity;
+            productivity: resp.data || null
+          };
         })
         .catch((err) => console.log(err))
     })
