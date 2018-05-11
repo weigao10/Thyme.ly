@@ -26,7 +26,7 @@ const monitorActivity = (activities, errors) => {
       }
       return axios.get(server + '/api/classifications', {params: qs})
         .then((resp) => {
-          console.log('classification data is', resp.data)
+          // console.log('classification data is', resp.data)
           return {
             ...lastActivity,
             productivity: resp.data || null
