@@ -48,12 +48,19 @@ const activities = (state = initialState, action) => {
         nextId: ++state.nextId
       }
     case DELETE_ACTIVITY:
-
-      let newArr = state[action.payload.category].filter((el) => el.id != action.payload.id);
+      let afterArr = state[action.payload.category].filter((el) => el.id != action.payload.id);
       return {
         ...state,
-        [action.payload.category]: newArr
+        [action.payload.category]: afterArr
       }
+    // case PATCH_ACTIVITY:
+    //   let {category, index, activity} = action.payload
+
+    //   let newArr = state[action.payload.category].filter((el) => el.id != action.payload.id);
+    //   return {
+    //     ...state,
+    //     [action.payload.category]: newArr
+    //   }
     case PATCH_ACTIVITY:
       let {category, index, activity, data} = action.payload
       let copySpurts = activity.spurts.slice()
