@@ -1,4 +1,4 @@
-import { GET_ACTIVITIES, ADD_ACTIVITY, PATCH_ACTIVITY, CATEGORIZE_ACTIVITY } from './types'; 
+import { GET_ACTIVITIES, ADD_ACTIVITY, PATCH_ACTIVITY, CATEGORIZE_ACTIVITY, DELETE_ACTIVITY } from './types'; 
 import { createStore } from 'redux';
 import moment from 'moment';
 import axios from 'axios';
@@ -41,5 +41,12 @@ export const changeCategory = (activity, oldCatName, newCatName) => {
       oldCatName,
       newCatName
     }
+  }
+}
+
+export const deleteActivity = (id, category) => {
+  return {
+    type: DELETE_ACTIVITY,
+    payload: {id, category}
   }
 }
