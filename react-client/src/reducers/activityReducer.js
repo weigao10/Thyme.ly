@@ -31,17 +31,19 @@ const activities = (state = initialState, action) => {
       }
     case ADD_ACTIVITY:
       // console.log('reducer add act', action.payload)
-      console.log(state)
+      // console.log(state)
       let newData = {
         'id': state.nextId,
         'app': action.payload.app,
         'title': action.payload.title,
         'spurts': [{'startTime': action.payload.startTime, 'endTime': action.payload.endTime}],
-        'duration': 10 //function to calc duration
+        'duration': 10, //function to calc duration
+        'productivity': action.payload.productivity || 'neutral' //if null, make neutral for now
       }
+      console.log('productivity cat inside reducer is', newData.productivity);
       return {
         ...state,
-        neutral: [... state.neutral, newData],
+        [newData.productivity]: [... state[newData.productivity], newData],
         nextId: ++state.nextId
       }
     case PATCH_ACTIVITY:
