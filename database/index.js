@@ -47,17 +47,18 @@ const getProductivityClass = (appName, title) => {
     .catch(err => console.error('error in looking up prod_class', err)) 
 };
 
-const addOrChangeProductivity = ({user_name, app_name, window_title, prod_class}) => {
+const addOrChangeProductivity = (query) => {
   console.log('inside add or change productivity')
-  return getProductivityClass(app_name, window_title)
+  const {app_name, window_title} = query;
+  return getProductivityClass(app_name, window_title) //add user here later
     .then(result => {
       if (result) {
         console.log('gotta recategorize!')
-        return 'recat';
+        return changeProductivityClass(query)
       }
       else {
         console.log('gotta add productivity!')
-        return 'add';
+        return addProductivityClass(query);
       }
     })
     .catch(err => console.log('error checking for productivity!'))
@@ -72,7 +73,7 @@ const addProductivityClass = ({user_name, app_name, window_title, prod_class}) =
 };
 
 const changeProductivityClass = ({user_name, app_name, window_title, prod_class}) => {
-  const queryStr = `UPDATE public.categories SET (prod_class) = $1\
+  const queryStr = `UPDATE public.categories SET prod_class = $1\
                     WHERE app_name = $2 AND window_title = $3`;
   const values = [prod_class, app_name, window_title];
   return pool.query(queryStr, values)
