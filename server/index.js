@@ -13,6 +13,9 @@ const createTray = () => {
 //   // tray = new Tray('../thyme.png');
   tray = new Tray(image);
   tray.setToolTip('Thyme');
+  tray.on('click', () => {
+    mainWindow.isVisible() ? mainWindow.hide() : mainWindow.show();
+  })
 }
 
 const createWindow = () => {
@@ -52,6 +55,8 @@ const createWindow = () => {
 app.on('ready', () => {
   createWindow();
   createTray();  
+  electron.powerMonitor.on('suspend', () => console.log('system going to sleep'));
+  electron.powerMonitor.on('resume', () => console.log('system waking from sleep'));
 }) 
 
 const mainMenuTemplate = [
