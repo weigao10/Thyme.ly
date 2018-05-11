@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import ReactDOM from 'react-dom';
 import React from 'react';
 import { ipcRenderer } from 'electron';
+import axios from 'axios';
 
 import { addActivity, patchActivity } from '../actions/activityActions'
 import ActivityContainer from './ActivityContainer.jsx';
@@ -29,7 +30,11 @@ class DashboardView extends React.Component {
   
   componentDidMount() {
     this.connectMonitor();
+    axios.get('http://127.0.0.1:3000/api/activities')
+      .then(res => console.log(res))
+      .catch(err => console.log(err))
     ipcRenderer.on('activity', (event, message) => {
+      console.log('message is', message);
       let inState = this.checkState(message)
       this.props.activityHandler(message, inState)
     });
@@ -102,7 +107,7 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = (dispatch) => {
   return {
     activityHandler: (data, inState) => {
-      if(inState) dispatch(patchActivity(inState, data))
+      if (inState) dispatch(patchActivity(inState, data))
       else dispatch(addActivity(data))
     } 
   };
