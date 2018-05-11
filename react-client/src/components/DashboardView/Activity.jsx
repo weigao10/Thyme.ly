@@ -2,6 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { ipcRenderer } from 'electron';
 import moment from 'moment';
+import momentFormat from 'moment-duration-format';
 // import update from 'react-addons-update';
 import clone from 'clone';
 
@@ -21,15 +22,16 @@ const renderActivities = (category, activities, changeCategory) => {
           {font: 'Open Sans', 
           background: '#00BCD4', 
           padding: '10px 5px 10px 5px',
-          textAlign: 'center',
+          textAlign: 'left',
           color: 'white',
           fontWeight: 'bolder',
           fontSize: '115%'}}
       >
-        {category[0].toUpperCase() + category.slice(1, category.length)}
+        {category[0].toUpperCase() + category.slice(1, category.length)} &nbsp;
+        {getTotalDuration(sortedActivities[category])}
       </Paper>
       {sortedActivities[category].map((activity, index) => {
-        // console.log('activity', activity)
+        let formatDuration = moment.duration(activity.duration, "seconds").format("h[h], m[m] s[s]")
         let styleTick = {
           font: 'Arial', 
           //background: '#E8F5E9', 
@@ -57,7 +59,7 @@ const renderActivities = (category, activities, changeCategory) => {
           >
             <b>{activity.app}</b> <br/>
             {activity.title} <br/>
-            <i>{activity.duration}</i> seconds <br/>
+            <i>{formatDuration}</i> <br/>
             <br/>
             <button name="productive" onClick={(e) => {
                 changeCategory(activity.id, category, 'productive')}
@@ -83,7 +85,12 @@ const sortByDuration = (obj) => {
 }
 
 const getTotalDuration = (activities) => {
-
+  let duration = 0;
+  activities.forEach((activity) => {
+    duration += activity.duration;
+  })
+  let formatDuration = moment.duration(duration, "seconds").format("h[h], m[m] s[s]");
+  return formatDuration;
 }
 
 const Activity = ({ activities, clickHandler }) => {

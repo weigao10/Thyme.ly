@@ -4,18 +4,23 @@ const path = require('path');
 const windowStateKeeper = require('electron-window-state')
 const {monitor} = require('../server/helpers/activityData')
 
-const { app, BrowserWindow, Menu, ipcMain } = electron;
+const { app, BrowserWindow, Menu, ipcMain, Tray, nativeImage } = electron;
 
-let mainWindow; 
-let addWindow;
+let mainWindow, addWindow, tray;
 
-app.on('ready', () => {
+const createTray = () => {
+  let image = nativeImage.createFromPath('../icon.png')
+//   // tray = new Tray('../thyme.png');
+  tray = new Tray(image);
+  tray.setToolTip('Thyme');
+}
 
+const createWindow = () => {
   let winState = windowStateKeeper({
     defaultWidth: 1200,
     defaultHeight: 900
   })
-  // console.log('path?', path.join(__dirname, '/../react-client/dist/index.html'))
+  
   mainWindow = new BrowserWindow({
         width: winState.width,
         height: winState.height,
@@ -42,6 +47,11 @@ app.on('ready', () => {
   const mainMenu = Menu.buildFromTemplate(mainMenuTemplate);
   Menu.setApplicationMenu(mainMenu);
   monitor(mainWindow)
+}
+
+app.on('ready', () => {
+  createWindow();
+  createTray();  
 }) 
 
 const mainMenuTemplate = [
@@ -81,13 +91,13 @@ if(process.env.NODE_ENV !== 'production'){
     submenu: [
       {
         label: 'Toggle DevTools',
+        role: 'toggledevtools',
         accelerator: process.platform === 'darwin' ? 'Command+I' : 'Ctrl+I',
-        click(item, focusedWindow){
-          focusedWindow.toggleDevTools(); 
-        }
       },
       {
         role: 'reload'
+      }, {
+        role: 'togglefullscreen'
       }
     ]
   })
