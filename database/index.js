@@ -37,10 +37,10 @@ const getProductivityClass = (appName, title) => {
   return pool.query(queryStr, values)
     .then((data) => {
       if (data.rows.length) {
-        console.log(data.rows)
+        console.log('productivity class is', data.rows[0].prod_class)
         return data.rows[0].prod_class
       } else {
-        // console.log(data.rows)
+        console.log('productivity class not found')
         return null;
       }
     })
@@ -68,6 +68,7 @@ const addProductivityClass = ({user_name, app_name, window_title, prod_class}) =
   const queryStr = `INSERT INTO public.categories(user_name, app_name, window_title, prod_class)\
                     VALUES ($1, $2, $3, $4)`;
   const values = [user_name, app_name, window_title, prod_class];
+  console.log('values to add are', values)
   return pool.query(queryStr, values)
     .catch(err => console.error('error in adding prod_class', err)) 
 };

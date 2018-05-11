@@ -16,12 +16,9 @@ app.get('/api/classifications', (req, res) => {
 })
 
 app.post('/api/classifications', (req, res) => {
-  return db.addOrChangeProductivity({
-    user_name: 'brian',
-    app_name: 'messages',
-    window_title: 'YOOO',
-    prod_class: 'neutral'
-  })
+  // const { user_name, app_name, window_title, prod_class } = req.body
+  // console.log('post request body is', req.body.params)
+  return db.addOrChangeProductivity(req.body.params)
     .then(message => res.send(message))
     .catch(err => console.log(err))
 })

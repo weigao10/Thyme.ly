@@ -63,10 +63,10 @@ const renderActivities = (category, activities, changeCategory) => {
             <i>{activity.duration}</i> seconds <br/>
             <br/>
             <button name="productive" onClick={(e) => {
-                changeCategory(activity.id, category, 'productive')}
+                changeCategory(activity, category, 'productive')}
               }>productive</button>
-            <button onClick={() => {changeCategory(activity.id, category, 'neutral')}}>neutral</button>
-            <button onClick={() => {changeCategory(activity.id, category, 'distracting')}}>distracting</button>
+            <button onClick={() => {changeCategory(activity, category, 'neutral')}}>neutral</button>
+            <button onClick={() => {changeCategory(activity, category, 'distracting')}}>distracting</button>
 
           </Paper>
         )
@@ -111,9 +111,9 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    clickHandler: (id, oldCat, newCat) => {
+    clickHandler: (activity, oldCat, newCat) => {
       console.log('trying to dispatch!')
-      if (oldCat !== newCat) dispatch(changeCategory(id, oldCat, newCat));
+      if (oldCat !== newCat) dispatch(changeCategory(activity, oldCat, newCat));
     }
   };
 }
