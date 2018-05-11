@@ -1,74 +1,29 @@
-const electron = require('electron');
-const url = require('url');
+const express = require('express');
 const path = require('path');
-const {monitor} = require('../server/helpers/activityData')
+const bodyParser = require('body-parser');
+const app = express();
+const port = process.env.PORT || 3000;
+const db = require('../database/index.js');
 
-const { app, BrowserWindow, Menu, ipcMain } = electron;
+// app.use(express.static(path.join(__dirname, '/../react-client/dist')));
+app.use(bodyParser.json());
 
-let mainWindow; 
-let addWindow;
+app.get('/api/classifications', (req, res) => {
+  const {user_name, app_name, window_title} = req.query;
+  return db.getProductivityClass(app_name, window_title)
+    .then((prod_class) => res.send(prod_class))
+    .catch((err) => res.send(err));
+})
 
-app.on('ready', () => {
-  // console.log('path?', path.join(__dirname, '/../react-client/dist/index.html'))
-  mainWindow = new BrowserWindow({});
-  mainWindow.loadURL(url.format({ 
-    pathname: path.join(__dirname, '/../react-client/dist/index.html'),
-    protocol: 'file:',
-    slashes: true
-  }))
+app.post('/api/classifications', (req, res) => {
+  // const { user_name, app_name, window_title, prod_class } = req.body
+  // console.log('post request body is', req.body.params)
+  return db.addOrChangeProductivity(req.body.params)
+    .then(message => res.send(message))
+    .catch(err => console.log(err))
+})
 
-  mainWindow.on('closed', () => app.quit()) 
+let server = app.listen(port, () => {
+  console.log(`listening on port ${port}`);
+});
 
-  const mainMenu = Menu.buildFromTemplate(mainMenuTemplate);
-  Menu.setApplicationMenu(mainMenu);
-  monitor(mainWindow)
-}) 
-
-const mainMenuTemplate = [
-  //if mac, need an empty object here
-  {
-    label: 'File', 
-    submenu: [ 
-      {
-        label: 'Add Item', 
-        click(){
-          createAddWindow();
-        }
-      }, 
-      {
-        label: 'Clear Items'
-      },
-      {
-        label: 'Quit',
-        accelerator: process.platform === 'darwin' ? 'Command+Q' : 'Ctrl+Q',
-        //darwin (mac), win32 (windows)
-        click(){
-          app.quit();
-        }
-      }
-    ]
-  }
-]
-
-if(process.platform === 'darwin'){
-  mainMenuTemplate.unshift({});
-}
-
-//devtools
-if(process.env.NODE_ENV !== 'production'){
-  mainMenuTemplate.push({
-    label: 'Developer Tools',
-    submenu: [
-      {
-        label: 'Toggle DevTools',
-        accelerator: process.platform === 'darwin' ? 'Command+I' : 'Ctrl+I',
-        click(item, focusedWindow){
-          focusedWindow.toggleDevTools(); 
-        }
-      },
-      {
-        role: 'reload'
-      }
-    ]
-  })
-}
