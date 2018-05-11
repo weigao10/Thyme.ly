@@ -34,7 +34,7 @@ class DashboardView extends React.Component {
       .then(res => console.log(res))
       .catch(err => console.log(err))
     ipcRenderer.on('activity', (event, message) => {
-      console.log('message is', message);
+      // console.log('message is', message);
       let inState = this.checkState(message)
       this.props.activityHandler(message, inState)
     });
