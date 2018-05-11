@@ -25,8 +25,8 @@ const createWindow = () => {
   splash = new BrowserWindow({
     width: 810, 
     height: 610, 
-    transparent: 
-    true,frame: false, 
+    transparent: true,
+    frame: false, 
     alwaysOnTop: true
   });
   splash.loadURL(url.format({ 
