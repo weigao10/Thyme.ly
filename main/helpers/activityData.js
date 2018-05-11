@@ -49,7 +49,7 @@ const startMonitor = (mainWindow, activities = [], errors = []) => {
     monitorActivity(activities, errors)
       .then((data) => {
         if (data) {
-          console.log(data);
+          // console.log(data);
           mainWindow.sender.webContents.send('activity', data)
         }
       })
@@ -63,10 +63,10 @@ exports.monitor = (mainWindow) => {
   let errors = [];
   ipcMain.on('monitor', (mainWindow, event, message) => {
     if (event === 'start') {
-      console.log('main is trying to start monitor')
+      // console.log('main is trying to start monitor')
       intervalId = startMonitor(mainWindow, activities, errors);
     } else if (event === 'pause' && intervalId) {
-      console.log('main is trying to clear monitor')
+      // console.log('main is trying to clear monitor')
       clearInterval(intervalId);
       intervalId = false;
     } else {

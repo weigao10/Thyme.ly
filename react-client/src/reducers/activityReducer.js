@@ -31,6 +31,7 @@ const activities = (state = initialState, action) => {
       }
     case ADD_ACTIVITY:
       // console.log('reducer add act', action.payload)
+      console.log(state)
       let newData = {
         'id': state.nextId,
         'app': action.payload.app,
@@ -65,7 +66,7 @@ const activities = (state = initialState, action) => {
       }
       // return state
     case CATEGORIZE_ACTIVITY:
-      console.log('got dispatch', action.payload)
+      // console.log('got dispatch', action.payload)
       let {id, oldCatName, newCatName} = action.payload;
       const movingActivity = state[oldCatName].filter((el) => el.id === id)[0];
       const updatedOldCat = state[oldCatName].filter((el) => el.id !== id);
