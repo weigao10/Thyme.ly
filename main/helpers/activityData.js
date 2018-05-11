@@ -2,6 +2,8 @@
 const activeWin = require('active-win');
 const moment = require('moment');
 const { ipcMain } = require('electron');
+const axios = require('axios');
+const server = 'http://127.0.0.1:3000';
 
 const monitorActivity = (activities, errors) => {
   return activeWin()
@@ -11,9 +13,29 @@ const monitorActivity = (activities, errors) => {
       if (needToInitializeChunk(lastActivity)) activities.push(newActivity);
       else if (chunkComplete(lastActivity, newActivity)) {
         lastActivity.endTime = timestamp();
+        console.log('lastActivity is', lastActivity)
         activities.push(newActivity);
         return lastActivity;
       }
+    })
+    .then((lastActivity) => {
+      const qs = {
+        user_name: 'brian',
+        app_name: lastActivity.app,
+        window_title: lastActivity.title
+      }
+      return axios.get(server + '/api/classifications', {params: qs})
+        .then((resp) => {
+          console.log('classification data is', resp.data)
+          //STAMP THIS WITH PRODUCTIVITY CLASS FROM RESP.DATA W SPREAD OPERATOR
+          // console.log(resp);
+          console.log({
+            ...lastActivity,
+            productivity: resp.data
+          })
+          return lastActivity;
+        })
+        .catch((err) => console.log(err))
     })
     .catch((e) => {
       e.time = timestamp();

@@ -31,7 +31,6 @@ const getActivities = () => {
 };
 
 const getProductivityClass = (appName, title) => {
-  console.log('get productivity class')
   const queryStr = `SELECT prod_class FROM public.categories where\
                     (app_name = $1) AND (window_title = $2)`;
   const values = [appName, title];
@@ -41,8 +40,8 @@ const getProductivityClass = (appName, title) => {
         console.log(data.rows)
         return data.rows[0].prod_class
       } else {
-        console.log(data.rows)
-        return null
+        // console.log(data.rows)
+        return null;
       }
     })
     .catch(err => console.error('error in looking up prod_class', err)) 
@@ -54,9 +53,11 @@ const addOrChangeProductivity = ({user_name, app_name, window_title, prod_class}
     .then(result => {
       if (result) {
         console.log('gotta recategorize!')
+        return 'recat';
       }
       else {
         console.log('gotta add productivity!')
+        return 'add';
       }
     })
     .catch(err => console.log('error checking for productivity!'))
@@ -64,7 +65,7 @@ const addOrChangeProductivity = ({user_name, app_name, window_title, prod_class}
 
 const addProductivityClass = ({user_name, app_name, window_title, prod_class}) => {
   const queryStr = `INSERT INTO public.categories(user_name, app_name, window_title, prod_class)\
-                    ($1, $2, $3, $4)`;
+                    VALUES ($1, $2, $3, $4)`;
   const values = [user_name, app_name, window_title, prod_class];
   return pool.query(queryStr, values)
     .catch(err => console.error('error in adding prod_class', err)) 
