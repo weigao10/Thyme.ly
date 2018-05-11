@@ -6,7 +6,7 @@ const {monitor} = require('../server/helpers/activityData')
 
 const { app, BrowserWindow, Menu, ipcMain, Tray, nativeImage } = electron;
 
-let mainWindow, addWindow, tray;
+let mainWindow, addWindow, tray, splash;
 
 const createTray = () => {
   let image = nativeImage.createFromPath('../icon.png')
@@ -20,10 +20,21 @@ const createTray = () => {
 
 const createWindow = () => {
   let winState = windowStateKeeper({
-    defaultWidth: 1200,
-    defaultHeight: 900
+    defaultWidth: 1000,
+    defaultHeight: 1000
   })
-  
+  splash = new BrowserWindow({
+    width: 810, 
+    height: 610, 
+    transparent: 
+    true,frame: false, 
+    alwaysOnTop: true
+  });
+  splash.loadURL(url.format({ 
+    pathname: path.join(__dirname, '/../react-client/dist/splash.html'),
+    protocol: 'file:',
+    slashes: true
+  }))
   mainWindow = new BrowserWindow({
         width: winState.width,
         height: winState.height,
@@ -43,7 +54,10 @@ const createWindow = () => {
     slashes: true
   }))
 
-  mainWindow.once('ready-to-show', () => mainWindow.show())
+  mainWindow.once('ready-to-show', () => {
+    splash.destroy();
+    mainWindow.show();
+  })
 
   mainWindow.on('closed', () => app.quit()) 
 
