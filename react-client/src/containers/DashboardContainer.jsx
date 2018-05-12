@@ -21,11 +21,23 @@ class DashboardContainer extends React.Component {
   }
   
   render() {
+    const {activities, changeCategory, deleteActivity } = this.props;
+    console.log('change caetgory inside dashboard container is', changeCategory);
     return (
       <div>
         <Paper style={{display: 'table', background: '#AAA', margin: '0', padding: '5px'}}>
-          {/* create 3 activity groups */}
-          <ActivityGroup />
+          {Object.keys(activities).map(category => {
+            if (category !== 'nextId') {
+              return (
+                <ActivityGroup
+                  category={category}
+                  activities={activities[category]}
+                  changeCategory={changeCategory}
+                  deleteActivity={deleteActivity}
+                />
+              )
+            }
+          })}
         </Paper>
         <pre>{JSON.stringify(this.props.activities)}</pre>
       </div>
@@ -39,7 +51,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    clickHandler: (activity, oldCat, newCat) => {
+    changeCategory: (activity, oldCat, newCat) => {
       console.log('trying to dispatch!')
       if (oldCat !== newCat) dispatch(changeCategory(activity, oldCat, newCat));
     },
@@ -50,5 +62,5 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-export default connect(mapStateToProps)(DashboardContainer);
+export default connect(mapStateToProps, mapDispatchToProps)(DashboardContainer);
 
