@@ -4,7 +4,7 @@ import store from './store'
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 
 import MonitorContainer from './containers/MonitorContainer.jsx';
-import DashboardView from './containers/DashboardView.jsx';
+import DashboardContainer from './containers/DashboardContainer.jsx';
 
 class App extends React.Component {
   
@@ -19,7 +19,7 @@ class App extends React.Component {
 
       <MuiThemeProvider>
       <Provider store={store}>
-        <DashboardView />
+        <DashboardContainer />
       </Provider>
       </MuiThemeProvider>
       </div>
