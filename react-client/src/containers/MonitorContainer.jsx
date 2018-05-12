@@ -72,6 +72,7 @@ class MonitorContainer extends React.Component {
 
   render() {
     return (
+      // TODO: Move this to another component (first have to move pause/not paused state to store)
       <div>
         <AppBar 
             title='Dashboard'

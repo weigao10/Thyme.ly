@@ -10,56 +10,36 @@ import Divider from 'material-ui/Divider';
 import RaisedButton from 'material-ui/RaisedButton';
 
 const ActivityGroup = ({ category, activities, changeCategory, deleteActivity, style }) =>  {
-  // activities is a group for a category
-  let sortedActivities = sortByDuration(activities)
-  // sorting doesnt seem to work!
+  const sortedActivities = [...activities].sort((a, b) => b.duration - a.duration);
   return (
     <div>
       <Paper style={styleMap[category]}>
-      {/* <Paper> */}
-        {renderActivities(category, sortedActivities, changeCategory, deleteActivity)}
+        <div>
+          <Paper>
+            {category[0].toUpperCase() + category.slice(1, category.length)} &nbsp;
+            <span style={
+              {
+                fontSize: "75%",
+                fontStyle: "italic"
+              }
+            }>{getTotalDuration(activities)}</span>
+          </Paper>
+          {sortedActivities.map((activity, index) => {
+            return (
+              <ActivityCard 
+                activity={activity}
+                index={index}
+                category={category}
+                changeCategory={changeCategory}
+                deleteActivity={deleteActivity}
+              />
+            )
+          })}
+        </div>
       </Paper>
     </div>
   )
-}
-
-const renderActivities = (category, activities, changeCategory, deleteActivity) => {
-  console.log('change categories inside render activities is', changeCategory)
-  return (
-    <div>
-      <Paper>
-        {category[0].toUpperCase() + category.slice(1, category.length)} &nbsp;
-        <span style={
-          {
-            fontSize: "75%",
-            fontStyle: "italic"
-          }
-        }>{getTotalDuration(activities)}</span>
-      </Paper>
-      {activities.map((activity, index) => {
-       return (
-        <ActivityCard 
-          activity={activity}
-          index={index}
-          category={category}
-          changeCategory={changeCategory}
-          deleteActivity={deleteActivity}
-        />
-      )
-      })}
-    </div>
-  );
-}
-
-const sortByDuration = (obj) => {
-  let newObj = clone(obj)
-  for(let key in newObj){
-    if(Array.isArray(newObj[key])) {
-      newObj[key].sort((a, b) => b.duration-a.duration)
-    }
-  }
-  return newObj
-}
+};
 
 const getTotalDuration = (activities) => {
   let duration = 0;
@@ -68,7 +48,7 @@ const getTotalDuration = (activities) => {
   })
   let formatDuration = moment.duration(duration, "seconds").format("h[h], m[m] s[s]");
   return formatDuration;
-}
+};
 
 let styleCategoryP = {
   font: 'Open Sans',

@@ -1,4 +1,3 @@
-// import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import ReactDOM from 'react-dom';
 import React from 'react';
@@ -6,14 +5,10 @@ import { ipcRenderer } from 'electron';
 import axios from 'axios';
 
 import { changeCategory, deleteActivity } from '../actions/activityActions'
-import ProductivityScore from './ProductivityScore.jsx';
+// import ProductivityScore from './ProductivityScore.jsx';
 import ActivityGroup from '../components/DashboardView/ActivityGroup.jsx';
 
 import Paper from 'material-ui/Paper';
-import AppBar from 'material-ui/AppBar';
-import FlatButton from 'material-ui/FlatButton';
-import Divider from 'material-ui/Divider';
-
 
 class DashboardContainer extends React.Component {
   constructor(props) {
@@ -22,24 +17,28 @@ class DashboardContainer extends React.Component {
   
   render() {
     const {activities, changeCategory, deleteActivity } = this.props;
-    console.log('change caetgory inside dashboard container is', changeCategory);
     return (
       <div>
         <Paper style={{display: 'table', background: '#AAA', margin: '0', padding: '5px'}}>
-          {Object.keys(activities).map(category => {
-            if (category !== 'nextId') {
-              return (
-                <ActivityGroup
-                  category={category}
-                  activities={activities[category]}
-                  changeCategory={changeCategory}
-                  deleteActivity={deleteActivity}
-                />
-              )
-            }
-          })}
+          <ActivityGroup
+            category='productive'
+            activities={activities.productive}
+            changeCategory={changeCategory}
+            deleteActivity={deleteActivity}
+          />
+          <ActivityGroup
+            category='neutral'
+            activities={activities.neutral}
+            changeCategory={changeCategory}
+            deleteActivity={deleteActivity}
+          />
+          <ActivityGroup
+            category='distracting'
+            activities={activities.distracting}
+            changeCategory={changeCategory}
+            deleteActivity={deleteActivity}
+          />
         </Paper>
-        <pre>{JSON.stringify(this.props.activities)}</pre>
       </div>
     )
   }
@@ -52,11 +51,9 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = (dispatch) => {
   return {
     changeCategory: (activity, oldCat, newCat) => {
-      console.log('trying to dispatch!')
       if (oldCat !== newCat) dispatch(changeCategory(activity, oldCat, newCat));
     },
     deleteActivity: (id, category) => {
-      console.log('trying to delete');
       dispatch(deleteActivity(id, category));
     }
   };

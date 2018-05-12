@@ -8,7 +8,8 @@ import Divider from 'material-ui/Divider';
 import RaisedButton from 'material-ui/RaisedButton';
 
 const ActivityCard = ({ activity, category, changeCategory, deleteActivity, index }) => {
-  let formattedDuration = moment.duration(activity.duration, "seconds").format("h[h], m[m] s[s]")
+  let formattedDuration = moment.duration(activity.duration, "seconds").format("h[h], m[m] s[s]");
+
   let styleTick = {
     font: 'Arial', 
     //background: '#E8F5E9', 
@@ -18,7 +19,8 @@ const ActivityCard = ({ activity, category, changeCategory, deleteActivity, inde
     textAlign: 'left',
     color: 'black',
     fontSize: '80%',
-  }
+  };
+
   let styleTock = {
     font: 'Arial', 
     // background: '#C8E6C9', 
@@ -28,7 +30,11 @@ const ActivityCard = ({ activity, category, changeCategory, deleteActivity, inde
     textAlign: 'left',
     color: 'black',
     fontSize: '80%',
-  }
+  };
+
+  const handleClick = (e) => {
+    changeCategory(activity, category, e.target.name)
+  };
 
   return (
     <Paper
@@ -40,12 +46,9 @@ const ActivityCard = ({ activity, category, changeCategory, deleteActivity, inde
       <i>{formattedDuration}</i>
       <strong onClick={() => {deleteActivity(activity.id, category)}}>&nbsp;-delete-</strong> <br/>
       <br/>
-      <button name="productive" onClick={(e) => {
-          changeCategory(activity, category, 'productive')}
-        }>productive</button>
-      <button onClick={() => {changeCategory(activity, category, 'neutral')}}>neutral</button>
-      <button onClick={() => {changeCategory(activity, category, 'distracting')}}>distracting</button>
-
+      <button name="productive" onClick={handleClick}>productive</button>
+      <button name="neutral" onClick={handleClick}>neutral</button>
+      <button name="distracting" onClick={handleClick}>distracting</button>
     </Paper>
   )
 }
