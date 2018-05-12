@@ -13,7 +13,7 @@ const monitorActivity = (activities, errors) => {
       if (needToInitializeChunk(lastActivity)) activities.push(newActivity);
       else if (chunkComplete(lastActivity, newActivity)) {
         lastActivity.endTime = timestamp();
-        console.log('lastActivity is', lastActivity)
+        // console.log('lastActivity is', lastActivity)
         activities.push(newActivity);
         return lastActivity;
       }
@@ -26,7 +26,7 @@ const monitorActivity = (activities, errors) => {
       }
       return axios.get(server + '/api/classifications', {params: qs})
         .then((resp) => {
-          console.log('classification data is', resp.data)
+          // console.log('classification data is', resp.data)
           return {
             ...lastActivity,
             productivity: resp.data || null
