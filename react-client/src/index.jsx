@@ -33,7 +33,10 @@ loginButton.addEventListener('click', () => {
   let email = document.getElementById('email').value
   let password = document.getElementById('password').value
   auth.signInWithEmailAndPassword(email, password)
-  .then((data) => ReactDOM.render((<App />), document.getElementById('app')))
+  .then((data) => {
+    //make home log in html page go away
+    ReactDOM.render((<App />), document.getElementById('app'))
+  })
   .catch((err) => alert('Username/password combination do not match.'))
 })
 

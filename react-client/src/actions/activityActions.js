@@ -1,4 +1,4 @@
-import { ADD_ACTIVITY, PATCH_ACTIVITY, CATEGORIZE_ACTIVITY } from './types'; 
+import { ADD_ACTIVITY, PATCH_ACTIVITY, CATEGORIZE_ACTIVITY, DELETE_ACTIVITY } from './types'; 
 import { createStore } from 'redux';
 import moment from 'moment';
 import axios from 'axios';
