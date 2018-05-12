@@ -12,6 +12,8 @@ import Paper from 'material-ui/Paper';
 import AppBar from 'material-ui/AppBar';
 import FlatButton from 'material-ui/FlatButton';
 import Divider from 'material-ui/Divider';
+import SwipeableViews from 'react-swipeable-views';
+import {Tabs, Tab} from 'material-ui/Tabs'
 //import RaisedButton from 'material-ui/RaisedButton';
 
 class DashboardView extends React.Component {
@@ -19,13 +21,15 @@ class DashboardView extends React.Component {
     super(props);
 
     this.state = {
-      showTimerButton: true
+      showTimerButton: true,
+      slideIndex: 0
     }
 
     this.connectMonitor = this.connectMonitor.bind(this);
     this.pauseMonitor = this.pauseMonitor.bind(this);
     this.toggleTimerButton = this.toggleTimerButton.bind(this);
     this.checkState = this.checkState.bind(this);
+    this.handleChange = this.handleChange.bind(this);
   }
   
   componentDidMount() {
@@ -39,6 +43,12 @@ class DashboardView extends React.Component {
       this.props.activityHandler(message, inState)
     });
   }
+
+  handleChange = (value) => {
+    this.setState({
+      slideIndex: value,
+    });
+  };
 
   connectMonitor() {
     this.connected = true;
@@ -84,17 +94,35 @@ class DashboardView extends React.Component {
   render() {
     return (
       <div>
-        <AppBar 
-          title='Dashboard'
-          style={{background: '#2196F3', margin: '0px'}}
-          iconElementRight={this.state.showTimerButton ? <FlatButton label="Pause Tracker"/> : <FlatButton label="Restart Tracker" />}
-          onRightIconButtonClick={this.toggleTimerButton}
-        />
-        <Paper style={{display: 'table', background: '#AAA', margin: '0', padding: '5px'}}>
+        <Tabs
+          onChange={this.handleChange}
+          value={this.state.slideIndex}
+        >
+          <Tab label="Activity" value={0} />
+          <Tab label="Daily Report" value={1} />
+          <Tab label="Another Report" value={2} />
+        </Tabs>
+        <SwipeableViews
+          index={this.state.slideIndex}
+          onChangeIndex={this.handleChange}
+        >
+          <div>
+            {/* <h2 style={styles.headline}>Tabs with slide effect</h2>
+            Swipe to see the next slide.<br /> */}
+              <Paper style={{display: 'table', background: '#AAA', margin: '0', padding: '5px'}}>
           
-          <ActivityContainer />
+                <ActivityContainer />
           
-        </Paper>
+            </Paper>
+          </div>
+          <div style={styles.slide}>
+            slide n°2
+          </div>
+          <div style={styles.slide}>
+            slide n°3
+          </div>
+        </SwipeableViews>
+        
       </div>
     )
   }
@@ -113,4 +141,16 @@ const mapDispatchToProps = (dispatch) => {
   };
 }
 export default connect(mapStateToProps, mapDispatchToProps) (DashboardView)
+
+const styles = {
+  headline: {
+    fontSize: 24,
+    paddingTop: 16,
+    marginBottom: 12,
+    fontWeight: 400,
+  },
+  slide: {
+    padding: 10,
+  },
+};
 
