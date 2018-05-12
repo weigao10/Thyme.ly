@@ -8,8 +8,7 @@ const { app, BrowserWindow, Menu, ipcMain, Tray, nativeImage } = electron;
 let mainWindow, addWindow, tray, splash;
 
 const createTray = () => {
-  let image = nativeImage.createFromPath('../icon.png')
-//   // tray = new Tray('../thyme.png');
+  let image = nativeImage.createFromPath(path.join(__dirname, '../iconTemplate.png'))
   tray = new Tray(image);
   tray.setToolTip('Thyme');
   tray.on('click', () => {
