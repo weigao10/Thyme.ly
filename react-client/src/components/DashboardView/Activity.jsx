@@ -141,7 +141,8 @@ let styleCategoryP = {
   color: 'white',
   fontWeight: 'bolder',
   fontSize: '115%',
-  onMouseOver: '#FFF'
+  onMouseOver: '#FFF',
+  borderRadius: '15px 15px 0px 0px'
  };
  
  let styleCategoryN = {
