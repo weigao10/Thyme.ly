@@ -2,16 +2,35 @@
 <html>
 <head>
   <title>Thyme</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://www.gstatic.com/firebasejs/5.0.2/firebase.js"></script>
+  <!-- <script src="https://apis.google.com/js/platform.js" async defer></script> -->
+  <!-- <meta name="google-signin-client_id" content="79209900610-07qsg4p34rjof0d6891a9nhmusohmm04.apps.googleusercontent.com"> -->
+  </head>
 </head>
 <body>
   <div id="app"></div>
+  <div id="login-page"class="login-page">
+    <div class="form">
+      <form class="register-form">
+        <input type="text" id="reg-name" placeholder="name"/>
+        <input type="text" id="reg-email" placeholder="email address"/>
+        <input type="password" id="reg-password" placeholder="password"/>
+        <button id="register">create</button>
+        <p class="message">Already registered? <a href="#">Sign In</a></p>
+      </form>
+      <form class="login-form">
+        <input type="text" id="email" placeholder="email address"/>
+        <input type="password" id="password" placeholder="password"/>
+        <button type="button" id="login">login</button>
+        <div class="g-signin2" data-onsuccess="onSignIn"></div>
+        <!-- <button type="button"></button> -->
+        <p class="message">Not registered? <a href="#">Create an account</a></p>
+      </form>
+    </div>
+  </div>
   <script>
-    import * as React from 'react';
-    import ReactDOM from 'react-dom';
-    import App from '../src/App.jsx';
-    ReactDOM.render(<App />, document.getElementById('app'))
-    //require index.jsx?
+    require('../src/index.jsx')
   </script>
-<!-- <script type="text/javascript" src="bundle.js"></script> -->
 </body>
 </html>
