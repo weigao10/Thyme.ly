@@ -7,13 +7,13 @@ import momentFormat from 'moment-duration-format';
 import clone from 'clone';
 
 import ProductivityScore from '../../containers/ProductivityScore.jsx';
-import {changeCategory} from '../../actions/activityActions';
+import {changeCategory, deleteActivity} from '../../actions/activityActions';
 
 import Paper from 'material-ui/Paper';
 import Divider from 'material-ui/Divider';
 import RaisedButton from 'material-ui/RaisedButton';
 
-const renderActivities = (category, activities, changeCategory) => {
+const renderActivities = (category, activities, changeCategory, deleteActivity) => {
   let sortedActivities = sortByDuration(activities)
 
   let styleCategory;
@@ -64,7 +64,8 @@ const renderActivities = (category, activities, changeCategory) => {
           >
             <b>{activity.app}</b> <br/>
             {activity.title} <br/>
-            <i>{formatDuration}</i> <br/>
+            <i>{formatDuration}</i>
+            <strong onClick={() => {deleteActivity(activity.id, category)}}>&nbsp;-delete-</strong> <br/>
             <br/>
             <button name="productive" onClick={(e) => {
                 changeCategory(activity, category, 'productive')}
@@ -98,18 +99,18 @@ const getTotalDuration = (activities) => {
   return formatDuration;
 }
 
-const Activity = ({ activities, clickHandler }) => {
+const Activity = ({ activities, clickHandler, deleteActivity }) => {
 
   return (
     <div>
       <Paper style={style}>
-        {renderActivities('productive', activities, clickHandler)}
+        {renderActivities('productive', activities, clickHandler, deleteActivity)}
       </Paper>
       <Paper style={style}>
-        {renderActivities('neutral', activities, clickHandler)}
+        {renderActivities('neutral', activities, clickHandler, deleteActivity)}
       </Paper>
       <Paper style={style}>
-        {renderActivities('distracting', activities, clickHandler)}
+        {renderActivities('distracting', activities, clickHandler, deleteActivity)}
       </Paper>
       <Paper style={styleScore}>
         <ProductivityScore />
@@ -127,6 +128,10 @@ const mapDispatchToProps = (dispatch) => {
     clickHandler: (activity, oldCat, newCat) => {
       console.log('trying to dispatch!')
       if (oldCat !== newCat) dispatch(changeCategory(activity, oldCat, newCat));
+    },
+    deleteActivity: (id, category) => {
+      console.log('trying to delete');
+      dispatch(deleteActivity(id, category));
     }
   };
 }
