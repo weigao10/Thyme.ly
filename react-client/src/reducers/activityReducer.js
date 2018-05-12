@@ -12,7 +12,7 @@ const initialState = {
 
 const activities = (state = initialState, action) => {
   // console.log('reached reducer');
-  switch(action.type){
+  switch(action.type) {
     case GET_ACTIVITIES: 
       return {
         ...state, 
