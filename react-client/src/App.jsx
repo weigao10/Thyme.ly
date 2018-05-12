@@ -1,27 +1,28 @@
-// import { BrowserRouter as Router, Route } from 'react-router-dom';
 import { Provider } from 'react-redux'
 import React from 'react';
 import store from './store'
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 
-// import ActivityContainer from './containers/ActivityContainer.jsx'
-import DashboardView from './containers/DashboardView.jsx'
+import MonitorContainer from './containers/MonitorContainer.jsx';
+import DashboardContainer from './containers/DashboardContainer.jsx';
 
 class App extends React.Component {
   
   render() {
-    // console.log('in app')
-    return(  
+    return(
+      <div>  
       <MuiThemeProvider>
-        <Provider store={store}>
-        {/* <ActivityContainer /> */}
-        <DashboardView />
-          {/* <Router> */}
-              {/* <Route exact={true} path='/' component={ () => <DashboardView /> }/> */}
-            {/* <Route exact={true} path='/' component={ () => <ActivityContainer /> }/> */}
-          {/* </Router> */}
-        </Provider>
+      <Provider store={store}>
+          <MonitorContainer />
+      </Provider>
       </MuiThemeProvider>
+
+      <MuiThemeProvider>
+      <Provider store={store}>
+        <DashboardContainer />
+      </Provider>
+      </MuiThemeProvider>
+      </div>
     )
   }
 }
