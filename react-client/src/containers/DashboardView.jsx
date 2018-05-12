@@ -29,15 +29,15 @@ class DashboardView extends React.Component {
   }
   
   componentDidMount() {
-    this.connectMonitor();
-    axios.get('http://127.0.0.1:3000/api/activities')
-      .then(res => console.log(res))
-      .catch(err => console.log(err))
-    ipcRenderer.on('activity', (event, message) => {
-      // console.log('message is', message);
-      let inState = this.checkState(message)
-      this.props.activityHandler(message, inState)
-    });
+    // this.connectMonitor();
+    // axios.get('http://127.0.0.1:3000/api/activities')
+    //   .then(res => console.log(res))
+    //   .catch(err => console.log(err))
+    // ipcRenderer.on('activity', (event, message) => {
+    //   // console.log('message is', message);
+    //   let inState = this.checkState(message)
+    //   this.props.activityHandler(message, inState)
+    // });
   }
 
   connectMonitor() {

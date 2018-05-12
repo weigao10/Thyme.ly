@@ -13,7 +13,7 @@ const monitorActivity = (activities, errors) => {
       if (needToInitializeChunk(lastActivity)) activities.push(newActivity);
       else if (chunkComplete(lastActivity, newActivity)) {
         lastActivity.endTime = timestamp();
-        console.log('lastActivity is', lastActivity)
+        // console.log('lastActivity is', lastActivity)
         activities.push(newActivity);
         return lastActivity;
       }
