@@ -2,6 +2,8 @@ const windowStateKeeper = require('electron-window-state')
 const {monitor} = require('../main/helpers/activityData.js');
 const url = require('url');
 const path = require('path');
+const axios = require('axios')
+const qs = require('qs')
 const electron = require('electron')
 const { app, BrowserWindow, Menu, ipcMain, Tray, nativeImage } = electron;
 
@@ -66,7 +68,8 @@ const createWindow = () => {
 
 app.on('ready', () => {
   createWindow();
-  createTray();  
+  createTray(); 
+  console.log('ready') 
   electron.powerMonitor.on('suspend', () => console.log('system going to sleep'));
   electron.powerMonitor.on('resume', () => console.log('system waking from sleep'));
 }) 
