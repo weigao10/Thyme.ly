@@ -17,7 +17,7 @@ const activities = (state = initialState, action) => {
       let newData = {
         'id': state.nextId,
         'app': app,
-        'title': title || '',
+        'title': title,
         'spurts': [{'startTime': startTime, 'endTime': endTime}],
         'duration': duration,
         'productivity': productivity || 'neutral' //if null, make neutral for now
