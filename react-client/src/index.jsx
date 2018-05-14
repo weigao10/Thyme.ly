@@ -33,7 +33,6 @@ registerButton.addEventListener('click', () => {
 
   auth.createUserWithEmailAndPassword(email, password)
   .then((data) => {
-    console.log('data in sign up', data)
     ReactDOM.render((<App />), document.getElementById('app'))
     document.getElementById('login-page').innerHTML = ''
   })
@@ -75,7 +74,6 @@ const GOOGLE_PROFILE_URL = 'https://www.googleapis.com/userinfo/v2/me'
 
 
 function signInWithPopup () {
-  console.log('in sign in with pop up')
   return new Promise((resolve, reject) => {
     const authWindow = new remote.BrowserWindow({
       width: 500,
