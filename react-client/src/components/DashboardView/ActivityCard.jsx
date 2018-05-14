@@ -27,7 +27,7 @@ const collect = (connect, monitor) => {
 }
 
 const ActivityCard = (props) => {
-  const { activity, category, changeCategory, deleteActivity, index } = props;
+  const { activity, category, deleteActivity, index } = props;
   
   let formattedDuration = moment.duration(activity.duration, "seconds").format("h[h], m[m] s[s]");
 
@@ -52,10 +52,6 @@ const ActivityCard = (props) => {
     color: 'black',
     fontSize: '80%',
   };
-
-  const handleClick = (e) => {
-    changeCategory(activity, category, e.target.name)
-  };
   const { connectDragSource, isDragging } = props;
   return connectDragSource(
     <div>
@@ -66,11 +62,8 @@ const ActivityCard = (props) => {
       <b>{activity.app}</b> <br/>
       {activity.title} <br/>
       <i>{formattedDuration}</i>
-      <strong onClick={() => {deleteActivity(activity.id, category)}}>&nbsp;-delete-</strong> <br/>
       <br/>
-      <button name="productive" onClick={handleClick}>productive</button>
-      <button name="neutral" onClick={handleClick}>neutral</button>
-      <button name="distracting" onClick={handleClick}>distracting</button>
+      <button onClick={() => {deleteActivity(activity.id, category)}}>delete</button>
     </Paper>
     </div>
   )
