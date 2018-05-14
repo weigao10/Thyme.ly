@@ -13,8 +13,6 @@ import RaisedButton from 'material-ui/RaisedButton';
 
 const comparisonTarget = {
   drop(props, monitor) {
-    console.log('comparison target props are', props);
-    console.log('dropped item is', monitor.getItem());
     const { activity, oldCategory } = monitor.getItem();
     const newCategory = props.category;
     props.changeCategory(activity, oldCategory, newCategory);
@@ -51,7 +49,6 @@ const ActivityGroup = (props) =>  {
                 key={index}
                 index={index}
                 category={category}
-                changeCategory={changeCategory}
                 deleteActivity={deleteActivity}
               />
             )
