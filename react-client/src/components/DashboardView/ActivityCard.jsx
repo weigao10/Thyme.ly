@@ -36,8 +36,6 @@ const ActivityCard = ({ activity, category, changeCategory, deleteActivity, inde
     changeCategory(activity, category, e.target.name)
   };
 
-  console.log('in act card', preferences.trackedApps)
-
   if(preferences.trackedApps.includes(activity.app)){
     return (
       <Paper
@@ -61,6 +59,7 @@ const ActivityCard = ({ activity, category, changeCategory, deleteActivity, inde
         style={index % 2 === 0 ? styleTick : styleTock}
       >
         <b>{activity.app}</b> <br/>
+        {/* don't display title if not in trackedApps */}
         <i>{formattedDuration}</i>
         <strong onClick={() => {deleteActivity(activity.id, category)}}>&nbsp;-delete-</strong> <br/>
         <br/>

@@ -17,7 +17,6 @@ class DashboardContainer extends React.Component {
   
   render() {
     const {activities, changeCategory, deleteActivity, preferences } = this.props;
-    console.log('in dashboard track apps', preferences)
     return (
         <Paper style={{display: 'table', background: '#AAA', margin: '0', padding: '5px', width: '75%', minHeight: '425px', verticalAlign: 'top'}}>
           <ActivityGroup
