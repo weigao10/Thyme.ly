@@ -35,11 +35,13 @@ class MonitorContainer extends React.Component {
   connectMonitor() {
     this.connected = true;
     ipcRenderer.send('monitor', 'start');
+    console.log('start!')
   }
 
   pauseMonitor() {
     this.connected = false;
     ipcRenderer.send('monitor', 'pause');
+    console.log('paused')
   }
 
   toggleTimerButton() {
