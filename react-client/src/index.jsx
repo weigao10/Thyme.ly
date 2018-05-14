@@ -16,9 +16,7 @@ $('.message a').click(function(){
 if (!firebase.apps.length) {
   firebase.initializeApp(config);
 }
-// var provider = new firebase.auth.GoogleAuthProvider();
-var auth = firebase.auth();
-// auth.signInWithPopup(provider); 
+const auth = firebase.auth();
 
 var registerButton = document.getElementById('register')
 var loginButton = document.getElementById('login')
@@ -34,8 +32,11 @@ registerButton.addEventListener('click', () => {
   let password = document.getElementById('reg-password').value
 
   auth.createUserWithEmailAndPassword(email, password)
-  .then((data) => ReactDOM.render((<App />), document.getElementById('app')))
-  .catch((err) => console.log('err in register: ', err))
+  .then((data) => {
+    ReactDOM.render((<App />), document.getElementById('app'))
+    document.getElementById('login-page').innerHTML = ''
+  })
+  .catch((err) => alert(JSON.stringify(err)));
 })
 
 
@@ -44,8 +45,6 @@ loginButton.addEventListener('click', () => {
   let password = document.getElementById('password').value
   auth.signInWithEmailAndPassword(email, password)
   .then((data) => {
-    //make home log in html page go away
-    
     ReactDOM.render((<App />), document.getElementById('app'))
     document.getElementById('login-page').innerHTML = ''
   })
@@ -75,7 +74,6 @@ const GOOGLE_PROFILE_URL = 'https://www.googleapis.com/userinfo/v2/me'
 
 
 function signInWithPopup () {
-  console.log('in sign in with pop up')
   return new Promise((resolve, reject) => {
     const authWindow = new remote.BrowserWindow({
       width: 500,
@@ -107,10 +105,6 @@ function signInWithPopup () {
         }
       }
     }
-
-    // authWindow.on('closed', () => {
-    //   throw new Error('Auth window was closed by user')
-    // })
 
     authWindow.webContents.on('will-navigate', (event, url) => {
       handleNavigation(url)
