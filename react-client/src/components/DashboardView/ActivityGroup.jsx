@@ -13,6 +13,8 @@ import RaisedButton from "material-ui/RaisedButton";
 
 const comparisonTarget = {
   drop(props, monitor) {
+    console.log('comparison target props are', props);
+    console.log('dropped item is', monitor.getItem());
     const { activity, oldCategory } = monitor.getItem();
     const newCategory = props.category;
     props.changeCategory(activity, oldCategory, newCategory);
@@ -156,6 +158,4 @@ const styleMap = {
   distracting: styleCategoryD
 };
 
-export default DropTarget(ItemTypes.CARD, comparisonTarget, collect)(
-  ActivityGroup
-);
+ export default DropTarget(ItemTypes.CARD, comparisonTarget, collect)(ActivityGroup);
