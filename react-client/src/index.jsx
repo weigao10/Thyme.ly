@@ -48,7 +48,10 @@ loginButton.addEventListener('click', () => {
     ReactDOM.render((<App />), document.getElementById('app'))
     document.getElementById('login-page').innerHTML = ''
   })
-  .catch((err) => alert('Username/password combination do not match.'))
+  .catch((err) => {
+    alert('Username/password combination do not match.')
+    //clear form
+  })
 })
 
 function googleSignIn () {
