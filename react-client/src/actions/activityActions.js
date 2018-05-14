@@ -1,12 +1,8 @@
 import { ADD_ACTIVITY, PATCH_ACTIVITY, CATEGORIZE_ACTIVITY, DELETE_ACTIVITY } from './types'; 
-import { createStore } from 'redux';
+// import { createStore } from 'redux';
 import moment from 'moment';
 import axios from 'axios';
 const url = 'http://127.0.0.1:3000'
-
-export const getActivities = () => (dispatch) => {
-  
-}
 
 export const addActivity = (data) => {
   return {
