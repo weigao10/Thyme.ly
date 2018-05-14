@@ -17,7 +17,7 @@ const activities = (state = initialState, action) => {
       let newData = {
         'id': state.nextId,
         'app': app,
-        'title': title,
+        'title': title || '',
         'spurts': [{'startTime': startTime, 'endTime': endTime}],
         'duration': duration,
         'productivity': productivity || 'neutral' //if null, make neutral for now
@@ -29,7 +29,6 @@ const activities = (state = initialState, action) => {
       }
 
     case DELETE_ACTIVITY:
-      console.log('inside DELETE ACTIVITY REDUCER');
       let newArr = state[action.payload.category].filter((el) => el.id != action.payload.id);
       return {
         ...state,

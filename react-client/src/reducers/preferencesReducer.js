@@ -1,8 +1,7 @@
-import { ADD_ACTIVITY, PATCH_ACTIVITY, CATEGORIZE_ACTIVITY, DELETE_ACTIVITY } from '../actions/types'; 
-import moment from 'moment';
+import { TRACK_APP_TITLE, UNTRACK_APP_TITLE } from '../actions/types'; 
 
 const initialState = {
-  trackedApps = []
+  trackedApps: ['Google Chrome', 'Firefox', 'Safari']
 }
 
 const preferences = (state = initialState, action) => {
@@ -11,15 +10,14 @@ const preferences = (state = initialState, action) => {
     case TRACK_APP_TITLE:
       return {
         ...state,
-        trackedApps: [... state[newData.productivity], newData]
+        trackedApps: [... state.trackedApps, action.payload.data]
       }
 
-    case DELETE_ACTIVITY:
-      console.log('inside DELETE ACTIVITY REDUCER');
-      let newArr = state[action.payload.category].filter((el) => el.id != action.payload.id);
+    case UNTRACK_APP_TITLE:
+      let newArr = state.trackedApps.filter((el) => el !== action.payload.data);
       return {
         ...state,
-        [action.payload.category]: newArr
+        trackedApps: newArr
       };
     
     default: 
