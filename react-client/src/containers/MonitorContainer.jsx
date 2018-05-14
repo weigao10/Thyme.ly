@@ -7,9 +7,6 @@ import Paper from 'material-ui/Paper';
 import AppBar from 'material-ui/AppBar';
 import FlatButton from 'material-ui/FlatButton';
 import Divider from 'material-ui/Divider';
-import SwipeableViews from 'react-swipeable-views';
-import {Tabs, Tab} from 'material-ui/Tabs'
-//import RaisedButton from 'material-ui/RaisedButton';
 
 import { addActivity, patchActivity} from '../actions/activityActions.js';
 
@@ -85,24 +82,9 @@ class MonitorContainer extends React.Component {
 
   render() {
     return (
-      // TODO: Move this to another component (first have to move pause/not paused state to store)
+      // TODO: Make this component render a Pause/Start timer button
       <div>
-        <AppBar 
-            title='Dashboard'
-            style={{background: '#2196F3', margin: '0px'}}
-            iconElementRight={this.state.showTimerButton ? <FlatButton label="Pause Tracker"/> : <FlatButton label="Restart Tracker" />}
-            onRightIconButtonClick={this.toggleTimerButton}
-          />
-        <Tabs
-          onChange={this.handleChange}
-          value={this.state.slideIndex}
-        >
-          <Tab label="Activity" value={0} />
-          <Tab label="Daily Report" value={1} />
-          <Tab label="Another Report" value={2} />
-        </Tabs>
-
-        
+     
       </div>
     )
   }
@@ -134,27 +116,3 @@ const styles = {
     padding: 10,
   },
 };
-
-/*
-
-        <SwipeableViews
-          index={this.state.slideIndex}
-          onChangeIndex={this.handleChange}
-        >
-          <div>
-
-            <Paper style={{display: 'table', background: '#AAA', margin: '0', padding: '5px'}}>
-          
-            <DashboardContainer />
-      
-        </Paper>
-      </div>
-      <div style={styles.slide}>
-        slide n°2
-      </div>
-      <div style={styles.slide}>
-        slide n°3
-      </div>
-    </SwipeableViews>
-
-    */
