@@ -1,8 +1,8 @@
 import { ADD_ACTIVITY, PATCH_ACTIVITY, CATEGORIZE_ACTIVITY, DELETE_ACTIVITY } from './types'; 
 import { createStore } from 'redux';
 import moment from 'moment';
-import axios from 'axios';
-const url = 'http://127.0.0.1:3000'
+// import axios from 'axios';
+// const url = 'http://127.0.0.1:3000'
 
 export const getActivities = () => (dispatch) => {
   
@@ -39,11 +39,11 @@ export const changeCategory = (activity, oldCatName, newCatName) => {
     prod_class: newCatName
   };
 
-  const request = axios.post(url + '/api/classifications', {params: params})
+  // const request = axios.post(url + '/api/classifications', {params: params})
   return {
     type: CATEGORIZE_ACTIVITY,
     payload: {
-      request,
+      // request,
       id: activity.id,
       oldCatName,
       newCatName
