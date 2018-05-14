@@ -2,8 +2,8 @@
 const activeWin = require('active-win');
 const moment = require('moment');
 const { ipcMain } = require('electron');
-const axios = require('axios');
-const server = 'http://127.0.0.1:3000';
+// const axios = require('axios');
+// const server = 'http://127.0.0.1:3000';
 
 const monitorActivity = (activities, errors) => {
   return activeWin()
@@ -18,22 +18,22 @@ const monitorActivity = (activities, errors) => {
         return lastActivity;
       }
     })
-    .then((lastActivity) => {
-      const qs = {
-        user_name: 'brian',
-        app_name: lastActivity.app,
-        window_title: lastActivity.title
-      }
-      return axios.get(server + '/api/classifications', {params: qs})
-        .then((resp) => {
-          // console.log('classification data is', resp.data)
-          return {
-            ...lastActivity,
-            productivity: resp.data || null
-          };
-        })
-        .catch((err) => console.log(err))
-    })
+    // .then((lastActivity) => {
+    //   const qs = {
+    //     user_name: 'brian',
+    //     app_name: lastActivity.app,
+    //     window_title: lastActivity.title
+    //   }
+    //   return axios.get(server + '/api/classifications', {params: qs})
+    //     .then((resp) => {
+    //       // console.log('classification data is', resp.data)
+    //       return {
+    //         ...lastActivity,
+    //         productivity: resp.data || null
+    //       };
+    //     })
+    //     .catch((err) => console.log(err))
+    // })
     .catch((e) => {
       e.time = timestamp();
       e.description = e.message;
