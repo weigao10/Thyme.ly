@@ -2,39 +2,63 @@ import React from 'react';
 import clone from 'clone';
 import moment from 'moment';
 import momentFormat from 'moment-duration-format';
+import { DropTarget } from 'react-dnd';
 
+import { ItemTypes } from '../../constants.js'; 
 import ActivityCard from './ActivityCard.jsx';
 
 import Paper from 'material-ui/Paper';
 import Divider from 'material-ui/Divider';
 import RaisedButton from 'material-ui/RaisedButton';
 
-const ActivityGroup = ({ category, activities, changeCategory, deleteActivity, style }) =>  {
+const comparisonTarget = {
+  drop(props, monitor) {
+    console.log('comparison target props are', props);
+    console.log('dropped item is', monitor.getItem());
+    const { activity, oldCategory } = monitor.getItem();
+    const newCategory = props.category;
+    props.changeCategory(activity, oldCategory, newCategory);
+  }
+};
+
+const collect = (connect, monitor) => {
+  return {
+    connectDropTarget: connect.dropTarget(),
+    isOver: monitor.isOver()
+  };
+};
+
+const ActivityGroup = (props) =>  {
+  const { connectDropTarget, isOver, category, activities, changeCategory, deleteActivity, style } = props;
   const sortedActivities = [...activities].sort((a, b) => b.duration - a.duration);
-  return (
-    <Paper style={{width: '33%', display: 'inline-block', verticalAlign: 'top'}}>
-        <Paper style={styleMap[category]}>
-          {category[0].toUpperCase() + category.slice(1, category.length)} &nbsp;
-          <span style={
-            {
-              fontSize: "75%",
-              fontStyle: "italic"
-            }
-          }>{getTotalDuration(activities)}</span>
-        </Paper>
-        {sortedActivities.map((activity, index) => {
-          return (
-            <ActivityCard 
-              key={activity + index}
-              activity={activity}
-              index={index}
-              category={category}
-              changeCategory={changeCategory}
-              deleteActivity={deleteActivity}
-            />
-          )
-        })}
-    </Paper>  
+  return connectDropTarget(
+    <div>
+      <Paper style={styleMap[category]}>
+        <div>
+          <Paper>
+            {category[0].toUpperCase() + category.slice(1, category.length)} &nbsp;
+            <span style={
+              {
+                fontSize: "75%",
+                fontStyle: "italic"
+              }
+            }>{getTotalDuration(activities)}</span>
+          </Paper>
+          {sortedActivities.map((activity, index) => {
+            return (
+              <ActivityCard 
+                activity={activity}
+                key={index}
+                index={index}
+                category={category}
+                changeCategory={changeCategory}
+                deleteActivity={deleteActivity}
+              />
+            )
+          })}
+        </div>
+      </Paper>
+    </div>
   )
 };
 
@@ -112,4 +136,4 @@ let styleCategoryP = {
    'distracting': styleCategoryD
  };
 
- export default ActivityGroup;
+ export default DropTarget(ItemTypes.CARD, comparisonTarget, collect)(ActivityGroup);

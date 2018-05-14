@@ -2,12 +2,33 @@ import React from 'react';
 import moment from 'moment';
 import momentFormat from 'moment-duration-format';
 import clone from 'clone';
+import { DragSource } from 'react-dnd';
 
+
+import { ItemTypes } from '../../constants.js';
 import Paper from 'material-ui/Paper';
 import Divider from 'material-ui/Divider';
 import RaisedButton from 'material-ui/RaisedButton';
 
-const ActivityCard = ({ activity, category, changeCategory, deleteActivity, index }) => {
+const cardSource = {
+  beginDrag(props) {
+    return {
+      activity: props.activity,
+      oldCategory: props.category
+    };
+  }
+};
+
+const collect = (connect, monitor) => {
+  return {
+    connectDragSource: connect.dragSource(),
+    isDragging: monitor.isDragging()
+  }
+}
+
+const ActivityCard = (props) => {
+  const { activity, category, changeCategory, deleteActivity, index } = props;
+  
   let formattedDuration = moment.duration(activity.duration, "seconds").format("h[h], m[m] s[s]");
 
   let styleTick = {
@@ -35,8 +56,9 @@ const ActivityCard = ({ activity, category, changeCategory, deleteActivity, inde
   const handleClick = (e) => {
     changeCategory(activity, category, e.target.name)
   };
-
-  return (
+  const { connectDragSource, isDragging } = props;
+  return connectDragSource(
+    <div>
     <Paper
       key={activity.title + index}
       style={index % 2 === 0 ? styleTick : styleTock}
@@ -50,7 +72,8 @@ const ActivityCard = ({ activity, category, changeCategory, deleteActivity, inde
       <button name="neutral" onClick={handleClick}>neutral</button>
       <button name="distracting" onClick={handleClick}>distracting</button>
     </Paper>
+    </div>
   )
 }
 
-export default ActivityCard;
+export default DragSource(ItemTypes.CARD, cardSource, collect)(ActivityCard);
