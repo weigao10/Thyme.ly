@@ -18,13 +18,13 @@ class DashboardContainer extends React.Component {
   render() {
     const {activities, changeCategory, deleteActivity } = this.props;
     return (
-      <div>
-        <Paper style={{display: 'table', background: '#AAA', margin: '0', padding: '5px'}}>
+        <Paper style={{display: 'table', background: '#AAA', margin: '0', padding: '5px', width: '75%', minHeight: '425px', verticalAlign: 'top'}}>
           <ActivityGroup
             category='productive'
             activities={activities.productive}
             changeCategory={changeCategory}
             deleteActivity={deleteActivity}
+
           />
           <ActivityGroup
             category='neutral'
@@ -39,7 +39,6 @@ class DashboardContainer extends React.Component {
             deleteActivity={deleteActivity}
           />
         </Paper>
-      </div>
     )
   }
 };

@@ -8,7 +8,7 @@
 </head>
 <body>
   <div id="app"></div>
-  <div id="login-page"class="login-page">
+  <!-- <div id="login-page"class="login-page">
     <div class="form">
       <form class="register-form">
         <input type="text" id="reg-name" placeholder="name"/>
@@ -24,10 +24,14 @@
         <button id="google" type="button">GOOGLE OAUTH</button>
         <p class="message">Not registered? <a href="#">Create an account</a></p>
       </form>
-    </div>
+    </div> -->
   </div>
   <script>
-    require('../src/index.jsx')
+    import React from 'react';
+    import ReactDOM from 'react-dom'
+    import App from '../src/App.jsx'
+    // require('../src/index.jsx')
+    ReactDOM.render(<App />, document.getElementById('app'))
   </script>
 </body>
 </html>
