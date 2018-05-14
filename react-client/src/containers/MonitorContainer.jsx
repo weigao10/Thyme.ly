@@ -43,13 +43,11 @@ class MonitorContainer extends React.Component {
   connectMonitor() {
     this.connected = true;
     ipcRenderer.send('monitor', 'start');
-    console.log('start!')
   }
 
   pauseMonitor() {
     this.connected = false;
     ipcRenderer.send('monitor', 'pause');
-    console.log('paused')
   }
 
   toggleTimerButton() {
@@ -66,11 +64,14 @@ class MonitorContainer extends React.Component {
 
   checkState (data) {
     for (let category in this.props.activities) {
-      let activity = this.props.activities[category]
-      for (let i = 0; i < activity.length; i++) {
-        if (activity[i].title === data.title && activity[i].app === data.app) {
+      let activities = this.props.activities[category]
+      for (let i = 0; i < activities.length; i++) {
+
+        //
+
+        if (activities[i].title === data.title && activities[i].app === data.app) {
           return {
-            'activity': activity[i],
+            'activity': activities[i],
             'category': category,
             'index': i
           }
@@ -84,7 +85,7 @@ class MonitorContainer extends React.Component {
     return (
       // TODO: Make this component render a Pause/Start timer button
       <div>
-     
+    
       </div>
     )
   }
