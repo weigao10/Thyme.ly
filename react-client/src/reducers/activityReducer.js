@@ -43,7 +43,7 @@ const activities = (state = initialState, action) => {
         spurts: copySpurts
       }, activity);
       updatedActivity.spurts.push({'startTime': data.startTime, 'endTime': data.endTime})
-
+      updatedActivity.duration += getDuration(data.startTime, data.endTime)
       return {
         ...state,
         [category]: [
