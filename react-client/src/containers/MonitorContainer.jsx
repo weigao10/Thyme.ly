@@ -29,8 +29,12 @@ class MonitorContainer extends React.Component {
   componentDidMount() {
     this.connectMonitor();
     ipcRenderer.on('activity', (event, message) => {
-      // let toTrackTitle = 
-      let inState = this.checkState(message);
+      //check if in trackedApps and title and app match something in state OR
+        //update duration
+      //else if title matches something in state
+        //check if 
+      let isTracked = this.props.preferences.trackedApps.includes(message.app)
+      let inState = this.checkState(message, isTracked);
       this.props.activityHandler(message, inState);
     });
   }
@@ -63,15 +67,26 @@ class MonitorContainer extends React.Component {
     }
   }
 
-  checkState (data) {
+  checkState (data, isTracked) {
     for (let category in this.props.activities) {
       let activities = this.props.activities[category]
+
       for (let i = 0; i < activities.length; i++) {
-        if (activities[i].title === data.title && activities[i].app === data.app) {
-          return {
-            'activity': activities[i],
-            'category': category,
-            'index': i
+        if(isTracked){
+          if (activities[i].title === data.title && activities[i].app === data.app) {
+            return {
+              'activity': activities[i],
+              'category': category,
+              'index': i
+            }
+          }
+        } else{
+          if (activities[i].app === data.app) {
+            return {
+              'activity': activities[i],
+              'category': category,
+              'index': i
+            }
           }
         }
       }
@@ -90,7 +105,8 @@ class MonitorContainer extends React.Component {
 }
 
 const mapStateToProps = state => ({
-  activities: state.activities
+  activities: state.activities,
+  preferences: state.preferences
 });
 
 const mapDispatchToProps = dispatch => {
