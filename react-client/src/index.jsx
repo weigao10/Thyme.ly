@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './App.jsx';
 import $ from 'jquery';
+import config from '../../config.js'
 import {bundleId, clientId, redirectURI} from '../../config.js'
 import {parse} from 'url'
 import {remote} from 'electron'
@@ -102,6 +103,7 @@ function signInWithPopup () {
           resolve(query.code)
           //move this to google event listener
           ReactDOM.render((<App />), document.getElementById('app'))
+          document.getElementById('login-page').innerHTML = ''
         }
       }
     }
