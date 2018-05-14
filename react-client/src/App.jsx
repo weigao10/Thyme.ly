@@ -1,6 +1,8 @@
 import { Provider } from 'react-redux'
 import React from 'react';
-import store from './store'
+import store from './store';
+import { DragDropContext } from 'react-dnd';
+import HTML5Backend from 'react-dnd-html5-backend';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import SwipeableViews from 'react-swipeable-views';
 
@@ -69,4 +71,4 @@ class App extends React.Component {
   }
 }
 
-export default App;
+export default DragDropContext(HTML5Backend)(App);
