@@ -75,6 +75,7 @@
     "axios": "^0.18.0",
     "body-parser": "^1.18.2",
     "c3": "^0.5.4",
+    "classificator": "^0.2.3",
     "clone": "^2.1.1",
     "d3": "^5.1.0",
     "electron-compile": "^6.4.2",
