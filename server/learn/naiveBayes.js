@@ -25,7 +25,7 @@ const runClassifier = async () => {
   }
 }
 
-runClassifier();
+// runClassifier();
 
 // getBrowserActivities()
 //   .then((activities) => {
