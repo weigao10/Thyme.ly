@@ -12,32 +12,29 @@ import RaisedButton from 'material-ui/RaisedButton';
 const ActivityGroup = ({ category, activities, changeCategory, deleteActivity, style }) =>  {
   const sortedActivities = [...activities].sort((a, b) => b.duration - a.duration);
   return (
-    <div>
-      <Paper style={styleMap[category]}>
-        <div>
-          <Paper>
-            {category[0].toUpperCase() + category.slice(1, category.length)} &nbsp;
-            <span style={
-              {
-                fontSize: "75%",
-                fontStyle: "italic"
-              }
-            }>{getTotalDuration(activities)}</span>
-          </Paper>
-          {sortedActivities.map((activity, index) => {
-            return (
-              <ActivityCard 
-                activity={activity}
-                index={index}
-                category={category}
-                changeCategory={changeCategory}
-                deleteActivity={deleteActivity}
-              />
-            )
-          })}
-        </div>
-      </Paper>
-    </div>
+    <Paper style={{width: '33%', display: 'inline-block', verticalAlign: 'top'}}>
+        <Paper style={styleMap[category]}>
+          {category[0].toUpperCase() + category.slice(1, category.length)} &nbsp;
+          <span style={
+            {
+              fontSize: "75%",
+              fontStyle: "italic"
+            }
+          }>{getTotalDuration(activities)}</span>
+        </Paper>
+        {sortedActivities.map((activity, index) => {
+          return (
+            <ActivityCard 
+              key={activity + index}
+              activity={activity}
+              index={index}
+              category={category}
+              changeCategory={changeCategory}
+              deleteActivity={deleteActivity}
+            />
+          )
+        })}
+    </Paper>  
   )
 };
 
@@ -59,7 +56,7 @@ let styleCategoryP = {
   fontWeight: 'bolder',
   fontSize: '115%',
   onMouseOver: '#FFF',
-  borderRadius: '15px 15px 0px 0px'
+  borderRadius: '15px 15px 0px 0px',
  };
  
  let styleCategoryN = {
@@ -70,7 +67,8 @@ let styleCategoryP = {
   color: 'white',
   fontWeight: 'bolder',
   fontSize: '115%',
-  onMouseOver: '#FFF'
+  onMouseOver: '#FFF',
+  borderRadius: '15px 15px 0px 0px',
  };
  
  let styleCategoryD = {
@@ -81,7 +79,8 @@ let styleCategoryP = {
   color: 'white',
   fontWeight: 'bolder',
   fontSize: '115%',
-  onMouseOver: '#FFF'
+  onMouseOver: '#FFF',
+  borderRadius: '15px 15px 0px 0px',
  };
  
  const style = {
