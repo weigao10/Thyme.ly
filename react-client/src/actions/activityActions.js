@@ -40,6 +40,7 @@ export const changeCategory = (activity, oldCatName, newCatName) => {
   };
 
   const request = axios.post(url + '/api/classifications', {params: params})
+  
   return {
     type: CATEGORIZE_ACTIVITY,
     payload: {
@@ -50,3 +51,4 @@ export const changeCategory = (activity, oldCatName, newCatName) => {
     }
   }
 }
+
