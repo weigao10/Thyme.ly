@@ -9,7 +9,7 @@ import Paper from 'material-ui/Paper';
 import Divider from 'material-ui/Divider';
 import RaisedButton from 'material-ui/RaisedButton';
 
-const ActivityGroup = ({ category, activities, changeCategory, deleteActivity, style }) =>  {
+const ActivityGroup = ({ category, activities, changeCategory, deleteActivity, style, preferences }) =>  {
   const sortedActivities = [...activities].sort((a, b) => b.duration - a.duration);
   return (
     <Paper style={{width: '33%', display: 'inline-block', verticalAlign: 'top'}}>
@@ -31,6 +31,7 @@ const ActivityGroup = ({ category, activities, changeCategory, deleteActivity, s
               category={category}
               changeCategory={changeCategory}
               deleteActivity={deleteActivity}
+              preferences={preferences}
             />
           )
         })}

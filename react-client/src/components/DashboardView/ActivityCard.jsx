@@ -7,7 +7,7 @@ import Paper from 'material-ui/Paper';
 import Divider from 'material-ui/Divider';
 import RaisedButton from 'material-ui/RaisedButton';
 
-const ActivityCard = ({ activity, category, changeCategory, deleteActivity, index }) => {
+const ActivityCard = ({ activity, category, changeCategory, deleteActivity, index, preferences }) => {
   let formattedDuration = moment.duration(activity.duration, "seconds").format("h[h], m[m] s[s]");
 
   let styleTick = {
@@ -36,21 +36,40 @@ const ActivityCard = ({ activity, category, changeCategory, deleteActivity, inde
     changeCategory(activity, category, e.target.name)
   };
 
-  return (
-    <Paper
-      key={activity.title + index}
-      style={index % 2 === 0 ? styleTick : styleTock}
-    >
-      <b>{activity.app}</b> <br/>
-      {activity.title} <br/>
-      <i>{formattedDuration}</i>
-      <strong onClick={() => {deleteActivity(activity.id, category)}}>&nbsp;-delete-</strong> <br/>
-      <br/>
-      <button name="productive" onClick={handleClick}>productive</button>
-      <button name="neutral" onClick={handleClick}>neutral</button>
-      <button name="distracting" onClick={handleClick}>distracting</button>
-    </Paper>
-  )
+  console.log('in act card', preferences.trackedApps)
+
+  if(preferences.trackedApps.includes(activity.app)){
+    return (
+      <Paper
+        key={activity.title + index}
+        style={index % 2 === 0 ? styleTick : styleTock}
+      >
+        <b>{activity.app}</b> <br/>
+        {activity.title} <br/>
+        <i>{formattedDuration}</i>
+        <strong onClick={() => {deleteActivity(activity.id, category)}}>&nbsp;-delete-</strong> <br/>
+        <br/>
+        <button name="productive" onClick={handleClick}>productive</button>
+        <button name="neutral" onClick={handleClick}>neutral</button>
+        <button name="distracting" onClick={handleClick}>distracting</button>
+      </Paper>
+    )
+  } else {
+    return (
+      <Paper
+        key={activity.title + index}
+        style={index % 2 === 0 ? styleTick : styleTock}
+      >
+        <b>{activity.app}</b> <br/>
+        <i>{formattedDuration}</i>
+        <strong onClick={() => {deleteActivity(activity.id, category)}}>&nbsp;-delete-</strong> <br/>
+        <br/>
+        <button name="productive" onClick={handleClick}>productive</button>
+        <button name="neutral" onClick={handleClick}>neutral</button>
+        <button name="distracting" onClick={handleClick}>distracting</button>
+      </Paper>
+    )
+  }  
 }
 
 export default ActivityCard;

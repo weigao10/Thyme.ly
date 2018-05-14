@@ -16,7 +16,8 @@ class DashboardContainer extends React.Component {
   }
   
   render() {
-    const {activities, changeCategory, deleteActivity } = this.props;
+    const {activities, changeCategory, deleteActivity, preferences } = this.props;
+    console.log('in dashboard track apps', preferences)
     return (
         <Paper style={{display: 'table', background: '#AAA', margin: '0', padding: '5px', width: '75%', minHeight: '425px', verticalAlign: 'top'}}>
           <ActivityGroup
@@ -24,6 +25,7 @@ class DashboardContainer extends React.Component {
             activities={activities.productive}
             changeCategory={changeCategory}
             deleteActivity={deleteActivity}
+            preferences={preferences}
 
           />
           <ActivityGroup
@@ -31,20 +33,23 @@ class DashboardContainer extends React.Component {
             activities={activities.neutral}
             changeCategory={changeCategory}
             deleteActivity={deleteActivity}
+            preferences={preferences}
           />
           <ActivityGroup
             category='distracting'
             activities={activities.distracting}
             changeCategory={changeCategory}
             deleteActivity={deleteActivity}
+            preferences={preferences}
           />
         </Paper>
     )
   }
 };
 
-const mapStateToProps = state => ({
-  activities: state.activities
+const mapStateToProps = (state) => ({
+  activities: state.activities,
+  preferences: state.preferences
 });
 
 const mapDispatchToProps = (dispatch) => {

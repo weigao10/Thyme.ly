@@ -29,7 +29,8 @@ class MonitorContainer extends React.Component {
   componentDidMount() {
     this.connectMonitor();
     ipcRenderer.on('activity', (event, message) => {
-      const inState = this.checkState(message);
+      // let toTrackTitle = 
+      let inState = this.checkState(message);
       this.props.activityHandler(message, inState);
     });
   }
@@ -66,9 +67,6 @@ class MonitorContainer extends React.Component {
     for (let category in this.props.activities) {
       let activities = this.props.activities[category]
       for (let i = 0; i < activities.length; i++) {
-
-        //
-
         if (activities[i].title === data.title && activities[i].app === data.app) {
           return {
             'activity': activities[i],
