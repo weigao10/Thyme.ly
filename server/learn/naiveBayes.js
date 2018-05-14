@@ -9,9 +9,10 @@ const { getBrowserActivities } = require('../database/index.js');
 
 //TODO: save classifier into DB so it can be "revived" each time
 const initClassifier = (activities) => {
-  activities.forEach(({window_title, prod_class}) => {
-    classifier.learn(window_title, prod_class);
-  });
+  activities.filter(({ app_name }) => app_name !== 'neutral')
+            .forEach(({window_title, prod_class}) => {
+              classifier.learn(window_title, prod_class);
+            });
 };
 
 getBrowserActivities()
