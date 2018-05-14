@@ -30,10 +30,9 @@ const ActivityGroup = (props) =>  {
   const { connectDropTarget, isOver, category, activities, changeCategory, deleteActivity, style } = props;
   const sortedActivities = [...activities].sort((a, b) => b.duration - a.duration);
   return connectDropTarget(
-    <div>
-      <Paper style={styleMap[category]}>
-        <div>
-          <Paper>
+    <div style={{width: '33%', height: '100%', display: 'inline-block', verticalAlign: 'top'}}>
+      <Paper >
+          <Paper style={styleMap[category]}>
             {category[0].toUpperCase() + category.slice(1, category.length)} &nbsp;
             <span style={
               {
@@ -45,17 +44,17 @@ const ActivityGroup = (props) =>  {
           {sortedActivities.map((activity, index) => {
             return (
               <ActivityCard 
+                key={activity + index}
                 activity={activity}
-                key={index}
                 index={index}
                 category={category}
+                changeCategory={changeCategory}
                 deleteActivity={deleteActivity}
               />
             )
           })}
-        </div>
       </Paper>
-    </div>
+    </div>  
   )
 };
 
