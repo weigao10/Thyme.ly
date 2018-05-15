@@ -3,6 +3,16 @@ const path = require('path');
 const bodyParser = require('body-parser');
 const app = express();
 const port = process.env.PORT || 3000;
+const admin = (require('firebase-admin'));
+const serviceAccount = require('../firebaseConfig.json');
+
+console.log('serviceAccount is', serviceAccount)
+
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount),
+  databaseURL: "https://thymely-cd776.firebaseio.com"
+});
+
 const db = require('./database/index.js');
 const naiveBayes = require('./learn/naiveBayes.js');
 
@@ -28,7 +38,14 @@ app.post('/api/classifications', (req, res) => {
     .catch(err => console.log(err))
 });
 
+app.post('/login', (req, res) => {
+  console.log('receiving login request!');
+  console.log('req body is', req)
+  res.send('ok')
+})
+
 let server = app.listen(port, () => {
   console.log(`listening on port ${port}`);
 });
+
 
