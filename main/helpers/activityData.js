@@ -13,7 +13,6 @@ const monitorActivity = (activities, errors) => {
       if (needToInitializeChunk(lastActivity)) activities.push(newActivity);
       else if (chunkComplete(lastActivity, newActivity)) {
         lastActivity.endTime = timestamp();
-        // console.log('lastActivity is', lastActivity)
         activities.push(newActivity);
         return lastActivity;
       }
@@ -26,7 +25,6 @@ const monitorActivity = (activities, errors) => {
       }
       return axios.get(server + '/api/classifications', {params: qs})
         .then((resp) => {
-          // console.log('classification data is', resp.data)
           return {
             ...lastActivity,
             productivity: resp.data || null
@@ -68,7 +66,6 @@ const startMonitor = (mainWindow, activities = [], errors = []) => {
     monitorActivity(activities, errors)
       .then((data) => {
         if (data) {
-          console.log(data);
           mainWindow.sender.webContents.send('activity', data)
         }
       })
@@ -82,10 +79,8 @@ exports.monitor = (mainWindow) => {
   let errors = [];
   ipcMain.on('monitor', (mainWindow, event, message) => {
     if (event === 'start') {
-      // console.log('main is trying to start monitor')
       intervalId = startMonitor(mainWindow, activities, errors);
     } else if (event === 'pause' && intervalId) {
-      // console.log('main is trying to clear monitor')
       clearInterval(intervalId);
       intervalId = false;
     } else {
