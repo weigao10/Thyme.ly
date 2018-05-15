@@ -65,7 +65,7 @@ const ActivityGroup = props => {
         {sortedActivities.map((activity, index) => {
           return (
             <ActivityCard
-              key={activity + index}
+              key={activity + index + Math.random() * 10}
               activity={activity}
               index={index}
               category={category}
