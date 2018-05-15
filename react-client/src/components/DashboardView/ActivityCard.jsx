@@ -27,7 +27,7 @@ const collect = (connect, monitor) => {
 }
 
 const ActivityCard = (props) => {
-  const { activity, category, deleteActivity, index } = props;
+  const { activity, category, deleteActivity, index, preferences } = props;
   
   let formattedDuration = moment.duration(activity.duration, "seconds").format("h[h], m[m] s[s]");
 
@@ -53,20 +53,34 @@ const ActivityCard = (props) => {
     fontSize: '80%',
   };
   const { connectDragSource, isDragging } = props;
-  return connectDragSource(
-    <div>
-    <Paper
-      key={activity.title + index}
-      style={index % 2 === 0 ? styleTick : styleTock}
-    >
-      <b>{activity.app}</b> <br/>
-      {activity.title} <br/>
-      <i>{formattedDuration}</i>
-      <br/>
-      <button onClick={() => {deleteActivity(activity.id, category)}}>delete</button>
-    </Paper>
-    </div>
-  )
+
+  if(preferences.trackedApps.includes(activity.app)){
+    return connectDragSource(
+      <div><Paper
+        key={activity.title + index}
+        style={index % 2 === 0 ? styleTick : styleTock}
+      >
+        <b>{activity.app}</b> <br/>
+        {activity.title} <br/>
+        <i>{formattedDuration}</i>
+        <br/>
+        <button onClick={() => {deleteActivity(activity.id, category)}}>delete</button>
+      </Paper></div>
+    )
+  } else {
+    return connectDragSource(
+      <div><Paper
+        key={activity.title + index}
+        style={index % 2 === 0 ? styleTick : styleTock}
+      >
+        <b>{activity.app}</b> <br/>
+        {/* don't display title if not in trackedApps */}
+        <i>{formattedDuration}</i>
+        <br/>
+        <button onClick={() => {deleteActivity(activity.id, category)}}>delete</button>
+      </Paper></div>
+    )
+  }  
 }
 
 export default DragSource(ItemTypes.CARD, cardSource, collect)(ActivityCard);

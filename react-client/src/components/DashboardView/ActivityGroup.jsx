@@ -27,7 +27,7 @@ const collect = (connect, monitor) => {
 };
 
 const ActivityGroup = (props) =>  {
-  const { connectDropTarget, isOver, category, activities, changeCategory, deleteActivity, style } = props;
+  const { connectDropTarget, isOver, category, activities, changeCategory, deleteActivity, style, preferences } = props;
   const sortedActivities = [...activities].sort((a, b) => b.duration - a.duration);
   return connectDropTarget(
     <div style={{width: '33%', height: '100%', display: 'inline-block', verticalAlign: 'top'}}>
@@ -50,6 +50,7 @@ const ActivityGroup = (props) =>  {
                 category={category}
                 changeCategory={changeCategory}
                 deleteActivity={deleteActivity}
+                preferences={preferences}
               />
             )
           })}
