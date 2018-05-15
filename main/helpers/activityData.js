@@ -19,7 +19,7 @@ const monitorActivity = (activities, errors) => {
     })
     .then((lastActivity) => {
       const qs = {
-        user_name: 'brian',
+        user_name: 'brian', //CHANGE TO USERNAME
         app_name: lastActivity.app,
         window_title: lastActivity.title
       }
@@ -44,13 +44,23 @@ const timestamp = () => {
 };
 
 const assembleActivity = (activeWinObj) => {
+  const title = stripEmoji(activeWinObj.title); // filter out the sound playing emoji
   return {
     id: activeWinObj.id,
     app: activeWinObj.owner.name,
-    title: activeWinObj.title,
+    title, 
     startTime: timestamp()
   };
 };
+
+const stripEmoji = (title) => {
+  // return title;
+  const indexOfEmoji = title.indexOf('🔊'); //indicates a window is playing sound
+  if (indexOfEmoji > -1) {
+    const noEmoji = title.replace('🔊', '');
+    return noEmoji.substring(0, noEmoji.length - 1);
+ } else return title;
+}
 
 const needToInitializeChunk = (lastActivity) => {
   return !lastActivity;
