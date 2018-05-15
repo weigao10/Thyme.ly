@@ -1,5 +1,5 @@
-import { connect } from 'react-redux';
 import React from 'react';
+import { connect } from 'react-redux';
 import { ipcRenderer } from 'electron';
 import axios from 'axios';
 
@@ -29,10 +29,6 @@ class MonitorContainer extends React.Component {
   componentDidMount() {
     this.connectMonitor();
     ipcRenderer.on('activity', (event, message) => {
-      //check if in trackedApps and title and app match something in state OR
-        //update duration
-      //else if title matches something in state
-        //check if 
       let isTracked = this.props.preferences.trackedApps.includes(message.app)
       let inState = this.checkState(message, isTracked);
       this.props.activityHandler(message, inState);
