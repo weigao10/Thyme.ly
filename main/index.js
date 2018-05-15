@@ -4,7 +4,8 @@ const windowStateKeeper = require('electron-window-state')
 const electron = require('electron')
 const { app, BrowserWindow, ipcMain, Menu, Tray, nativeImage } = electron;
 
-const {monitor} = require('../main/helpers/activityData.js');
+const { insertActivities } = require('../server/database/sqlite.js')
+const { monitor } = require('../main/helpers/activityData.js');
 
 let mainWindow, addWindow, tray, splash;
 let force_quit = false;
@@ -73,9 +74,15 @@ const createWindow = () => {
   app.once('before-quit', function() {
 
     mainWindow.send("windowClose", "close")
-    ipcMain.once("store", (event, result) => {
-      console.log('in index.js', result)
-      //save result to sqlite3 somehow
+    ipcMain.once("store", (event, data) => {
+      let { activities, preferences } = JSON.parse(data)
+      console.log('activities?', activities)
+      for(let category in activities){
+        if(category !== 'nextId'){
+          activities[category].forEach((el) => insertActivities(el))
+        }
+      }
+      //also should store preferences
     })
     force_quit = true;
     app.quit()

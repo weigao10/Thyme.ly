@@ -2,6 +2,7 @@ import { connect } from 'react-redux';
 import ReactDOM from 'react-dom';
 import React from 'react';
 import axios from 'axios';
+import { ipcRenderer } from 'electron';
 
 import { changeCategory, deleteActivity } from '../actions/activityActions'
 // import ProductivityScore from './ProductivityScore.jsx';
@@ -15,12 +16,12 @@ class DashboardContainer extends React.Component {
   }
   
   componentDidMount() {
-    ipcRenderer.on('dbStoreInfo', (event, store) => {
+    // ipcRenderer.on('dbStoreInfo', (event, store) => {
       
       //iterate through keys of store
         //map over store[category]
         //addActivity(store[category][i], false)
-    })
+    // })
   }
 
 

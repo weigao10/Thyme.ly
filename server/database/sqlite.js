@@ -14,11 +14,11 @@ export function createTable() {
   // db.run("CREATE TABLE IF NOT EXISTS spurts (id INT, category TEXT, app TEXT, title TEXT, startTime TEXT, endTime TEXT)")
 }
 
-export function insertActivities({id, category, app, title, duration}) {
+export function insertActivities({id, productivity, app, title, duration}) {
   console.log("insertRows")
 
   db.run(`INSERT INTO activities(id, category, app, title, duration) VALUES(?, ?, ?, ?, ?)`, 
-  [id, category, app, title, duration], 
+  [id, productivity, app, title, duration], 
   (err) => {
     if (err) return console.log(err.message);
     console.log(`A row has been inserted with rowid ${this.lastID}`);
