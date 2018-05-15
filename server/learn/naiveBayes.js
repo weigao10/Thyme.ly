@@ -9,20 +9,32 @@ const { getBrowserActivities } = require('../database/index.js');
 
 //TODO: save classifier into DB so it can be "revived" each time
 const initClassifier = (activities) => {
-  activities.filter(({ app_name }) => app_name !== 'neutral')
+  activities.filter(({ window_title }) => window_title !== 'neutral')
             .forEach(({window_title, prod_class}) => {
               classifier.learn(window_title, prod_class);
             });
 };
 
-getBrowserActivities()
-  .then((activities) => {
+const runClassifier = async () => {
+  const activities = await getBrowserActivities();
+  try {
     initClassifier(activities);
     console.log('classifier initialized!');
-  })
-  .catch((err) => {
-    console.error('error in trying to run naive-bayes', err)
-  });
+  } catch(e) {
+    console.error('error in trying to run naive-bayes', e)
+  }
+}
+
+runClassifier();
+
+// getBrowserActivities()
+//   .then((activities) => {
+//     initClassifier(activities);
+//     console.log('classifier initialized!');
+//   })
+//   .catch((err) => {
+//     console.error('error in trying to run naive-bayes', err)
+//   });
 
   // learn either periodically using a cron or on every new user categorization
     // if latter, need to also recognize recategorizations and deletes
