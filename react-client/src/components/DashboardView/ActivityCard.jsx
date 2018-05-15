@@ -64,7 +64,7 @@ const ActivityCard = (props) => {
         {activity.title} <br/>
         <i>{formattedDuration}</i>
         <br/>
-        <button onClick={() => {deleteActivity(activity.id, category)}}>delete</button>
+        <button onClick={() => {deleteActivity(activity, category, true)}}>delete</button>
       </Paper></div>
     )
   } else {
@@ -77,7 +77,7 @@ const ActivityCard = (props) => {
         {/* don't display title if not in trackedApps */}
         <i>{formattedDuration}</i>
         <br/>
-        <button onClick={() => {deleteActivity(activity.id, category)}}>delete</button>
+        <button onClick={() => {deleteActivity(activity, category, false)}}>delete</button>
       </Paper></div>
     )
   }  

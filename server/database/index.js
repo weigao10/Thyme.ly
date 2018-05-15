@@ -64,7 +64,23 @@ const addOrChangeProductivity = (query) => {
     .catch(err => console.log('error checking for productivity!'))
 };
 
-//ADD DELETE FUNCTIONALITY FOR USER
+const deleteProductivityClass = ({user_name, app_name, window_title, prod_class, isTracked}) => {
+
+  let queryStr;
+
+  if (isTracked) {
+    queryStr = `DELETE FROM public.categories WHERE user_name='${user_name}' AND app_name='${app_name}' AND window_title='${window_title}'`;
+  } else {
+    queryStr = `DELETE FROM public.categories WHERE user_name='${user_name}' AND app_name='${app_name}'`;
+  }
+
+  //values are still included here, but not used, in case we need them in the future
+  const values = [user_name, app_name, window_title, prod_class, isTracked];
+
+  console.log('values to delete are', values);
+  return pool.query(queryStr)
+    .catch(err => console.error('error in deleting prod-class', err));
+}
 
 const addProductivityClass = ({user_name, app_name, window_title, prod_class}) => {
   const queryStr = `INSERT INTO public.categories(user_name, app_name, window_title, prod_class)\
@@ -223,6 +239,7 @@ const insertError = () => {
 
 exports.getActivities = getActivities;
 exports.getProductivityClass = getProductivityClass;
+exports.deleteProductivityClass = deleteProductivityClass;
 exports.addOrChangeProductivity = addOrChangeProductivity;
 exports.getBrowserActivities = getBrowserActivities;
 // insertActivity();
