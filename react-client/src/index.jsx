@@ -9,6 +9,8 @@ import {remote} from 'electron'
 import axios from 'axios'
 import qs from 'qs'
 
+const SERVER_URL = 'http://127.0.0.1:3000';
+
 $('.message a').click(function(){
   $('form').animate({height: "toggle", opacity: "toggle"}, "slow");
 });
@@ -53,11 +55,17 @@ loginButton.addEventListener('click', () => {
   })
   .then((user) => {
     return user.user.getIdToken().then(idToken => {
-      console.log('id token is', idToken)
+      // console.log('id token is', idToken)
+      // const csrfToken = document.getCookie('csrfToken');
+      // console.log('csrf token is', csrfToken)
+      return axios.post(SERVER_URL + '/login', idToken)
+        .then(resp => console.log('resp from login attempt is', resp))
+        .catch(err => console.error('error in trying to post login is', err))
     })
   })
   .catch((err) => {
-    alert('Username/password combination do not match.')
+    console.error(err);
+    // alert('Username/password combination do not match.')
     //clear form
   })
 })
