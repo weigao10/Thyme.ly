@@ -56,8 +56,9 @@ const mapDispatchToProps = (dispatch) => {
     changeCategory: (activity, oldCat, newCat) => {
       if (oldCat !== newCat) dispatch(changeCategory(activity, oldCat, newCat));
     },
-    deleteActivity: (id, category) => {
-      dispatch(deleteActivity(id, category));
+    deleteActivity: (activity, category, isTracked) => {
+      console.log('dispatching deleteActivity and isTracked is:', isTracked)
+      dispatch(deleteActivity(activity, category, isTracked));
     }
   };
 };
