@@ -2,7 +2,7 @@ const url = require('url');
 const path = require('path');
 const windowStateKeeper = require('electron-window-state')
 const electron = require('electron')
-const { app, BrowserWindow, Menu, ipcMain, Tray, nativeImage } = electron;
+const { app, BrowserWindow, Menu, ipcMain, Tray, nativeImage, session } = electron;
 
 const {monitor} = require('../main/helpers/activityData.js');
 
@@ -70,7 +70,15 @@ app.on('ready', () => {
   createTray();  
   electron.powerMonitor.on('suspend', () => console.log('system going to sleep'));
   electron.powerMonitor.on('resume', () => console.log('system waking from sleep'));
-}) 
+});
+
+app.on('quit', () => {
+  session.defaultSession.cookies.get({}, (error, cookies) => {
+    console.log('err getting cookies', error);
+    console.log('cookies are', cookies);
+  })
+  console.log('APP QUIT!')
+})
 
 const mainMenuTemplate = [
   //if mac, need an empty object here
@@ -110,12 +118,12 @@ const mainMenuTemplate = [
   }
 ]
 
-if(process.platform === 'darwin'){
+if (process.platform === 'darwin'){
   mainMenuTemplate.unshift({});
 }
 
 //devtools
-if(process.env.NODE_ENV !== 'production'){
+if (process.env.NODE_ENV !== 'production'){
   mainMenuTemplate.push({
     label: 'Developer Tools',
     submenu: [
