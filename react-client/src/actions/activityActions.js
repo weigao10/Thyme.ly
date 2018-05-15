@@ -11,7 +11,22 @@ export const addActivity = (data) => {
   }
 }
 
-export const deleteActivity = (id, category) => {
+export const deleteActivity = (activity, category, isTracked) => {
+
+  console.log('deleting this activity card isTracked is:', isTracked);
+  let id = activity.id;
+
+  const params = {
+    user_name: 'brian',
+    app_name: activity.app,
+    window_title: activity.title,
+    prod_class: category,
+    isTracked: isTracked
+  }
+
+  console.log('params are', params)
+
+  const request = axios.post(url + '/api/deleteCard', {params: params});
   return {
     type: DELETE_ACTIVITY,
     payload: {id, category}
@@ -35,7 +50,7 @@ export const changeCategory = (activity, oldCatName, newCatName) => {
     prod_class: newCatName
   };
 
-  const request = axios.post(url + '/api/classifications', {params: params})
+  const request = axios.post(url + '/api/classifications', {params: params});
   
   return {
     type: CATEGORIZE_ACTIVITY,
