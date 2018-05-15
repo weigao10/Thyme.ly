@@ -2,7 +2,7 @@ const url = require('url');
 const path = require('path');
 const windowStateKeeper = require('electron-window-state')
 const electron = require('electron')
-const { app, BrowserWindow, Menu, Tray, nativeImage } = electron;
+const { app, BrowserWindow, ipcMain, Menu, Tray, nativeImage } = electron;
 
 const {monitor} = require('../main/helpers/activityData.js');
 
@@ -55,6 +55,10 @@ const createWindow = () => {
   }))
 
   mainWindow.once('ready-to-show', () => {
+  //   knex.select("all").from("all")
+  //   .then((data) => {
+  //     mainWindow.webContents.send("dbStoreInfo", data)
+  //   })
     splash.destroy();
     mainWindow.show();
   })
@@ -66,8 +70,13 @@ const createWindow = () => {
     }
   });
 
-  app.on('before-quit', function() {
-    //save to fs
+  app.once('before-quit', function() {
+
+    mainWindow.send("windowClose", "close")
+    ipcMain.once("store", (event, result) => {
+      console.log('in index.js', result)
+      //save result to sqlite3 somehow
+    })
     force_quit = true;
     app.quit()
   });

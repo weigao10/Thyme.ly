@@ -28,11 +28,20 @@ class MonitorContainer extends React.Component {
 
   componentDidMount() {
     this.connectMonitor();
+
     ipcRenderer.on('activity', (event, message) => {
       let isTracked = this.props.preferences.trackedApps.includes(message.app)
       let inState = this.checkState(message, isTracked);
       this.props.activityHandler(message, inState);
     });
+    
+    ipcRenderer.once("windowClose", (event, message) => {
+      let store = JSON.stringify({
+        activities: this.props.activities,
+        preferences: this.props.preferences
+      })
+      event.sender.send("store", store)
+    })
   }
 
   handleChange = (value) => {

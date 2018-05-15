@@ -1,7 +1,6 @@
 import { connect } from 'react-redux';
 import ReactDOM from 'react-dom';
 import React from 'react';
-import { ipcRenderer } from 'electron';
 import axios from 'axios';
 
 import { changeCategory, deleteActivity } from '../actions/activityActions'
@@ -15,6 +14,16 @@ class DashboardContainer extends React.Component {
     super(props);
   }
   
+  componentDidMount() {
+    ipcRenderer.on('dbStoreInfo', (event, store) => {
+      
+      //iterate through keys of store
+        //map over store[category]
+        //addActivity(store[category][i], false)
+    })
+  }
+
+
   render() {
     const {activities, changeCategory, deleteActivity, preferences } = this.props;
     return (
@@ -58,6 +67,9 @@ const mapDispatchToProps = (dispatch) => {
     },
     deleteActivity: (id, category) => {
       dispatch(deleteActivity(id, category));
+    }, 
+    addActivity: (data) => {
+      dispatch(addActivity(data));
     }
   };
 };

@@ -7,7 +7,9 @@
     "start": "electron .",
     "react-dev": "webpack -d --watch",
     "react-build": "webpack --mode production",
-    "server-dev": "nodemon server/index.js"
+    "server-dev": "nodemon server/index.js",
+    "rebuild": "electron-rebuild -f -w -sqlite3",
+    "postinstall": "install-app-deps"
   },
   "repository": {
     "type": "git",
@@ -69,7 +71,8 @@
     "devtron": "^1.4.0",
     "electron": "^2.0.0",
     "electron-forge": "^5.2.2",
-    "electron-prebuilt-compile": "2.0.0"
+    "electron-prebuilt-compile": "2.0.0",
+    "electron-rebuild": "^1.7.3"
   },
   "dependencies": {
     "active-win": "^3.0.0",
@@ -86,6 +89,7 @@
     "fs": "0.0.1-security",
     "graceful-fs": "^4.1.11",
     "jquery": "^3.3.1",
+    "knex": "^0.14.6",
     "material-ui": "^0.20.0",
     "moment": "^2.22.1",
     "moment-duration-format": "^2.2.2",
@@ -99,6 +103,7 @@
     "react-swipeable-views": "^0.12.13",
     "redux": "^4.0.0",
     "redux-promise": "^0.5.3",
-    "redux-thunk": "^2.2.0"
+    "redux-thunk": "^2.2.0",
+    "sqlite3": "^4.0.0"
   }
 }

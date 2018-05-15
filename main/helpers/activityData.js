@@ -1,7 +1,7 @@
 //file to get sample data chunks
 const activeWin = require('active-win');
 const moment = require('moment');
-const { ipcMain } = require('electron');
+const { ipcMain, webContents } = require('electron');
 const axios = require('axios');
 const server = 'http://127.0.0.1:3000';
 
