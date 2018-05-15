@@ -15,14 +15,26 @@ const initClassifier = (activities) => {
             });
 };
 
-getBrowserActivities()
-  .then((activities) => {
+const runClassifier = async () => {
+  const activities = await getBrowserActivities();
+  try {
     initClassifier(activities);
     console.log('classifier initialized!');
-  })
-  .catch((err) => {
-    console.error('error in trying to run naive-bayes', err)
-  });
+  } catch(e) {
+    console.error('error in trying to run naive-bayes', e)
+  }
+}
+
+runClassifier();
+
+// getBrowserActivities()
+//   .then((activities) => {
+//     initClassifier(activities);
+//     console.log('classifier initialized!');
+//   })
+//   .catch((err) => {
+//     console.error('error in trying to run naive-bayes', err)
+//   });
 
   // learn either periodically using a cron or on every new user categorization
     // if latter, need to also recognize recategorizations and deletes
