@@ -5,6 +5,7 @@
   "main": "main/index.js",
   "scripts": {
     "start": "electron .",
+    "dev": "nodemon server/index.js && electron .",
     "react-dev": "webpack -d --watch",
     "react-build": "webpack --mode production",
     "server-dev": "nodemon server/index.js"
