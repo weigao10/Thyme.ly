@@ -20,7 +20,7 @@ CREATE TABLE activities(
   window_title VARCHAR,
   category VARCHAR,
   prod_class VARCHAR,
-  url VARCHAR,
+  url VARCHAR
 );
 
 CREATE TABLE categories(
