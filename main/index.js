@@ -1,9 +1,10 @@
-const windowStateKeeper = require('electron-window-state')
-const {monitor} = require('../main/helpers/activityData.js');
 const url = require('url');
 const path = require('path');
+const windowStateKeeper = require('electron-window-state')
 const electron = require('electron')
 const { app, BrowserWindow, Menu, ipcMain, Tray, nativeImage } = electron;
+
+const {monitor} = require('../main/helpers/activityData.js');
 
 let mainWindow, addWindow, tray, splash;
 
