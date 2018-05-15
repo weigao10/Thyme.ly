@@ -29,7 +29,12 @@ class MonitorContainer extends React.Component {
   componentDidMount() {
     this.connectMonitor();
     ipcRenderer.on('activity', (event, message) => {
-      const inState = this.checkState(message);
+      //check if in trackedApps and title and app match something in state OR
+        //update duration
+      //else if title matches something in state
+        //check if 
+      let isTracked = this.props.preferences.trackedApps.includes(message.app)
+      let inState = this.checkState(message, isTracked);
       this.props.activityHandler(message, inState);
     });
   }
@@ -43,13 +48,11 @@ class MonitorContainer extends React.Component {
   connectMonitor() {
     this.connected = true;
     ipcRenderer.send('monitor', 'start');
-    console.log('start!')
   }
 
   pauseMonitor() {
     this.connected = false;
     ipcRenderer.send('monitor', 'pause');
-    console.log('paused')
   }
 
   toggleTimerButton() {
@@ -64,15 +67,26 @@ class MonitorContainer extends React.Component {
     }
   }
 
-  checkState (data) {
+  checkState (data, isTracked) {
     for (let category in this.props.activities) {
-      let activity = this.props.activities[category]
-      for (let i = 0; i < activity.length; i++) {
-        if (activity[i].title === data.title && activity[i].app === data.app) {
-          return {
-            'activity': activity[i],
-            'category': category,
-            'index': i
+      let activities = this.props.activities[category]
+
+      for (let i = 0; i < activities.length; i++) {
+        if(isTracked){
+          if (activities[i].title === data.title && activities[i].app === data.app) {
+            return {
+              'activity': activities[i],
+              'category': category,
+              'index': i
+            }
+          }
+        } else{
+          if (activities[i].app === data.app) {
+            return {
+              'activity': activities[i],
+              'category': category,
+              'index': i
+            }
           }
         }
       }
@@ -84,14 +98,15 @@ class MonitorContainer extends React.Component {
     return (
       // TODO: Make this component render a Pause/Start timer button
       <div>
-     
+    
       </div>
     )
   }
 }
 
 const mapStateToProps = state => ({
-  activities: state.activities
+  activities: state.activities,
+  preferences: state.preferences
 });
 
 const mapDispatchToProps = dispatch => {
