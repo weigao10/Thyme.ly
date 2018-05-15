@@ -2,11 +2,12 @@ const url = require('url');
 const path = require('path');
 const windowStateKeeper = require('electron-window-state')
 const electron = require('electron')
-const { app, BrowserWindow, Menu, ipcMain, Tray, nativeImage } = electron;
+const { app, BrowserWindow, Menu, Tray, nativeImage } = electron;
 
 const {monitor} = require('../main/helpers/activityData.js');
 
 let mainWindow, addWindow, tray, splash;
+let force_quit = false;
 
 const createTray = () => {
   let image = nativeImage.createFromPath(path.join(__dirname, '../iconTemplate.png'))
@@ -58,7 +59,30 @@ const createWindow = () => {
     mainWindow.show();
   })
 
-  mainWindow.on('closed', () => app.quit()) 
+  mainWindow.on('close', function(e){
+    if(!force_quit){
+        e.preventDefault();
+        mainWindow.hide();
+    }
+  });
+
+  app.on('before-quit', function() {
+    //save to fs
+    force_quit = true;
+    app.quit()
+  });
+
+
+  app.on('activate', function(){
+    mainWindow.show();
+  });
+
+//   app.on('will-quit', function () {
+//     // This is a good place to add tests insuring the app is still
+//     // responsive and all windows are closed.
+//     console.log("will-quit");
+//     mainWindow = null;
+// });
 
   const mainMenu = Menu.buildFromTemplate(mainMenuTemplate);
   Menu.setApplicationMenu(mainMenu);

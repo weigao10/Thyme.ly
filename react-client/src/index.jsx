@@ -45,52 +45,31 @@ loginButton.addEventListener('click', () => {
   let password = document.getElementById('password').value
   auth.signInWithEmailAndPassword(email, password)
   .then((data) => {
-    console.log('data', data)
     ReactDOM.render((<App />), document.getElementById('app'))
     document.getElementById('login-page').innerHTML = ''
   })
   .catch((err) => {
     alert('Username/password combination do not match.')
-    //clear form
+    //need to clear form here
   })
 })
 
 function googleSignIn () {
   signInWithPopup()
-  .then((code) => {
-    let tokens = fetchAccessTokens(code)
-    console.log('tokens', tokens)
-  })
+  .then((code) => (
+    fetchAccessTokens(code)
+  ))
   .then((tokens) => (
     fetchGoogleProfile(tokens.access_token)
   ))
   .then(({id, email, name}) => {
-    console.log('google oauth id', id)
     return {
-      //use to identify google oauth log ins?
-      id: id,
+      id: id, //use as identifier
       email: email,
       name: name
     }
   })
 }
-
-// async function googleSignIn () {
-//   const code = await signInWithPopup()
-//   console.log('code', code)
-//   const tokens = await fetchAccessTokens(code)
-//   console.log('tokens', tokens)
-//   const {id, email, name} = await fetchGoogleProfile(tokens.access_token)
-//   console.log('id', id)
-//   const providerUser = {
-//     uid: id,
-//     email,
-//     displayName: name,
-//     idToken: tokens.id_token,
-//   }
-
-//   return mySignInFunction(providerUser)
-// }
 
 const GOOGLE_AUTHORIZATION_URL = 'https://accounts.google.com/o/oauth2/v2/auth'
 const GOOGLE_TOKEN_URL = 'https://www.googleapis.com/oauth2/v4/token'
@@ -143,7 +122,7 @@ function signInWithPopup () {
 }
 
 function fetchAccessTokens (code) {
-  axios.post(GOOGLE_TOKEN_URL, qs.stringify({
+  return axios.post(GOOGLE_TOKEN_URL, qs.stringify({
     code,
     client_id: clientId,
     redirect_uri: bundleId + ':' +redirectURI,
@@ -156,22 +135,8 @@ function fetchAccessTokens (code) {
   .then((data) => data.data)
 }
 
-// async function fetchAccessTokens (code) {
-//   const response = await axios.post(GOOGLE_TOKEN_URL, qs.stringify({
-//     code,
-//     client_id: clientId,
-//     redirect_uri: bundleId + ':' +redirectURI,
-//     grant_type: 'authorization_code',
-//   }), {
-//     headers: {
-//       'Content-Type': 'application/x-www-form-urlencoded',
-//     },
-//   })
-//   return response.data
-// }
-
 function fetchGoogleProfile (accessToken) {
-  axios.get(GOOGLE_PROFILE_URL, {
+  return axios.get(GOOGLE_PROFILE_URL, {
     headers: {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${accessToken}`,
@@ -179,13 +144,3 @@ function fetchGoogleProfile (accessToken) {
   })
   .then((data) => data.data)
 }
-
-// async function fetchGoogleProfile (accessToken) {
-//   const response = await axios.get(GOOGLE_PROFILE_URL, {
-//     headers: {
-//       'Content-Type': 'application/json',
-//       'Authorization': `Bearer ${accessToken}`,
-//     },
-//   })
-//   return response.data
-// }
