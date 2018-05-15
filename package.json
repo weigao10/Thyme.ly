@@ -57,6 +57,7 @@
   "devDependencies": {
     "babel-core": "^6.26.3",
     "babel-loader": "^7.1.4",
+    "babel-plugin-syntax-async-functions": "^6.13.0",
     "babel-plugin-transform-async-to-generator": "^6.24.1",
     "babel-plugin-transform-regenerator": "^6.26.0",
     "babel-polyfill": "^6.26.0",
@@ -83,6 +84,7 @@
     "electron-window-state": "^4.1.1",
     "express": "^4.15.0",
     "fs": "0.0.1-security",
+    "graceful-fs": "^4.1.11",
     "jquery": "^3.3.1",
     "material-ui": "^0.20.0",
     "moment": "^2.22.1",
