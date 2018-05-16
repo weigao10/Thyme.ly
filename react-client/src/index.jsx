@@ -3,9 +3,9 @@ import ReactDOM from 'react-dom';
 import App from './App.jsx';
 import $ from 'jquery';
 import config from '../../config.js'
-import {bundleId, clientId, redirectURI} from '../../config.js'
-import {parse} from 'url'
-import {remote} from 'electron'
+import { bundleId, clientId, redirectURI } from '../../config.js'
+import { parse } from 'url'
+import { remote } from 'electron'
 import axios from 'axios'
 import qs from 'qs'
 

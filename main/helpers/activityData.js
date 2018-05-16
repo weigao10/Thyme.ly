@@ -17,21 +17,21 @@ const monitorActivity = (activities, errors) => {
         return lastActivity;
       }
     })
-    .then((lastActivity) => {
-      const qs = {
-        user_name: 'brian',
-        app_name: lastActivity.app,
-        window_title: lastActivity.title
-      }
-      return axios.get(server + '/api/classifications', {params: qs})
-        .then((resp) => {
-          return {
-            ...lastActivity,
-            productivity: resp.data || null
-          };
-        })
-        .catch((err) => console.log(err))
-    })
+    // .then((lastActivity) => {
+    //   const qs = {
+    //     user_name: 'brian',
+    //     app_name: lastActivity.app,
+    //     window_title: lastActivity.title
+    //   }
+    //   return axios.get(server + '/api/classifications', {params: qs})
+    //     .then((resp) => {
+    //       return {
+    //         ...lastActivity,
+    //         productivity: resp.data || null
+    //       };
+    //     })
+    //     .catch((err) => console.log(err))
+    // })
     .catch((e) => {
       e.time = timestamp();
       e.description = e.message;

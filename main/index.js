@@ -4,7 +4,8 @@ const windowStateKeeper = require('electron-window-state')
 const electron = require('electron')
 const { app, BrowserWindow, ipcMain, Menu, Tray, nativeImage } = electron;
 
-const { insertActivities } = require('../server/database/sqlite.js')
+// const { createDb, insertActivities, insertPreferences, insertSpurts, closeDb } = require('../server/database/sqlite.js')
+const { createTable, insertActivities, insertPreferences, closeDb } = require('../server/database/sqlite.js')
 const { monitor } = require('../main/helpers/activityData.js');
 
 let mainWindow, addWindow, tray, splash;
@@ -21,8 +22,8 @@ const createTray = () => {
 
 const createWindow = () => {
   let winState = windowStateKeeper({
-    defaultWidth: 1000,
-    defaultHeight: 1000
+    defaultWidth: 1200,
+    defaultHeight: 900
   })
   splash = new BrowserWindow({
     width: 810, 
@@ -56,10 +57,7 @@ const createWindow = () => {
   }))
 
   mainWindow.once('ready-to-show', () => {
-  //   knex.select("all").from("all")
-  //   .then((data) => {
-  //     mainWindow.webContents.send("dbStoreInfo", data)
-  //   })
+    createTable();
     splash.destroy();
     mainWindow.show();
   })
@@ -76,13 +74,17 @@ const createWindow = () => {
     mainWindow.send("windowClose", "close")
     ipcMain.once("store", (event, data) => {
       let { activities, preferences } = JSON.parse(data)
-      console.log('activities?', activities)
       for(let category in activities){
         if(category !== 'nextId'){
           activities[category].forEach((el) => insertActivities(el))
         }
       }
-      //also should store preferences
+      //somehow save spurts as well
+      for(let category in preferences){
+        //example: category = trackedApps, el = Google Chrome
+        preferences[category].forEach((el) => (insertPreferences(el, category)))
+      }
+      // closeDb();
     })
     force_quit = true;
     app.quit()

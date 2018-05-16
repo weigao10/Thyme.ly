@@ -35,12 +35,12 @@ export const changeCategory = (activity, oldCatName, newCatName) => {
     prod_class: newCatName
   };
 
-  const request = axios.post(url + '/api/classifications', {params: params})
+  // const request = axios.post(url + '/api/classifications', {params: params})
   
   return {
     type: CATEGORIZE_ACTIVITY,
     payload: {
-      request,
+      // request,
       id: activity.id,
       oldCatName,
       newCatName
