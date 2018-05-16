@@ -73,6 +73,7 @@ const chunkComplete = (lastActivity, newActivity) => {
 };
 
 const startMonitor = (mainWindow, activities = [], errors = [], user = "test") => {
+  console.log('MONITOR WAS STARTED FOR USER', user)
   return setInterval(() => {
     monitorActivity(activities, errors, user)
       .then((data) => {
@@ -89,12 +90,15 @@ exports.monitor = (mainWindow, mainSession) => {
   let activities = [];
   let errors = [];
   ipcMain.on('monitor', (mainWindow, event, message) => {
+    //works only when there is a cookie now
     if (event === 'start') {
-      mainSession.cookies.get({name: 'userId', url}, (err, cookies) => {
-        console.log('cookies inside monitor subroutine are', cookies);
-        intervalId = startMonitor(mainWindow, activities, errors, cookies[0].value);
-      });
+      // mainSession.cookies.get({name: 'userId', url}, (err, cookies) => {
+      //   console.log('cookies inside monitor subroutine are', cookies);
+        
+      // });
        //add user here
+      console.log('messsage inside monitor is', message)
+      intervalId = startMonitor(mainWindow, activities, errors, message);
     } else if (event === 'pause' && intervalId) {
       clearInterval(intervalId);
       intervalId = false;

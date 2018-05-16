@@ -1,10 +1,15 @@
-import { SET_USER, GET_USER } from './types'; 
+import { ipcRenderer } from 'electron';
+import { SET_USER, GET_USER, LOG_OUT } from './types'; 
 
 export const setUser = (user) => {
   return {
     type: SET_USER,
     payload: user
   }
+}
+
+export const logout = () => {
+
 }
 
 export const getUser = () => {

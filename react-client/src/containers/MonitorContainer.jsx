@@ -25,10 +25,10 @@ class MonitorContainer extends React.Component {
     this.checkState = this.checkState.bind(this);
     this.toggleTimerButton = this.toggleTimerButton.bind(this);
     this.handleChange = this.handleChange.bind(this);
+    this.logout = this.logout.bind(this);
   }
 
   componentDidMount() {
-    this.connectMonitor();
     ipcRenderer.on('activity', (event, message) => {
       let isTracked = this.props.preferences.trackedApps.includes(message.app)
       let inState = this.checkState(message, isTracked);
@@ -39,7 +39,13 @@ class MonitorContainer extends React.Component {
     ipcRenderer.on('cookies', (event, message) => {
       console.log('monitor container got this user_id via IPC', message.value)
       this.props.setUser(message.value)
+      if (message.value) this.connectMonitor(message.value)
     });
+  }
+
+  logout = () => {
+    ipcRenderer.send('cookies', 'logout');
+    //actually destroys the cookie but also need to remove it from the store
   }
 
   handleChange = (value) => {
@@ -48,9 +54,9 @@ class MonitorContainer extends React.Component {
     });
   };
 
-  connectMonitor() {
+  connectMonitor(user) {
     this.connected = true;
-    ipcRenderer.send('monitor', 'start');
+    ipcRenderer.send('monitor', 'start', user);
   }
 
   pauseMonitor() {
@@ -101,6 +107,7 @@ class MonitorContainer extends React.Component {
     return (
       // TODO: Make this component render a Pause/Start timer button
       <div>
+        <button onClick={this.logout}>Test logout button</button>
         {/* <pre>'current user is' {JSON.stringify(this.props.user)}</pre> */}
       </div>
     )
