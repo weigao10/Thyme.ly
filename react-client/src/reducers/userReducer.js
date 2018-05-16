@@ -9,6 +9,7 @@ const user = (state = initialState, action) => {
     case SET_USER:
       console.log('in reducer, about to set user to', action.payload)
       return {
+        ...state,
         user: action.payload
       }
     default:
