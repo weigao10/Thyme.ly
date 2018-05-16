@@ -4,8 +4,7 @@ const windowStateKeeper = require('electron-window-state')
 const electron = require('electron')
 const { app, BrowserWindow, ipcMain, Menu, Tray, nativeImage } = electron;
 
-// const { createDb, insertActivities, insertPreferences, insertSpurts, closeDb } = require('../server/database/sqlite.js')
-const { createTable, insertActivities, insertPreferences, closeDb } = require('../server/database/sqlite.js')
+const { createTable, insertActivities, insertPreferences, getActivities, clearDb, closeDb } = require('../server/database/sqlite.js')
 const { monitor } = require('../main/helpers/activityData.js');
 
 let mainWindow, addWindow, tray, splash;
@@ -57,7 +56,6 @@ const createWindow = () => {
   }))
 
   mainWindow.once('ready-to-show', () => {
-    createTable();
     splash.destroy();
     mainWindow.show();
   })
@@ -70,7 +68,7 @@ const createWindow = () => {
   });
 
   app.once('before-quit', function() {
-
+    clearDb();
     mainWindow.send("windowClose", "close")
     ipcMain.once("store", (event, data) => {
       let { activities, preferences } = JSON.parse(data)
@@ -79,28 +77,18 @@ const createWindow = () => {
           activities[category].forEach((el) => insertActivities(el))
         }
       }
-      //somehow save spurts as well
-      for(let category in preferences){
-        //example: category = trackedApps, el = Google Chrome
+      //need to save spurts as well
+      for(let category in preferences){ //ex: category = trackedApps, el = Google Chrome
         preferences[category].forEach((el) => (insertPreferences(el, category)))
       }
-      // closeDb();
     })
     force_quit = true;
     app.quit()
   });
 
-
   app.on('activate', function(){
     mainWindow.show();
   });
-
-//   app.on('will-quit', function () {
-//     // This is a good place to add tests insuring the app is still
-//     // responsive and all windows are closed.
-//     console.log("will-quit");
-//     mainWindow = null;
-// });
 
   const mainMenu = Menu.buildFromTemplate(mainMenuTemplate);
   Menu.setApplicationMenu(mainMenu);
@@ -109,7 +97,12 @@ const createWindow = () => {
 
 app.on('ready', () => {
   createWindow();
-  createTray();  
+  createTray();
+  createTable();
+  getActivities();
+  //add info from sqlite to store  
+  // let dbData = readAllRows
+  // mainWindow.send("sqliteDbInfo", )
   electron.powerMonitor.on('suspend', () => console.log('system going to sleep'));
   electron.powerMonitor.on('resume', () => console.log('system waking from sleep'));
 }) 
