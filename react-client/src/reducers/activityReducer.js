@@ -1,4 +1,4 @@
-import { ADD_ACTIVITY, PATCH_ACTIVITY, CATEGORIZE_ACTIVITY, DELETE_ACTIVITY } from '../actions/types'; 
+import { ADD_ACTIVITY, PATCH_ACTIVITY, CATEGORIZE_ACTIVITY, DELETE_ACTIVITY, SET_ALL_ACTIVITIES } from '../actions/types'; 
 import moment from 'moment';
 
 const initialState = {
@@ -36,24 +36,30 @@ const activities = (state = initialState, action) => {
       };
 
     case PATCH_ACTIVITY:
-      let {category, index, activity, data} = action.payload
-      let copySpurts = activity.spurts.slice()
+      let {index, activity, data} = action.payload
+      console.log('activity', activity);
+      // console.log('data', data)
+      let copySpurts = (activity.spurts) ? activity.spurts.slice() : []
+      // console.log('copy spurts', copySpurts)
       let updatedActivity = Object.assign({
         spurts: copySpurts
       }, activity);
       updatedActivity.spurts.push({'startTime': data.startTime, 'endTime': data.endTime})
       updatedActivity.duration += getDuration(data.startTime, data.endTime)
+      // console.log('saate', productivity)
       return {
         ...state,
-        [category]: [
-                    ...state[category].slice(0,index),
+        [activity.productivity]: [
+                    ...state[activity.productivity].slice(0,index),
                     updatedActivity,
-                    ...state[category].slice(index + 1)
+                    ...state[activity.productivity].slice(index + 1)
                     ]
       }
+
     case CATEGORIZE_ACTIVITY:
       let {id, oldCatName, newCatName} = action.payload;
       const movingActivity = state[oldCatName].filter((el) => el.id === id)[0];
+      movingActivity.productivity = newCatName;
       const updatedOldCat = state[oldCatName].filter((el) => el.id !== id);
       const updatedNewCat = [...state[newCatName] , movingActivity];
       return {
@@ -61,6 +67,24 @@ const activities = (state = initialState, action) => {
         [oldCatName]: updatedOldCat,
         [newCatName]: updatedNewCat
       };
+
+    case SET_ALL_ACTIVITIES:
+      let neutral = []
+      let productive = []
+      let distracting = []
+      action.payload.forEach((activity) => {
+        if(activity.productivity === 'neutral') neutral.push(activity);
+        if(activity.productivity === 'productive') productive.push(activity);
+        if(activity.productivity === 'distracting') distracting.push(activity);
+      })
+
+    return {
+      ...state,
+      neutral: neutral,
+      productive: productive,
+      distracting: distracting,
+      nextId: action.payload.length
+    }
     default: 
       return state;
   }

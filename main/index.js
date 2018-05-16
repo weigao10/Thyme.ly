@@ -2,11 +2,12 @@ const url = require('url');
 const path = require('path');
 const windowStateKeeper = require('electron-window-state')
 const electron = require('electron')
-const { app, BrowserWindow, Menu, ipcMain, Tray, nativeImage } = electron;
-
-const {monitor} = require('../main/helpers/activityData.js');
+const { app, BrowserWindow, ipcMain, Menu, Tray, nativeImage } = electron;
+const { saveStoreToSql, populateStore } = require('./helpers/sqlHelpers.js')
+const { monitor } = require('../main/helpers/activityData.js');
 
 let mainWindow, addWindow, tray, splash;
+let force_quit = false;
 
 const createTray = () => {
   let image = nativeImage.createFromPath(path.join(__dirname, '../iconTemplate.png'))
@@ -19,8 +20,8 @@ const createTray = () => {
 
 const createWindow = () => {
   let winState = windowStateKeeper({
-    defaultWidth: 1000,
-    defaultHeight: 1000
+    defaultWidth: 1200,
+    defaultHeight: 900
   })
   splash = new BrowserWindow({
     width: 810, 
@@ -56,9 +57,28 @@ const createWindow = () => {
   mainWindow.once('ready-to-show', () => {
     splash.destroy();
     mainWindow.show();
+    populateStore(mainWindow);
   })
 
-  mainWindow.on('closed', () => app.quit()) 
+  // mainWindow.on('closed', () => app.quit()) 
+
+  mainWindow.on('close', function(e){
+    if(!force_quit){
+        e.preventDefault();
+        mainWindow.hide();
+    }
+  });
+
+  app.once('before-quit', function() {
+    saveStoreToSql(mainWindow)
+    force_quit = true;
+    app.quit()
+  });
+
+  //may not do anything
+  app.on('activate', function(){
+    mainWindow.show();
+  });
 
   const mainMenu = Menu.buildFromTemplate(mainMenuTemplate);
   Menu.setApplicationMenu(mainMenu);
