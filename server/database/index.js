@@ -1,22 +1,24 @@
 const chalk = require('chalk');
 const { Pool, Client } = require('pg');
+const { user, host, database, password } = require('../../serverConfig.js');
+const port = require('../../serverConfig.js').port;
 
 //Create connection to AWS database
 
 const pool = new Pool({
-  user: 'senior',
-  host: 'productivity-app.cmqyrbiaigty.us-east-2.rds.amazonaws.com',
-  database: 'postgres',
-  password: 'hackreactor',
-  port: 5432,
+  user,
+  host,
+  database,
+  password,
+  port
 })
 
 const client = new Client({
-  user: 'senior',
-  host: 'productivity-app.cmqyrbiaigty.us-east-2.rds.amazonaws.com',
-  database: 'postgres',
-  password: 'hackreactor',
-  port: 5432,
+  user,
+  host,
+  database,
+  password,
+  port
 })
 
 //----Activity Helper Functions----
