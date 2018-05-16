@@ -32,14 +32,6 @@ class App extends React.Component {
 
   componentDidMount() {
     console.log('app component got this user_id via props', this.props.user);
-    if (!this.props.user) {
-      console.log('checking for cookies inside app component--app did not receive user_id via props')
-      ipcRenderer.send('cookies', 'check');
-    }
-
-    ipcRenderer.on('cookies', (event, message) => {
-      console.log('app component got this user_id via IPC', message.value)
-    });
   }
   
   render() {
@@ -81,6 +73,14 @@ class App extends React.Component {
       </MuiThemeProvider>
       </div>
     )
+  }
+}
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    saveUserToStore: (user) => {
+      dispatch(getUser(user))
+    }
   }
 }
 

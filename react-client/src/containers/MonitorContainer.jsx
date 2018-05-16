@@ -9,6 +9,7 @@ import FlatButton from 'material-ui/FlatButton';
 import Divider from 'material-ui/Divider';
 
 import { addActivity, patchActivity} from '../actions/activityActions.js';
+import { setUser } from '../actions/userActions.js';
 
 class MonitorContainer extends React.Component {
   constructor(props) {
@@ -32,6 +33,11 @@ class MonitorContainer extends React.Component {
       let isTracked = this.props.preferences.trackedApps.includes(message.app)
       let inState = this.checkState(message, isTracked);
       this.props.activityHandler(message, inState);
+    });
+    ipcRenderer.send('cookies', 'check');
+    ipcRenderer.on('cookies', (event, message) => {
+      console.log('monitor container got this user_id via IPC', message.value)
+      this.props.setUser(message.value)
     });
   }
 
@@ -94,7 +100,7 @@ class MonitorContainer extends React.Component {
     return (
       // TODO: Make this component render a Pause/Start timer button
       <div>
-    
+        <pre>'current user is' {JSON.stringify(this.props.user)}</pre>
       </div>
     )
   }
@@ -102,14 +108,18 @@ class MonitorContainer extends React.Component {
 
 const mapStateToProps = state => ({
   activities: state.activities,
-  preferences: state.preferences
+  preferences: state.preferences,
+  user: state.user
 });
 
 const mapDispatchToProps = dispatch => {
   return {
     activityHandler: (data, inState) => {
-      if (inState) dispatch(patchActivity(inState, data))
+      if (inState) dispatch(patchActivity(inState, data)) // add state.user here
       else dispatch(addActivity(data))
+    },
+    setUser: (user) => {
+      dispatch(setUser(user))
     } 
   };
 }
