@@ -28,6 +28,7 @@ const manageCookies = (mainSession) => {
           mainSession.cookies.get({name: 'userId', url}, (err, cookies) => {
             console.log('COOKIE SET!', cookies[0]);
             console.log('this should be 1 (no duplicate cookies)', cookies.length)
+            if (cookies.length) mainWindow.sender.webContents.send('cookies', cookies[0]);
           })
         }
       });

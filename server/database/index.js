@@ -40,10 +40,10 @@ const getProductivityClass = (appName, title, userName) => {
   return pool.query(queryStr, values)
     .then((data) => {
       if (data.rows.length) {
-        // console.log('productivity class is', data.rows[0].prod_class)
+        console.log('productivity class is', data.rows[0].prod_class)
         return data.rows[0].prod_class
       } else {
-        // console.log('productivity class not found')
+        console.log('productivity class not found')
         return null;
       }
     })
