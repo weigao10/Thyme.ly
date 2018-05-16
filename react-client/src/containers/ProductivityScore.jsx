@@ -47,10 +47,10 @@ class ProductivityScore extends React.Component {
 
   render() {
     return (
-      <Paper style={{ fontSize: "125%", textAlign: "center" }}>
-        <h3>Your Productivity Score Today Is:</h3>
-        <div id="gauge" style={{ lineHeight: "300px" }} />
-      </Paper>
+        <Paper style={{ fontSize: "125%", textAlign: "center" }}>
+          <h3>Your Productivity Score Today Is:</h3>
+          <div id="gauge" style={{ lineHeight: "300px" }} />
+        </Paper>
     );
   }
 }

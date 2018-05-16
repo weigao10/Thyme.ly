@@ -5,7 +5,7 @@ import { ipcRenderer } from 'electron';
 import axios from 'axios';
 
 import { changeCategory, deleteActivity } from '../actions/activityActions'
-// import ProductivityScore from './ProductivityScore.jsx';
+import ProductivityScore from './ProductivityScore.jsx';
 import ActivityGroup from '../components/DashboardView/ActivityGroup.jsx';
 
 import Paper from 'material-ui/Paper';
@@ -18,7 +18,8 @@ class DashboardContainer extends React.Component {
   render() {
     const {activities, changeCategory, deleteActivity, preferences } = this.props;
     return (
-        <Paper style={{display: 'table', background: '#AAA', margin: '0', padding: '5px', width: '75%', minHeight: '500px', maxHeight: '550px', overflowY: 'scroll', verticalAlign: 'top'}}>
+      <div style={{background: '#555'}}>
+        <Paper style={{display: 'inline-block', background: '#AAA', margin: '0', padding: '5px', width: '75%', minHeight: '500px', maxHeight: '550px', overflowY: 'scroll', verticalAlign: 'top'}}>
           <ActivityGroup
             category='productive'
             activities={activities.productive}
@@ -42,6 +43,10 @@ class DashboardContainer extends React.Component {
             preferences={preferences}
           />
         </Paper>
+        <Paper style={{display: 'inline-block', background: '#BBB', margin: '0', padding: '5px', width: '20%', minHeight: '500px', maxHeight: '550px', verticalAlign: 'top'}}>
+          <ProductivityScore />
+        </Paper>
+      </div>
     )
   }
 };
