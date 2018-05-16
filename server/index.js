@@ -31,7 +31,7 @@ const restrict = (req, res, next) => {
 
 app.get('/api/classifications', (req, res) => {
   const {user_name, app_name, window_title} = req.query;
-  console.log('user id is', req.session.auth)
+  // console.log('user id is', req.session.auth)
   return db.getProductivityClass(app_name, window_title)
     .then((prod_class) => {
       // console.log(`prod_class is ${prod_class} and app_name is ${app_name}`) //seems to lag one behind??
