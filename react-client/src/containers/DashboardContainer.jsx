@@ -16,7 +16,7 @@ class DashboardContainer extends React.Component {
   }
   
   render() {
-    const {activities, changeCategory, deleteActivity, preferences } = this.props;
+    const {activities, changeCategory, deleteActivity, preferences, user } = this.props;
     return (
         <Paper style={{display: 'table', background: '#AAA', margin: '0', padding: '5px', width: '75%', minHeight: '500px', maxHeight: '550px', overflowY: 'scroll', verticalAlign: 'top'}}>
           <ActivityGroup
@@ -25,7 +25,7 @@ class DashboardContainer extends React.Component {
             changeCategory={changeCategory}
             deleteActivity={deleteActivity}
             preferences={preferences}
-
+            user={user}
           />
           <ActivityGroup
             category='neutral'
@@ -33,6 +33,7 @@ class DashboardContainer extends React.Component {
             changeCategory={changeCategory}
             deleteActivity={deleteActivity}
             preferences={preferences}
+            user={user}
           />
           <ActivityGroup
             category='distracting'
@@ -40,6 +41,7 @@ class DashboardContainer extends React.Component {
             changeCategory={changeCategory}
             deleteActivity={deleteActivity}
             preferences={preferences}
+            user={user}
           />
         </Paper>
     )
@@ -48,16 +50,19 @@ class DashboardContainer extends React.Component {
 
 const mapStateToProps = (state) => ({
   activities: state.activities,
-  preferences: state.preferences
+  preferences: state.preferences,
+  user: state.user.user
 });
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    changeCategory: (activity, oldCat, newCat) => {
-      if (oldCat !== newCat) dispatch(changeCategory(activity, oldCat, newCat));
+    changeCategory: (activity, oldCat, newCat, user) => {
+      // console.log('user trying to change cats is', user)
+      if (oldCat !== newCat) dispatch(changeCategory(activity, oldCat, newCat, user));
     },
-    deleteActivity: (id, category) => {
-      dispatch(deleteActivity(id, category));
+    deleteActivity: (id, category, user) => {
+      // console.log('user trying to delete cats is', user)
+      dispatch(deleteActivity(id, category, user));
     }
   };
 };

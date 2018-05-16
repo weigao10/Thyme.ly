@@ -27,7 +27,7 @@ const collect = (connect, monitor) => {
 }
 
 const ActivityCard = (props) => {
-  const { activity, category, deleteActivity, index, preferences } = props;
+  const { activity, category, deleteActivity, index, preferences, user } = props;
   
   let formattedDuration = moment.duration(activity.duration, "seconds").format("h[h], m[m] s[s]");
 
@@ -64,7 +64,7 @@ const ActivityCard = (props) => {
         {activity.title} <br/>
         <i>{formattedDuration}</i>
         <br/>
-        <button onClick={() => {deleteActivity(activity.id, category)}}>delete</button>
+        <button onClick={() => {deleteActivity(activity.id, category, user)}}>delete</button>
       </Paper></div>
     )
   } else {
@@ -77,7 +77,7 @@ const ActivityCard = (props) => {
         {/* don't display title if not in trackedApps */}
         <i>{formattedDuration}</i>
         <br/>
-        <button onClick={() => {deleteActivity(activity.id, category)}}>delete</button>
+        <button onClick={() => {deleteActivity(activity.id, category, user)}}>delete</button>
       </Paper></div>
     )
   }  

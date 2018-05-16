@@ -15,7 +15,8 @@ const comparisonTarget = {
   drop(props, monitor) {
     const { activity, oldCategory } = monitor.getItem();
     const newCategory = props.category;
-    props.changeCategory(activity, oldCategory, newCategory);
+    const user = props.user
+    props.changeCategory(activity, oldCategory, newCategory, user);
   }
 };
 
@@ -35,7 +36,8 @@ const ActivityGroup = props => {
     changeCategory,
     deleteActivity,
     style,
-    preferences
+    preferences,
+    user
   } = props;
   const sortedActivities = [...activities].sort(
     (a, b) => b.duration - a.duration
@@ -72,6 +74,7 @@ const ActivityGroup = props => {
               changeCategory={changeCategory}
               deleteActivity={deleteActivity}
               preferences={preferences}
+              user={user}
             />
           );
         })}
