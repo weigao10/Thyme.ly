@@ -5,11 +5,29 @@ import $ from 'jquery';
 import config from '../../config.js'
 import {bundleId, clientId, redirectURI} from '../../config.js'
 import {parse} from 'url'
-import {remote} from 'electron'
+import { remote, ipcRenderer } from 'electron'
 import axios from 'axios'
 import qs from 'qs'
 
 const SERVER_URL = 'http://127.0.0.1:3000';
+
+//if logged in already, should render app directly AND add uID to redux store
+  //else render this log in screen
+// if user logs out, destroy the cookie
+
+//check to see if cookie exists
+  //if cookie exists, skip this screen and render app
+    //need to somehow connect user_id to redux store
+//if not wait for login
+  //upon successful login set the cookie
+//also listen for a logout action
+  //destroy cookie
+  
+ipcRenderer.send('cookies', 'check', 'gimme dem deets')
+ipcRenderer.on('cookies', (event, message) => {
+  console.log('cookies are', message)
+});
+
 
 $('.message a').click(function(){
   $('form').animate({height: "toggle", opacity: "toggle"}, "slow");
@@ -49,19 +67,10 @@ loginButton.addEventListener('click', () => {
   .then((data) => {
     console.log('entire data obj is', data)
     console.log('user id from regular login is', data.user.uid)
+    const uId = data.user.uid;
+    ipcRenderer.send('cookies', 'logged in', uId)
     ReactDOM.render((<App />), document.getElementById('app'))
-    document.getElementById('login-page').innerHTML = ''
-    return data;
-  })
-  .then((user) => {
-    return user.user.getIdToken().then(idToken => {
-      // console.log('id token is', idToken)
-      // const csrfToken = document.getCookie('csrfToken');
-      // console.log('csrf token is', csrfToken)
-      return axios.post(SERVER_URL + '/login', idToken)
-        .then(resp => console.log('resp from login attempt is', resp))
-        .catch(err => console.error('error in trying to post login is', err))
-    })
+    document.getElementById('login-page').innerHTML = '';
   })
   .catch((err) => {
     console.error(err);
@@ -161,8 +170,7 @@ function fetchGoogleProfile (accessToken) {
   })
   .then((data) => {
     console.log('data from google profile is', data);
-    const csrfToken = getCookie('csrfToken')
-    console.log('csrfTokane is', csrfToken)
+    ipcRenderer.send('cookies', 'logged in', data.data.id)
     return data.data
   })
 }

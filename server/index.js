@@ -1,26 +1,37 @@
 const express = require('express');
 const path = require('path');
 const bodyParser = require('body-parser');
+const session = require('express-session');
+const partials = require('express-partials');
 const app = express();
 const port = process.env.PORT || 3000;
-const admin = (require('firebase-admin'));
-const serviceAccount = require('../firebaseConfig.json');
-
-console.log('serviceAccount is', serviceAccount)
-
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount),
-  databaseURL: "https://thymely-cd776.firebaseio.com"
-});
 
 const db = require('./database/index.js');
 const naiveBayes = require('./learn/naiveBayes.js');
 
 // app.use(express.static(path.join(__dirname, '/../react-client/dist')));
+app.use(partials());
 app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(session({
+  secret: 'secret'
+}));
+
+const restrict = (req, res, next) => {
+  if (req.session.auth) {
+    console.log('user in session!')
+    next();
+  } else {
+    console.log('user NOT in session!')
+    next();
+    // req.session.error = 'Access denied';
+    // res.status(403).send('Access denied, please login');
+  }
+};
 
 app.get('/api/classifications', (req, res) => {
   const {user_name, app_name, window_title} = req.query;
+  console.log('user id is', req.session.auth)
   return db.getProductivityClass(app_name, window_title)
     .then((prod_class) => {
       // console.log(`prod_class is ${prod_class} and app_name is ${app_name}`) //seems to lag one behind??
@@ -39,8 +50,13 @@ app.post('/api/classifications', (req, res) => {
 });
 
 app.post('/login', (req, res) => {
-  console.log('receiving login request!');
-  console.log('req body is', req)
+  console.log('req user_id is', req.body.data);
+  const googleUserId = req.body.data;
+  //query the firebase DB to see if this is a real userId?
+  // req.session.regenerate(() => {
+  //   req.session.user = googleUserId;
+  // })
+  req.session.auth = googleUserId;
   res.send('ok')
 })
 
