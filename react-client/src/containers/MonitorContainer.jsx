@@ -8,7 +8,7 @@ import AppBar from 'material-ui/AppBar';
 import FlatButton from 'material-ui/FlatButton';
 import Divider from 'material-ui/Divider';
 
-import { addActivity, patchActivity} from '../actions/activityActions.js';
+import { addActivity, patchActivity, setAllActivities} from '../actions/activityActions.js';
 
 class MonitorContainer extends React.Component {
   constructor(props) {
@@ -28,6 +28,10 @@ class MonitorContainer extends React.Component {
 
   componentDidMount() {
     this.connectMonitor();
+
+    ipcRenderer.on('sqlActivities', (event, message) => {
+      this.props.setAllActivities(message)
+    })
 
     ipcRenderer.on('activity', (event, message) => {
       let isTracked = this.props.preferences.trackedApps.includes(message.app)
@@ -81,7 +85,7 @@ class MonitorContainer extends React.Component {
           if (activities[i].title === data.title && activities[i].app === data.app) {
             return {
               'activity': activities[i],
-              'category': category,
+              'productivity': category,
               'index': i
             }
           }
@@ -89,7 +93,7 @@ class MonitorContainer extends React.Component {
           if (activities[i].app === data.app) {
             return {
               'activity': activities[i],
-              'category': category,
+              'productivity': category,
               'index': i
             }
           }
@@ -119,7 +123,10 @@ const mapDispatchToProps = dispatch => {
     activityHandler: (data, inState) => {
       if (inState) dispatch(patchActivity(inState, data))
       else dispatch(addActivity(data))
-    } 
+    }, 
+    setAllActivities: (data) => {
+      dispatch(setAllActivities(data));
+    }
   };
 }
 

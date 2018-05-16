@@ -4,7 +4,7 @@ import ReduxPromise from 'redux-promise';
 import combineReducers from './reducers/index';
 
 
-const initialState = {};
+const initialState = {}; //initial store
 const middleware = [thunk, ReduxPromise];
 const store = createStore(combineReducers, initialState, applyMiddleware(...middleware));
 

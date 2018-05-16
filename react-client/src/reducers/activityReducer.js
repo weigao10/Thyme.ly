@@ -1,5 +1,6 @@
-import { ADD_ACTIVITY, PATCH_ACTIVITY, CATEGORIZE_ACTIVITY, DELETE_ACTIVITY } from '../actions/types'; 
+import { ADD_ACTIVITY, PATCH_ACTIVITY, CATEGORIZE_ACTIVITY, DELETE_ACTIVITY, SET_ALL_ACTIVITIES } from '../actions/types'; 
 import moment from 'moment';
+
 
 const initialState = {
   neutral: [],
@@ -9,9 +10,11 @@ const initialState = {
 }
 
 const activities = (state = initialState, action) => {
+  console.log('action in reducer is', action)
 
   switch(action.type){
     case ADD_ACTIVITY:
+      console.log('payload,', action.payload)
       let {app, title, startTime, endTime, productivity} = action.payload
       let duration = getDuration(startTime, endTime)
       let newData = {
@@ -24,7 +27,7 @@ const activities = (state = initialState, action) => {
       }
       return {
         ...state,
-        [newData.productivity]: [... state[newData.productivity], newData],
+        [productivity]: [... state[productivity], newData],
         nextId: ++state.nextId
       }
 
@@ -37,7 +40,7 @@ const activities = (state = initialState, action) => {
 
     case PATCH_ACTIVITY:
       let {category, index, activity, data} = action.payload
-      let copySpurts = activity.spurts.slice()
+      let copySpurts = (activity.spurts) || activity.spurts.slice() || ''
       let updatedActivity = Object.assign({
         spurts: copySpurts
       }, activity);
@@ -54,13 +57,40 @@ const activities = (state = initialState, action) => {
     case CATEGORIZE_ACTIVITY:
       let {id, oldCatName, newCatName} = action.payload;
       const movingActivity = state[oldCatName].filter((el) => el.id === id)[0];
+      movingActivity.productivity = newCatName
       const updatedOldCat = state[oldCatName].filter((el) => el.id !== id);
       const updatedNewCat = [...state[newCatName] , movingActivity];
+      console.log('movingactivity', movingActivity)
       return {
         ...state,
         [oldCatName]: updatedOldCat,
         [newCatName]: updatedNewCat
       };
+    case SET_ALL_ACTIVITIES:
+      // console.log('in set all act REDUCER', action.payload)
+
+
+// [{app: "Electron", category: "neutral", duration: 6, id: 1, title: "Thyme"},
+// {app: "Code", category: "neutral", duration: 14, id: 2, title: "MonitorContainer.jsx — productivity-manager"}]
+
+      let neutral = []
+      let productive = []
+      let distracting = []
+      action.payload.forEach((activity) => {
+        // activity.productivity = activity.category
+        if(activity.productivity === 'neutral') neutral.push(activity);
+        if(activity.productivity === 'productive') productive.push(activity);
+        if(activity.productivity === 'distracting') distracting.push(activity);
+      })
+
+      return {
+        ...state,
+        neutral: neutral,
+        productive: productive,
+        distracting: distracting,
+        nextId: action.payload.length
+      }
+      // return state;
     default: 
       return state;
   }
@@ -77,3 +107,6 @@ const getDuration = (start, end) => {
 
 
 export default activities;
+
+
+
