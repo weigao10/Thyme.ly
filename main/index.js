@@ -4,7 +4,9 @@ const windowStateKeeper = require('electron-window-state')
 const electron = require('electron')
 const { app, BrowserWindow, Menu, ipcMain, Tray, nativeImage, session } = electron;
 
-const {monitor} = require('../main/helpers/activityData.js');
+
+const { monitor } = require('./helpers/activityData.js');
+const { manageCookies } = require('./helpers/manageSession.js');
 
 let mainWindow, addWindow, tray, splash;
 
@@ -33,7 +35,9 @@ const createWindow = () => {
     pathname: path.join(__dirname, '/../react-client/dist/splash.html'),
     protocol: 'file:',
     slashes: true
-  }))
+  }));
+
+  // let appSession = session.fromPartition('partition1');
   mainWindow = new BrowserWindow({
         width: winState.width,
         height: winState.height,
@@ -41,9 +45,14 @@ const createWindow = () => {
         y: winState.y,
         minWidth: 400,
         minHeight: 300,
-        show: false
+        show: false,
         //make non resizable?
   });
+
+  let mainSession = mainWindow.webContents.session;
+  manageCookies(mainSession, mainWindow);
+
+
 
   winState.manage(mainWindow);
 
@@ -71,14 +80,6 @@ app.on('ready', () => {
   electron.powerMonitor.on('suspend', () => console.log('system going to sleep'));
   electron.powerMonitor.on('resume', () => console.log('system waking from sleep'));
 });
-
-app.on('quit', () => {
-  session.defaultSession.cookies.get({}, (error, cookies) => {
-    console.log('err getting cookies', error);
-    console.log('cookies are', cookies);
-  })
-  console.log('APP QUIT!')
-})
 
 const mainMenuTemplate = [
   //if mac, need an empty object here
