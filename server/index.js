@@ -40,7 +40,7 @@ app.use(bodyParser.json());
 // };
 
 app.get('/api/classifications', (req, res) => {
-  const hd = new memwatch.HeapDiff();
+  // const hd = new memwatch.HeapDiff();
   const {user_name, app_name, window_title} = req.query;
   // console.log('GET req is', req)
   if (!user_name) {
@@ -53,25 +53,25 @@ app.get('/api/classifications', (req, res) => {
       //   naiveBayes.predictProducitivityClass(window_title);
       // }
       res.send(prod_class);
-      const diff = hd.end();
-      console.log('MEMWATCH DIFF after get request')
-      console.log(diff)
+      // const diff = hd.end();
+      // console.log('MEMWATCH DIFF after get request')
+      // console.log(diff)
     })
     .catch((err) => res.send(err));
 });
 
 app.post('/api/classifications', (req, res) => {
   // console.log('POST req is', req)
-  const hd = new memwatch.HeapDiff();
+  // const hd = new memwatch.HeapDiff();
   if (!req.body.params.user_name) {
     res.send('no user attached to this session')
   }
   return db.addOrChangeProductivity(req.body.params)
     .then(message => {
       res.send(message)
-      const diff = hd.end();
-      console.log('MEMWATCH DIFF after POST request')
-      console.log(diff)
+      // const diff = hd.end();
+      // console.log('MEMWATCH DIFF after POST request')
+      // console.log(diff)
     })
     .catch(err => console.log(err))
 });
