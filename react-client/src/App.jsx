@@ -13,8 +13,8 @@ import ViewSelector from './components/ViewSelector.jsx';
 
 class App extends React.Component {
 
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
 
     this.state = {
       tabIndex: 0
@@ -31,9 +31,14 @@ class App extends React.Component {
   }
 
   componentDidMount() {
-    ipcRenderer.send('cookies', 'check');
+    console.log('app component got this user_id via props', this.props.user);
+    if (!this.props.user) {
+      console.log('checking for cookies inside app component--app did not receive user_id via props')
+      ipcRenderer.send('cookies', 'check');
+    }
+
     ipcRenderer.on('cookies', (event, message) => {
-      console.log('app component got the user_id of', message)
+      console.log('app component got this user_id via IPC', message.value)
     });
   }
   

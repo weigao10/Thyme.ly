@@ -7,9 +7,14 @@ const manageCookies = (mainSession) => {
   ipcMain.on('cookies', (mainWindow, event, message) => {
     console.log('event is', event);
     console.log('message is', message);
-    if (event === 'logged in') {
+
+    if (event === 'check') {
+      mainSession.cookies.get({name: 'userId', url}, (err, cookies) => {
+        if (cookies.length) mainWindow.sender.webContents.send('cookies', cookies[0]);
+        //if cookie does not exist, don't send it back
+      });
+    } else if (event === 'logged in') {
       console.log('user logged in with id', message)
-      //SET COOKIE
       const cookie = {
         url,
         name: 'userId',
@@ -21,18 +26,14 @@ const manageCookies = (mainSession) => {
         if (err) console.log(err);
         else {
           mainSession.cookies.get({name: 'userId', url}, (err, cookies) => {
-            // console.log('cookies after setting cookies is', cookies);
-            mainWindow.sender.webContents.send('cookies', cookies)
+            console.log('COOKIE SET!', cookies[0]);
+            console.log('this should be 1 (no duplicate cookies)', cookies.length)
           })
         }
       });
     } else if (event === 'logged out') {
+      console.log('COOKIE DESTROYED!')
       mainSession.clearStorageData();
-    } else if (event === 'check') {
-      mainSession.cookies.get({name: 'userId', url}, (err, cookies) => {
-        // console.log('cookies from inside manage session are', cookies);
-        mainWindow.sender.webContents.send('cookies', cookies)
-      });
     }
   })
 }
