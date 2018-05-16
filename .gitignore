@@ -1,5 +1,6 @@
 node_modules
 .DS_Store
+.vscode
 react-client/.DS_Store
 react-client/dist/bundle.js
 package-lock.json
