@@ -31,7 +31,7 @@ const manageCookies = (mainSession) => {
           })
         }
       });
-    } else if (event === 'logged out') {
+    } else if (event === 'logout') {
       console.log('COOKIE DESTROYED!')
       mainSession.clearStorageData();
     }
