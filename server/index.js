@@ -13,9 +13,6 @@ const db = require('./database/index.js');
 app.use(partials());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(session({
-  secret: 'secret'
-}));
 
 const restrict = (req, res, next) => {
   if (req.session.auth) {
@@ -31,6 +28,10 @@ const restrict = (req, res, next) => {
 
 app.get('/api/classifications', (req, res) => {
   const {user_name, app_name, window_title} = req.query;
+  console.log('api being hit!')
+  if (!user_name) {
+    res.send('no user attached to this session')
+  }
   return db.getProductivityClass(app_name, window_title, user_name)
     .then((prod_class) => {
       // console.log(`prod_class is ${prod_class} and app_name is ${app_name}`) //seems to lag one behind??
@@ -43,6 +44,10 @@ app.get('/api/classifications', (req, res) => {
 });
 
 app.post('/api/classifications', (req, res) => {
+  console.log('api being hit!')
+  if (!user_name) {
+    res.send('no user attached to this session')
+  }
   return db.addOrChangeProductivity(req.body.params)
     .then(message => res.send(message))
     .catch(err => console.log(err))
