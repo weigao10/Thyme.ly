@@ -32,10 +32,10 @@ const getActivities = () => {
     .catch((err) => console.log( chalk.red.bgYellow(err)));
 };
 
-const getProductivityClass = (appName, title) => {
+const getProductivityClass = (appName, title, userName) => {
   const queryStr = `SELECT prod_class FROM public.categories where\
-                    (app_name = $1) AND (window_title = $2)`;
-  const values = [appName, title];
+                    (app_name = $1) AND (window_title = $2) AND (user_name = $3)`;
+  const values = [appName, title, userName];
   return pool.query(queryStr, values)
     .then((data) => {
       if (data.rows.length) {
@@ -51,8 +51,8 @@ const getProductivityClass = (appName, title) => {
 
 const addOrChangeProductivity = (query) => {
   console.log('inside add or change productivity')
-  const {app_name, window_title} = query;
-  return getProductivityClass(app_name, window_title) //add user here later
+  const { app_name, window_title, user_name } = query;
+  return getProductivityClass(app_name, window_title, user_name) //add user here later
     .then(result => {
       if (result) {
         // console.log('gotta recategorize!')
