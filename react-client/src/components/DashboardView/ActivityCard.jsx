@@ -54,33 +54,25 @@ const ActivityCard = (props) => {
   };
   const { connectDragSource, isDragging } = props;
 
-  if(preferences.trackedApps.includes(activity.app)){
-    return connectDragSource(
-      <div><Paper
-        key={activity.title + index}
-        style={index % 2 === 0 ? styleTick : styleTock}
-      >
-        <b>{activity.app}</b> <br/>
-        {activity.title} <br/>
-        <i>{formattedDuration}</i>
-        <br/>
-        <button onClick={() => {deleteActivity(activity, category, true)}}>delete</button>
-      </Paper></div>
-    )
+  let isTracked;
+  if(preferences.trackedApps.includes(activity.app)) {
+    isTracked = true;
   } else {
+    isTracked = false;
+  }
+
     return connectDragSource(
       <div><Paper
         key={activity.title + index}
         style={index % 2 === 0 ? styleTick : styleTock}
       >
         <b>{activity.app}</b> <br/>
-        {/* don't display title if not in trackedApps */}
+        {isTracked ? activity.title : ''} <br/>
         <i>{formattedDuration}</i>
         <br/>
-        <button onClick={() => {deleteActivity(activity, category, false)}}>delete</button>
+        <button onClick={() => {deleteActivity(activity, category, isTracked)}}>delete</button>
       </Paper></div>
     )
-  }  
 }
 
 export default DragSource(ItemTypes.CARD, cardSource, collect)(ActivityCard);
