@@ -5,6 +5,7 @@ import { DragDropContext } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import SwipeableViews from 'react-swipeable-views';
+import { ipcRenderer } from 'electron';
 
 import MonitorContainer from './containers/MonitorContainer.jsx';
 import DashboardContainer from './containers/DashboardContainer.jsx';
@@ -27,6 +28,13 @@ class App extends React.Component {
     this.setState({
       tabIndex: tabIndex
     })
+  }
+
+  componentDidMount() {
+    ipcRenderer.send('cookies', 'check');
+    ipcRenderer.on('cookies', (event, message) => {
+      console.log('app component got the user_id of', message)
+    });
   }
   
   render() {
