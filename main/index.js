@@ -71,7 +71,7 @@ const createWindow = () => {
 
   const mainMenu = Menu.buildFromTemplate(mainMenuTemplate);
   Menu.setApplicationMenu(mainMenu);
-  monitor(mainWindow)
+  monitor(mainWindow, mainSession)
 }
 
 app.on('ready', () => {

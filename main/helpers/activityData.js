@@ -1,11 +1,12 @@
 //file to get sample data chunks
 const activeWin = require('active-win');
 const moment = require('moment');
-const { ipcMain } = require('electron');
+const { ipcMain, session } = require('electron');
 const axios = require('axios');
 const server = 'http://127.0.0.1:3000';
+const url = 'https://test-aws-thymely.com';
 
-const monitorActivity = (activities, errors) => {
+const monitorActivity = (activities, errors, user) => {
   return activeWin()
     .then((data) => {
       let newActivity = assembleActivity(data);
@@ -19,7 +20,7 @@ const monitorActivity = (activities, errors) => {
     })
     .then((lastActivity) => {
       const qs = {
-        user_name: 'brian', //CHANGE TO USERNAME
+        user_name: user, //CHANGE TO USERNAME
         app_name: lastActivity.app,
         window_title: lastActivity.title
       }
@@ -71,9 +72,9 @@ const chunkComplete = (lastActivity, newActivity) => {
   return (lastActivity.app !== newActivity.app) || (lastActivity.title !== newActivity.title);
 };
 
-const startMonitor = (mainWindow, activities = [], errors = []) => {
+const startMonitor = (mainWindow, activities = [], errors = [], user = "test") => {
   return setInterval(() => {
-    monitorActivity(activities, errors)
+    monitorActivity(activities, errors, user)
       .then((data) => {
         if (data) {
           mainWindow.sender.webContents.send('activity', data)
@@ -83,13 +84,17 @@ const startMonitor = (mainWindow, activities = [], errors = []) => {
   }, 1000)
 }
 
-exports.monitor = (mainWindow) => {
+exports.monitor = (mainWindow, mainSession) => {
   let intervalId = false;
   let activities = [];
   let errors = [];
   ipcMain.on('monitor', (mainWindow, event, message) => {
     if (event === 'start') {
-      intervalId = startMonitor(mainWindow, activities, errors);
+      mainSession.cookies.get({name: 'userId', url}, (err, cookies) => {
+        console.log('cookies inside monitor subroutine are', cookies);
+        intervalId = startMonitor(mainWindow, activities, errors, cookies[0].value);
+      });
+       //add user here
     } else if (event === 'pause' && intervalId) {
       clearInterval(intervalId);
       intervalId = false;
