@@ -70,7 +70,8 @@
     "devtron": "^1.4.0",
     "electron": "^2.0.0",
     "electron-forge": "^5.2.2",
-    "electron-prebuilt-compile": "2.0.0"
+    "electron-prebuilt-compile": "2.0.0",
+    "memwatch-next": "^0.3.0"
   },
   "dependencies": {
     "active-win": "^3.0.0",

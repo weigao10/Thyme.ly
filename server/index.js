@@ -5,30 +5,31 @@ const session = require('express-session');
 const partials = require('express-partials');
 const app = express();
 const port = process.env.PORT || 3000;
+const moment = require('moment')
 
 const db = require('./database/index.js');
 // const naiveBayes = require('./learn/naiveBayes.js');
 
 // app.use(express.static(path.join(__dirname, '/../react-client/dist')));
-app.use(partials());
+// app.use(partials());
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+// app.use(bodyParser.urlencoded({ extended: true }));
 
-const restrict = (req, res, next) => {
-  if (req.session.auth) {
-    console.log('user in session!')
-    next();
-  } else {
-    console.log('user NOT in session!')
-    next();
-    // req.session.error = 'Access denied';
-    // res.status(403).send('Access denied, please login');
-  }
-};
+// const restrict = (req, res, next) => {
+//   if (req.session.auth) {
+//     console.log('user in session!')
+//     next();
+//   } else {
+//     console.log('user NOT in session!')
+//     next();
+//     // req.session.error = 'Access denied';
+//     // res.status(403).send('Access denied, please login');
+//   }
+// };
 
 app.get('/api/classifications', (req, res) => {
   const {user_name, app_name, window_title} = req.query;
-  console.log('api being hit!')
+  console.log('GET req is', req.query)
   if (!user_name) {
     res.send('no user attached to this session')
   }
@@ -44,8 +45,8 @@ app.get('/api/classifications', (req, res) => {
 });
 
 app.post('/api/classifications', (req, res) => {
-  console.log('api being hit!')
-  if (!user_name) {
+  console.log('POST req is', req.body)
+  if (!req.body.params.user_name) {
     res.send('no user attached to this session')
   }
   return db.addOrChangeProductivity(req.body.params)
@@ -54,6 +55,7 @@ app.post('/api/classifications', (req, res) => {
 });
 
 app.post('/login', (req, res) => {
+  console.log('login path being hit!')
   console.log('req user_id is', req.body.data);
   const googleUserId = req.body.data;
   //query the firebase DB to see if this is a real userId?
