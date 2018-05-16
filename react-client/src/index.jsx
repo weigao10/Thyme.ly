@@ -22,12 +22,13 @@ const SERVER_URL = 'http://127.0.0.1:3000';
   //upon successful login set the cookie
 //also listen for a logout action
   //destroy cookie
-  
-ipcRenderer.send('cookies', 'check', 'gimme dem deets')
+
+//cookie checking routine
+
+ipcRenderer.send('cookies', 'check');
 ipcRenderer.on('cookies', (event, message) => {
   console.log('cookies are', message)
 });
-
 
 $('.message a').click(function(){
   $('form').animate({height: "toggle", opacity: "toggle"}, "slow");
