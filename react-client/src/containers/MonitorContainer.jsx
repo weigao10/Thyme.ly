@@ -34,6 +34,7 @@ class MonitorContainer extends React.Component {
       let inState = this.checkState(message, isTracked);
       this.props.activityHandler(message, inState);
     });
+    //COOKIE CHECK
     ipcRenderer.send('cookies', 'check');
     ipcRenderer.on('cookies', (event, message) => {
       console.log('monitor container got this user_id via IPC', message.value)
@@ -100,7 +101,7 @@ class MonitorContainer extends React.Component {
     return (
       // TODO: Make this component render a Pause/Start timer button
       <div>
-        <pre>'current user is' {JSON.stringify(this.props.user)}</pre>
+        {/* <pre>'current user is' {JSON.stringify(this.props.user)}</pre> */}
       </div>
     )
   }
