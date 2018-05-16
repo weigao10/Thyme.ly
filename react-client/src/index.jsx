@@ -23,11 +23,13 @@ const SERVER_URL = 'http://127.0.0.1:3000';
 //also listen for a logout action
   //destroy cookie
 
-//cookie checking routine
 
+//cookie checking routine (MOVE TO ANOTHER COMPONENT SO LOGIN NEVER EVEN RENDERS IF USER IS LOGGED IN)
 ipcRenderer.send('cookies', 'check');
 ipcRenderer.on('cookies', (event, message) => {
-  console.log('cookies are', message)
+  // console.log('already logged-in user id is', message.value);
+  ReactDOM.render((<App user={message.value}/>), document.getElementById('app'))
+  document.getElementById('login-page').innerHTML = '';
 });
 
 $('.message a').click(function(){
@@ -54,6 +56,8 @@ registerButton.addEventListener('click', () => {
 
   auth.createUserWithEmailAndPassword(email, password)
   .then((data) => {
+    // console.log('data from new user is', data.user.uid);
+    ipcRenderer.send('cookies', 'logged in', data.user.uid);
     ReactDOM.render((<App />), document.getElementById('app'))
     document.getElementById('login-page').innerHTML = ''
   })
@@ -70,7 +74,7 @@ loginButton.addEventListener('click', () => {
     console.log('user id from regular login is', data.user.uid)
     const uId = data.user.uid;
     ipcRenderer.send('cookies', 'logged in', uId)
-    ReactDOM.render((<App />), document.getElementById('app'))
+    ReactDOM.render((<App user={uId}/>), document.getElementById('app'))
     document.getElementById('login-page').innerHTML = '';
   })
   .catch((err) => {
