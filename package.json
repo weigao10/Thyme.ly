@@ -4,7 +4,7 @@
   "description": "Productivity manager",
   "main": "main/index.js",
   "scripts": {
-    "start": "electron .",
+    "start": "electron main/index.js",
     "dev": "nodemon server/index.js && electron .",
     "react-dev": "webpack -d --watch",
     "react-build": "webpack --mode production",
