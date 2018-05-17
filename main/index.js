@@ -5,7 +5,7 @@ const electron = require('electron')
 const { app, BrowserWindow, Menu, ipcMain, Tray, nativeImage, session } = electron;
 
 
-const { monitor } = require('./helpers/activityData.js');
+const { monitor, stopMonitorProcess, restartMonitorProcess } = require('./helpers/activityData.js');
 const { manageCookies } = require('./helpers/manageSession.js');
 
 let mainWindow, addWindow, tray, splash;
@@ -52,8 +52,6 @@ const createWindow = () => {
   let mainSession = mainWindow.webContents.session;
   manageCookies(mainSession, mainWindow);
 
-
-
   winState.manage(mainWindow);
 
   mainWindow.loadURL(url.format({ 
@@ -76,9 +74,22 @@ const createWindow = () => {
 
 app.on('ready', () => {
   createWindow();
-  createTray();  
-  electron.powerMonitor.on('suspend', () => console.log('system going to sleep'));
-  electron.powerMonitor.on('resume', () => console.log('system waking from sleep'));
+  createTray();
+  mainWindow.webContents.on('did-finish-load', () => {
+    console.log('main window finished loading!')
+  })
+  electron.powerMonitor.on('suspend', () => {
+    mainWindow.webContents.send('system', 'sleep')
+    // console.log('system going to sleep, so stop monitor')
+    // stopMonitorProcess();
+  });
+  electron.powerMonitor.on('resume', () => {
+    mainWindow.webContents.send('system', 'resume')
+    // console.log('system waking from sleep')
+    // restartMonitorProcess(mainWindow);
+  });
+  // electron.powerMonitor.on('suspend', () => console.log('system going to sleep'));
+  // electron.powerMonitor.on('resume', () => console.log('system waking from sleep'));
 });
 
 const mainMenuTemplate = [
