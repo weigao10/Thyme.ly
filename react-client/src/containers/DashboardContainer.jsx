@@ -61,13 +61,14 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    changeCategory: (activity, oldCat, newCat, user) => {
+    changeCategory: (activity, oldCat, newCat, user) => { //refactor 
       // console.log('user trying to change cats is', user)
       if (oldCat !== newCat) dispatch(changeCategory(activity, oldCat, newCat, user));
     },
-    deleteActivity: (activity, category, isTracked) => {
+    deleteActivity: (activity, category, isTracked, user) => {
       console.log('dispatching deleteActivity and isTracked is:', isTracked)
-      dispatch(deleteActivity(activity, category, isTracked));
+      console.log('trying to delete activity for user', user)
+      dispatch(deleteActivity(activity, category, isTracked, user));
     }
   };
 };

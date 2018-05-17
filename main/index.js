@@ -102,13 +102,9 @@ app.on('ready', () => {
   })
   electron.powerMonitor.on('suspend', () => {
     mainWindow.webContents.send('system', 'sleep')
-    // console.log('system going to sleep, so stop monitor')
-    // stopMonitorProcess();
   });
   electron.powerMonitor.on('resume', () => {
     mainWindow.webContents.send('system', 'resume')
-    // console.log('system waking from sleep')
-    // restartMonitorProcess(mainWindow);
   });
 });
 
