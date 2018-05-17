@@ -70,7 +70,7 @@ const ActivityCard = (props) => {
         {isTracked ? activity.title : ''} <br/>
         <i>{formattedDuration}</i>
         <br/>
-        <button onClick={() => {deleteActivity(activity, category, isTracked)}}>delete</button>
+        <button onClick={() => {deleteActivity(activity, category, isTracked, user)}}>delete</button>
       </Paper></div>
     )
 }

@@ -1,6 +1,7 @@
 const electron = require('electron')
 const { app, BrowserWindow, ipcMain, session } = electron;
 const url = 'https://test-aws-thymely.com';
+const moment = require('moment')
 
 //handle whether user can skip login, needs to login, or handle user logout
 const manageCookies = (mainSession) => {
@@ -20,7 +21,7 @@ const manageCookies = (mainSession) => {
         name: 'userId',
         value: message,
         secure: true,
-        expirationDate: 1526605635 // use moment.js to set it for a few days from now
+        expirationDate: moment().add(7, 'days').unix()
       };
       mainSession.cookies.set(cookie, (err) => {
         if (err) console.log(err);
@@ -33,7 +34,6 @@ const manageCookies = (mainSession) => {
         }
       });
     } else if (event === 'logout') {
-      console.log('COOKIE DESTROYED!')
       mainSession.clearStorageData();
     }
   })

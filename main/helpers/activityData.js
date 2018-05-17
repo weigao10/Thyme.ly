@@ -20,9 +20,6 @@ const monitorActivity = (activities, user) => {
     })
     .then((lastActivity) => {
       if (lastActivity) { //only bother if lastActivity not undefined
-        // console.log(lastActivity)
-        console.log('process memory info is', process.getProcessMemoryInfo())
-        console.log('system memory info is', process.getSystemMemoryInfo())
         const qs = {
           user_name: user, //CHANGE TO USERNAME
           app_name: lastActivity.app,
@@ -40,9 +37,6 @@ const monitorActivity = (activities, user) => {
     })
     .catch((e) => {
       console.log('error in activity monitor is', e)
-      // e.time = timestamp();
-      // e.description = e.message;
-      // errors.push(e); //TODO: this loses some info but full error objects apparently can't be stored in an array
     })
 };
 
@@ -92,13 +86,13 @@ const startMonitor = (mainWindow, activities = [], user = "test") => {
   }, 1000)
 }
 
+//closure variables
 
 let intervalId = false;
 let activities = [];
 let user = '';
 
 exports.monitor = (mainWindow, mainSession) => {
-  //TODO: CLEAR INTERVAL ON SYSTEM SLEEP
   ipcMain.on('monitor', (mainWindow, event, message) => {
     if (event === 'start') {
       console.log('messsage inside monitor is', message)
@@ -118,7 +112,6 @@ exports.stopMonitorProcess = () => {
 };
 
 exports.restartMonitorProcess = (mainWindow, mainSession) => {
-  console.log('main window inside restart monitor is', mainWindow);
   intervalId = startMonitor(mainWindow, activities, user);
 }
 

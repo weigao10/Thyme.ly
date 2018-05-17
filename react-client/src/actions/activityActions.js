@@ -11,20 +11,20 @@ export const addActivity = (data) => {
   }
 }
 
-export const deleteActivity = (activity, category, isTracked) => {
+export const deleteActivity = (activity, category, isTracked, user) => {
 
   console.log('deleting this activity card isTracked is:', isTracked);
   let id = activity.id;
 
   const params = {
-    user_name: 'brian',
+    user_name: user,
     app_name: activity.app,
     window_title: activity.title,
     prod_class: category,
     isTracked: isTracked
   }
 
-  console.log('params are', params)
+  // console.log('params are', params)
 
   const request = axios.post(url + '/api/deleteCard', {params: params});
   return {
