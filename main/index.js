@@ -49,14 +49,29 @@ const createWindow = () => {
         minWidth: 400,
         minHeight: 300,
         show: false,
+        // frame: false
         //make non resizable?
   });
 
   popUpWindow = new BrowserWindow({
-    width: 400,
-    height: 600,
+    width: 450,
+    height: 450,
     show: false,
     alwaysOnTop: true
+  })
+
+  popUpWindow.loadURL(url.format({
+    pathname: path.join(__dirname, '/../react-client/dist/idle.html'),
+    protocol: 'file',
+    slashes: true
+  }))
+
+  // popUpWindow.on('closed', function () {
+  //   popWindow=null;
+  // })
+  popUpWindow.on('close', function (event) {
+    popUpWindow.hide();
+    event.preventDefault();
   })
 
   let mainSession = mainWindow.webContents.session;
@@ -78,8 +93,8 @@ const createWindow = () => {
 
   mainWindow.on('close', function(e){
     if(!force_quit){
-        e.preventDefault();
-        mainWindow.hide();
+      e.preventDefault();
+      mainWindow.hide();
     }
   });
 
@@ -106,6 +121,7 @@ app.on('ready', () => {
     // stopMonitorProcess();
   });
   electron.powerMonitor.on('resume', () => {
+    popUpWindow.show();
     mainWindow.webContents.send('system', 'resume')
     // console.log('system waking from sleep')
     // restartMonitorProcess(mainWindow);
