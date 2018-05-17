@@ -3,28 +3,22 @@ const path = require('path');
 const dbPath = path.resolve(__dirname, 'sqlite.db')
 const db = new sqlite3.Database(dbPath);
 const Promise = require('bluebird')
-
+const moment = require('moment')
+let date = moment().format('YYYY-MM-DD')
 
 //NEED TO ADD DATE COLUMN
 const createTable = () => {
   console.log("createTable");
-  db.run("CREATE TABLE IF NOT EXISTS activities (id INT, productivity TEXT, app TEXT, title TEXT, duration INT)")
+  db.run("CREATE TABLE IF NOT EXISTS activities (id INT, date DATE, productivity TEXT, app TEXT, title TEXT, duration INT)")
   db.run("CREATE TABLE IF NOT EXISTS preferences (category TEXT, data TEXT)")
-  db.run("CREATE TABLE IF NOT EXISTS spurts (id INT, productivity TEXT, app TEXT, title TEXT, startTime TEXT, endTime TEXT)")
+  db.run("CREATE TABLE IF NOT EXISTS spurts (id INT, date DATE, productivity TEXT, app TEXT, title TEXT, startTime TEXT, endTime TEXT)")
 }
-
 
 //NEED TO ADD DATE COLUMN
 const insertActivities = ({id, productivity, app, title, duration}) => {
-  // db.run(`INSERT INTO activities(id, productivity, app, title, duration) VALUES(?, ?, ?, ?, ?)`, 
-  // [id, productivity, app, title, duration], 
-  // (err) => {
-  //   if (err) return console.log('ERR IN SQLITE INSERT ACTIVITIES: ', err.message);
-  //   console.log(`A row has been inserted into activities`);
-  // });
-  
-  let query = `INSERT INTO activities(id, productivity, app, title, duration) VALUES(?, ?, ?, ?, ?)`;
-  let params = [id, productivity, app, title, duration];
+  console.log('date is', date)
+  let query = `INSERT INTO activities(id, date, productivity, app, title, duration) VALUES(?, ?, ?, ?, ?, ?)`;
+  let params = [id, date, productivity, app, title, duration];
   return new Promise ((resolve, reject) => {
     db.run(query, params, (err, result) => {
       if (err) reject(err)
@@ -34,13 +28,6 @@ const insertActivities = ({id, productivity, app, title, duration}) => {
 }
 
 const insertPreferences = (data, category) => {
-  // db.run(`INSERT INTO preferences(data, category) VALUES(?, ?)`, 
-  // [data, category], 
-  // (err) => {
-  //   if (err) return console.log('ERR IN SQLITE INSERT PREFERENCES: ',err.message);
-  //   console.log(`A row has been inserted into preferences`);
-  // });
-
   let query = `INSERT INTO preferences(data, category) VALUES(?, ?)`;
   let params = [data, category];
   return new Promise ((resolve, reject) => {
@@ -54,15 +41,8 @@ const insertPreferences = (data, category) => {
 //NEED TO ADD DATE
 const insertSpurts = ({id, productivity, app, title}, {startTime, endTime}) => {
   console.log('insert spurt');
-
-  // db.run(`INSERT INTO spurts(id, productivity, app, title, startTime, endTime) VALUES(?, ?, ?, ?, ?, ?)`, 
-  // [id, productivity, app, title, startTime, endTime], 
-  // (err) => {
-  //   if (err) return console.log('ERR IN SQLITE INSERT SPURTS: ',err.message);
-  //   console.log(`A row has been inserted into spurts`);
-  // });
-  let query = `INSERT INTO spurts(id, productivity, app, title, startTime, endTime) VALUES(?, ?, ?, ?, ?, ?)`;
-  let params = [id, productivity, app, title, startTime, endTime];
+  let query = `INSERT INTO spurts(id, date, productivity, app, title, startTime, endTime) VALUES(?, ?, ?, ?, ?, ?, ?)`;
+  let params = [id, date, productivity, app, title, startTime, endTime];
   return new Promise ((resolve, reject) => {
     db.run(query, params, (err, result) => {
       if (err) reject(err)
@@ -73,8 +53,7 @@ const insertSpurts = ({id, productivity, app, title}, {startTime, endTime}) => {
 
 const getActivities = () => {
   console.log("get activities");
-  let query = `SELECT id, productivity, app, title, duration FROM activities`;
-
+  let query = `SELECT id, date, productivity, app, title, duration FROM activities`;
   return new Promise ((resolve, reject) => {
     db.all(query, [], (err, result) => {
       if (err) reject(err)
@@ -85,12 +64,7 @@ const getActivities = () => {
 
 const getSpurts = (cb) => {
   console.log("get spurts");
-  let query = `SELECT id, productivity, app, title, startTime, endTime FROM spurts`;
-  // db.all(query, [], (err, rows) => {
-  //   if (err) return console.log('ERR IN SQLITE GET SPURTS: ',err.message);
-  //   cb(rows)
-  // });
-
+  let query = `SELECT id, date, productivity, app, title, startTime, endTime FROM spurts`;
   return new Promise ((resolve, reject) => {
     db.all(query, [], (err, result) => {
       if (err) reject(err)
