@@ -4,6 +4,9 @@ export const CATEGORIZE_ACTIVITY = 'CATEGORIZE_ACTIVITY';
 export const SET_ALL_ACTIVITIES = 'SET_ALL_ACTIVITIES';
 export const DELETE_ACTIVITY = 'DELETE_ACTIVITY';
 export const TRACK_APP_TITLE = 'TRACK_APP_TITLE';
-export const UNTRACK_APP_TITLE = 'UNTRACK_APP_TITLE'
+export const UNTRACK_APP_TITLE = 'UNTRACK_APP_TITLE';
+export const SET_USER = 'SET_USER';
+export const GET_USER = 'GET_USER';
+export const LOG_OUT = 'LOG_OUT';
 
 

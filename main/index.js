@@ -2,9 +2,11 @@ const url = require('url');
 const path = require('path');
 const windowStateKeeper = require('electron-window-state')
 const electron = require('electron')
-const { app, BrowserWindow, ipcMain, Menu, Tray, nativeImage } = electron;
+const { app, BrowserWindow, Menu, ipcMain, Tray, nativeImage, session } = electron;
+
 const { saveStoreToSql, populateStore } = require('./helpers/sqlHelpers.js')
-const { monitor } = require('../main/helpers/activityData.js');
+const { monitor } = require('./helpers/activityData.js');
+const { manageCookies } = require('./helpers/manageSession.js');
 
 let mainWindow, popUpWindow, tray, splash;
 let force_quit = false;
@@ -38,15 +40,16 @@ const createWindow = () => {
     slashes: true
   }))
 
+  // let appSession = session.fromPartition('partition1');
   mainWindow = new BrowserWindow({
-    width: winState.width,
-    height: winState.height,
-    x: winState.x,
-    y: winState.y,
-    minWidth: 400,
-    minHeight: 300,
-    show: false
-    //make non resizable?
+        width: winState.width,
+        height: winState.height,
+        x: winState.x,
+        y: winState.y,
+        minWidth: 400,
+        minHeight: 300,
+        show: false,
+        //make non resizable?
   });
 
   popUpWindow = new BrowserWindow({
@@ -55,6 +58,9 @@ const createWindow = () => {
     show: false,
     alwaysOnTop: true
   })
+
+  let mainSession = mainWindow.webContents.session;
+  manageCookies(mainSession, mainWindow);
 
   winState.manage(mainWindow);
 
@@ -85,18 +91,26 @@ const createWindow = () => {
 
   const mainMenu = Menu.buildFromTemplate(mainMenuTemplate);
   Menu.setApplicationMenu(mainMenu);
-  monitor(mainWindow)
+  monitor(mainWindow, mainSession)
 }
 
 app.on('ready', () => {
   createWindow();
-  createTray();  
-  electron.powerMonitor.on('suspend', () => console.log('system going to sleep'));
-  electron.powerMonitor.on('resume', () => {
-    popUpWindow.show();
-    console.log('system waking from sleep')
+  createTray();
+  mainWindow.webContents.on('did-finish-load', () => {
+    console.log('main window finished loading!')
   })
-}) 
+  electron.powerMonitor.on('suspend', () => {
+    mainWindow.webContents.send('system', 'sleep')
+    // console.log('system going to sleep, so stop monitor')
+    // stopMonitorProcess();
+  });
+  electron.powerMonitor.on('resume', () => {
+    mainWindow.webContents.send('system', 'resume')
+    // console.log('system waking from sleep')
+    // restartMonitorProcess(mainWindow);
+  });
+});
 
 const mainMenuTemplate = [
   //if mac, need an empty object here
@@ -136,12 +150,12 @@ const mainMenuTemplate = [
   }
 ]
 
-if(process.platform === 'darwin'){
+if (process.platform === 'darwin'){
   mainMenuTemplate.unshift({});
 }
 
 //devtools
-if(process.env.NODE_ENV !== 'production'){
+if (process.env.NODE_ENV !== 'production'){
   mainMenuTemplate.push({
     label: 'Developer Tools',
     submenu: [
