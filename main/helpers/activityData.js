@@ -20,7 +20,9 @@ const monitorActivity = (activities, user) => {
     })
     .then((lastActivity) => {
       if (lastActivity) { //only bother if lastActivity not undefined
-        console.log(lastActivity)
+        // console.log(lastActivity)
+        console.log('process memory info is', process.getProcessMemoryInfo())
+        console.log('system memory info is', process.getSystemMemoryInfo())
         const qs = {
           user_name: user, //CHANGE TO USERNAME
           app_name: lastActivity.app,
