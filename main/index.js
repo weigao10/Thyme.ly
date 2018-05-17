@@ -75,6 +75,7 @@ const createWindow = () => {
 app.on('ready', () => {
   createWindow();
   createTray();
+  console.log(process.getProcessMemoryInfo())
   mainWindow.webContents.on('did-finish-load', () => {
     console.log('main window finished loading!')
   })
