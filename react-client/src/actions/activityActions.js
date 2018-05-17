@@ -26,7 +26,7 @@ export const deleteActivity = (activity, category, isTracked, user) => {
 
   // console.log('params are', params)
 
-  const request = axios.post(url + '/api/deleteCard', {params: params});
+  const request = axios.delete(url + '/api/classifications', {data: params});
   return {
     type: DELETE_ACTIVITY,
     payload: {id, category}
