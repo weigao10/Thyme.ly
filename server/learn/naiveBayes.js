@@ -9,7 +9,7 @@ const { getBrowserActivities } = require('../database/index.js');
 
 //TODO: save classifier into DB so it can be "revived" each time
 const initClassifier = (activities) => {
-  activities.filter(({ app_name }) => app_name !== 'neutral')
+  activities.filter(({ app_name, prod_class }) => app_name === 'Google Chrome' && prod_class !== 'neutral')
             .forEach(({window_title, prod_class}) => {
               classifier.learn(window_title, prod_class);
             });
@@ -17,6 +17,7 @@ const initClassifier = (activities) => {
 
 getBrowserActivities()
   .then((activities) => {
+    console.log('activities are', activities)
     initClassifier(activities);
     console.log('classifier initialized!');
   })
@@ -27,9 +28,9 @@ getBrowserActivities()
   // learn either periodically using a cron or on every new user categorization
     // if latter, need to also recognize recategorizations and deletes
     
-const predictProducitivityClass = (title) => {
+const predictProductivityClass = (title) => {
   console.log(`predicting productivity class of ${title}`)
   console.log(classifier.categorize(title));
 };
 
-exports.predictProducitivityClass = predictProducitivityClass;
+exports.predictProductivityClass = predictProductivityClass;
