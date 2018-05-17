@@ -76,6 +76,7 @@
   "dependencies": {
     "active-win": "^3.0.0",
     "axios": "^0.18.0",
+    "bluebird": "^3.5.1",
     "body-parser": "^1.18.2",
     "c3": "^0.5.4",
     "classificator": "^0.2.3",
