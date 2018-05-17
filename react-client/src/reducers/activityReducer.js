@@ -12,6 +12,7 @@ const activities = (state = initialState, action) => {
 
   switch(action.type){
     case ADD_ACTIVITY:
+      console.log('action payload', action.payload)
       let {app, title, startTime, endTime, productivity} = action.payload
       let duration = getDuration(startTime, endTime)
       let newData = {
@@ -29,24 +30,21 @@ const activities = (state = initialState, action) => {
       }
 
     case DELETE_ACTIVITY:
-      let newArr = state[action.payload.category].filter((el) => el.id != action.payload.id);
+      let { category } = action.payload
+      let newArr = state[category].filter((el) => el.id !== action.payload.id); //don't deconstruct id
       return {
         ...state,
-        [action.payload.category]: newArr
+        [category]: newArr
       };
 
     case PATCH_ACTIVITY:
-      let {index, activity, data} = action.payload
-      console.log('activity', activity);
-      // console.log('data', data)
+      let { index, activity, data } = action.payload
       let copySpurts = (activity.spurts) ? activity.spurts.slice() : []
-      // console.log('copy spurts', copySpurts)
       let updatedActivity = Object.assign({
         spurts: copySpurts
       }, activity);
       updatedActivity.spurts.push({'startTime': data.startTime, 'endTime': data.endTime})
       updatedActivity.duration += getDuration(data.startTime, data.endTime)
-      // console.log('saate', productivity)
       return {
         ...state,
         [activity.productivity]: [
@@ -57,7 +55,7 @@ const activities = (state = initialState, action) => {
       }
 
     case CATEGORIZE_ACTIVITY:
-      let {id, oldCatName, newCatName} = action.payload;
+      let { id, oldCatName, newCatName } = action.payload;
       const movingActivity = state[oldCatName].filter((el) => el.id === id)[0];
       movingActivity.productivity = newCatName;
       const updatedOldCat = state[oldCatName].filter((el) => el.id !== id);
