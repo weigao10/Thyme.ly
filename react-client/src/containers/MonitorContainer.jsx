@@ -44,14 +44,36 @@ class MonitorContainer extends React.Component {
         preferences: this.props.preferences
       })
       event.sender.send("store", store)
-    })
+    });
+
+    ipcRenderer.on('system', (event, message) => {
+      console.log('got system message of', message)
+      if (message === 'sleep') {
+        this.pauseMonitor()
+      }
+      else if (message === 'resume') {
+        this.connectMonitor(this.props.user.user)
+      };
+    });
+
+    ipcRenderer.send('cookies', 'check');
+    ipcRenderer.on('cookies', (event, message) => {
+      console.log('monitor container got this user_id via IPC', message.value)
+      this.props.setUser(message.value)
+      if (message.value) this.connectMonitor(message.value)
+    });
   }
 
-  handleChange = (value) => {
+  logout() {
+    ipcRenderer.send('cookies', 'logout');
+    //actually destroys the cookie but also need to remove it from the store
+  }
+
+  handleChange(value) {
     this.setState({
       slideIndex: value,
     });
-  };
+  }
 
   connectMonitor(user) {
     if (this.connected === true) console.log('you tried to connect monitor when it was already connected')
