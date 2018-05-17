@@ -34,6 +34,16 @@ class MonitorContainer extends React.Component {
       let inState = this.checkState(message, isTracked);
       this.props.activityHandler(message, inState);
     });
+
+    ipcRenderer.on('system', (event, message) => {
+      console.log('got system message of', message)
+      if (message === 'sleep') {
+        this.pauseMonitor()
+      }
+      else if (message === 'resume') {
+        this.connectMonitor(this.props.user.user)
+      };
+    });
     //COOKIE CHECK
     ipcRenderer.send('cookies', 'check');
     ipcRenderer.on('cookies', (event, message) => {
@@ -55,11 +65,13 @@ class MonitorContainer extends React.Component {
   };
 
   connectMonitor(user) {
+    if (this.connected === true) console.log('you tried to connect monitor when it was already connected')
     this.connected = true;
     ipcRenderer.send('monitor', 'start', user);
   }
 
   pauseMonitor() {
+    if (this.connected === false) console.log('you tried to pause monitor when it was already paused')
     this.connected = false;
     ipcRenderer.send('monitor', 'pause');
   }
@@ -72,7 +84,7 @@ class MonitorContainer extends React.Component {
     if (!toggle) {
       this.pauseMonitor();
     } else {
-      this.connectMonitor();
+      this.connectMonitor(this.props.user.user);
     }
   }
 

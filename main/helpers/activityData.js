@@ -6,7 +6,7 @@ const axios = require('axios');
 const server = 'http://127.0.0.1:3000';
 const url = 'https://test-aws-thymely.com';
 
-const monitorActivity = (activities, errors, user) => {
+const monitorActivity = (activities, user) => {
   return activeWin()
     .then((data) => {
       let newActivity = assembleActivity(data);
@@ -20,6 +20,7 @@ const monitorActivity = (activities, errors, user) => {
     })
     .then((lastActivity) => {
       if (lastActivity) { //only bother if lastActivity not undefined
+        console.log(lastActivity)
         const qs = {
           user_name: user, //CHANGE TO USERNAME
           app_name: lastActivity.app,
@@ -75,33 +76,32 @@ const chunkComplete = (lastActivity, newActivity) => {
   return (lastActivity.app !== newActivity.app) || (lastActivity.title !== newActivity.title);
 };
 
-const startMonitor = (mainWindow, activities = [], errors = [], user = "test") => {
+const startMonitor = (mainWindow, activities = [], user = "test") => {
   console.log('MONITOR WAS STARTED FOR USER', user)
   return setInterval(() => {
-    monitorActivity(activities, errors, user)
+    monitorActivity(activities, user)
       .then((data) => {
         if (data) {
           mainWindow.sender.webContents.send('activity', data)
+          // mainWindow.webContents.send('activity', data)
         }
       })
       .catch((err) => console.error('error in activity monitor', err))
   }, 1000)
 }
 
+
+let intervalId = false;
+let activities = [];
+let user = '';
+
 exports.monitor = (mainWindow, mainSession) => {
-  let intervalId = false;
-  let activities = [];
-  let errors = [];
+  //TODO: CLEAR INTERVAL ON SYSTEM SLEEP
   ipcMain.on('monitor', (mainWindow, event, message) => {
-    //works only when there is a cookie now
     if (event === 'start') {
-      // mainSession.cookies.get({name: 'userId', url}, (err, cookies) => {
-      //   console.log('cookies inside monitor subroutine are', cookies);
-        
-      // });
-       //add user here
       console.log('messsage inside monitor is', message)
-      intervalId = startMonitor(mainWindow, activities, errors, message);
+      user = message
+      intervalId = startMonitor(mainWindow, activities, message);
     } else if (event === 'pause' && intervalId) {
       clearInterval(intervalId);
       intervalId = false;
@@ -110,6 +110,15 @@ exports.monitor = (mainWindow, mainSession) => {
     }
   });
 };
+
+exports.stopMonitorProcess = () => {
+  if (intervalId) clearInterval(intervalId);
+};
+
+exports.restartMonitorProcess = (mainWindow, mainSession) => {
+  console.log('main window inside restart monitor is', mainWindow);
+  intervalId = startMonitor(mainWindow, activities, user);
+}
 
 /*
 ideas for tests:
