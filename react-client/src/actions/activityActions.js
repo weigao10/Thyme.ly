@@ -40,11 +40,9 @@ export const patchActivity = ({ activity, category, index }, data) => {
   }
 }
 
-export const changeCategory = (activity, oldCatName, newCatName) => {
-  //send off the username, apptitle, windowtitle to server
-  //return dat payload
+export const changeCategory = (activity, oldCatName, newCatName, user) => {
   const params = {
-    user_name: 'brian',
+    user_name: user,
     app_name: activity.app,
     window_title: activity.title,
     prod_class: newCatName

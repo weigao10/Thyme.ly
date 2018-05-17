@@ -32,17 +32,18 @@ const getActivities = () => {
     .catch((err) => console.log( chalk.red.bgYellow(err)));
 };
 
-const getProductivityClass = (appName, title) => {
+const getProductivityClass = (appName, title, userName) => {
   const queryStr = `SELECT prod_class FROM public.categories where\
-                    (app_name = $1) AND (window_title = $2)`;
-  const values = [appName, title];
+                    (app_name = $1) AND (window_title = $2) AND (user_name = $3)`;
+  const values = [appName, title, userName];
+  console.log('inside get productivity class for', userName);
   return pool.query(queryStr, values)
     .then((data) => {
       if (data.rows.length) {
-        // console.log('productivity class is', data.rows[0].prod_class)
+        console.log('productivity class is', data.rows[0].prod_class)
         return data.rows[0].prod_class
       } else {
-        // console.log('productivity class not found')
+        console.log('productivity class not found')
         return null;
       }
     })
@@ -50,9 +51,9 @@ const getProductivityClass = (appName, title) => {
 };
 
 const addOrChangeProductivity = (query) => {
-  console.log('inside add or change productivity')
-  const {app_name, window_title} = query;
-  return getProductivityClass(app_name, window_title) //add user here later
+  const { app_name, window_title, user_name } = query;
+  console.log('inside add or change productivity for user', user_name)
+  return getProductivityClass(app_name, window_title, user_name) //add user here later
     .then(result => {
       if (result) {
         // console.log('gotta recategorize!')
@@ -88,7 +89,6 @@ const addProductivityClass = ({user_name, app_name, window_title, prod_class}) =
   const queryStr = `INSERT INTO public.categories(user_name, app_name, window_title, prod_class)\
                     VALUES ($1, $2, $3, $4)`;
   const values = [user_name, app_name, window_title, prod_class];
-  console.log('values to add are', values)
   return pool.query(queryStr, values)
     .catch(err => console.error('error in adding prod_class', err)) 
 };

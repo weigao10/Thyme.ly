@@ -5,9 +5,32 @@ import $ from 'jquery';
 import config from '../../config.js'
 import {bundleId, clientId, redirectURI} from '../../config.js'
 import {parse} from 'url'
-import {remote} from 'electron'
+import { remote, ipcRenderer } from 'electron'
 import axios from 'axios'
 import qs from 'qs'
+
+const SERVER_URL = 'http://127.0.0.1:3000';
+
+//if logged in already, should render app directly AND add uID to redux store
+  //else render this log in screen
+// if user logs out, destroy the cookie
+
+//check to see if cookie exists
+  //if cookie exists, skip this screen and render app
+    //need to somehow connect user_id to redux store
+//if not wait for login
+  //upon successful login set the cookie
+//also listen for a logout action
+  //destroy cookie
+
+
+//cookie checking routine (MOVE TO ANOTHER COMPONENT SO LOGIN NEVER EVEN RENDERS IF USER IS LOGGED IN)
+ipcRenderer.send('cookies', 'check');
+ipcRenderer.on('cookies', (event, message) => {
+  // console.log('already logged-in user id is', message.value);
+  ReactDOM.render((<App user={message.value}/>), document.getElementById('app'))
+  document.getElementById('login-page').innerHTML = '';
+});
 
 $('.message a').click(function(){
   $('form').animate({height: "toggle", opacity: "toggle"}, "slow");
@@ -33,6 +56,8 @@ registerButton.addEventListener('click', () => {
 
   auth.createUserWithEmailAndPassword(email, password)
   .then((data) => {
+    // console.log('data from new user is', data.user.uid);
+    ipcRenderer.send('cookies', 'logged in', data.user.uid);
     ReactDOM.render((<App />), document.getElementById('app'))
     document.getElementById('login-page').innerHTML = ''
   })
@@ -45,12 +70,16 @@ loginButton.addEventListener('click', () => {
   let password = document.getElementById('password').value
   auth.signInWithEmailAndPassword(email, password)
   .then((data) => {
-    console.log('data', data)
-    ReactDOM.render((<App />), document.getElementById('app'))
-    document.getElementById('login-page').innerHTML = ''
+    console.log('entire data obj is', data)
+    console.log('user id from regular login is', data.user.uid)
+    const uId = data.user.uid;
+    ipcRenderer.send('cookies', 'logged in', uId)
+    ReactDOM.render((<App user={uId}/>), document.getElementById('app'))
+    document.getElementById('login-page').innerHTML = '';
   })
   .catch((err) => {
-    alert('Username/password combination do not match.')
+    console.error(err);
+    // alert('Username/password combination do not match.')
     //clear form
   })
 })
@@ -58,12 +87,11 @@ loginButton.addEventListener('click', () => {
 function googleSignIn () {
   signInWithPopup()
   .then((code) => {
-    let tokens = fetchAccessTokens(code)
-    console.log('tokens', tokens)
+    return fetchAccessTokens(code)
   })
-  .then((tokens) => (
-    fetchGoogleProfile(tokens.access_token)
-  ))
+  .then((tokens) => {
+    return fetchGoogleProfile(tokens.access_token)
+  })
   .then(({id, email, name}) => {
     console.log('google oauth id', id)
     return {
@@ -75,27 +103,9 @@ function googleSignIn () {
   })
 }
 
-// async function googleSignIn () {
-//   const code = await signInWithPopup()
-//   console.log('code', code)
-//   const tokens = await fetchAccessTokens(code)
-//   console.log('tokens', tokens)
-//   const {id, email, name} = await fetchGoogleProfile(tokens.access_token)
-//   console.log('id', id)
-//   const providerUser = {
-//     uid: id,
-//     email,
-//     displayName: name,
-//     idToken: tokens.id_token,
-//   }
-
-//   return mySignInFunction(providerUser)
-// }
-
 const GOOGLE_AUTHORIZATION_URL = 'https://accounts.google.com/o/oauth2/v2/auth'
 const GOOGLE_TOKEN_URL = 'https://www.googleapis.com/oauth2/v4/token'
 const GOOGLE_PROFILE_URL = 'https://www.googleapis.com/userinfo/v2/me'
-
 
 function signInWithPopup () {
   return new Promise((resolve, reject) => {
@@ -143,7 +153,7 @@ function signInWithPopup () {
 }
 
 function fetchAccessTokens (code) {
-  axios.post(GOOGLE_TOKEN_URL, qs.stringify({
+  return axios.post(GOOGLE_TOKEN_URL, qs.stringify({
     code,
     client_id: clientId,
     redirect_uri: bundleId + ':' +redirectURI,
@@ -156,36 +166,16 @@ function fetchAccessTokens (code) {
   .then((data) => data.data)
 }
 
-// async function fetchAccessTokens (code) {
-//   const response = await axios.post(GOOGLE_TOKEN_URL, qs.stringify({
-//     code,
-//     client_id: clientId,
-//     redirect_uri: bundleId + ':' +redirectURI,
-//     grant_type: 'authorization_code',
-//   }), {
-//     headers: {
-//       'Content-Type': 'application/x-www-form-urlencoded',
-//     },
-//   })
-//   return response.data
-// }
-
 function fetchGoogleProfile (accessToken) {
-  axios.get(GOOGLE_PROFILE_URL, {
+  return axios.get(GOOGLE_PROFILE_URL, {
     headers: {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${accessToken}`,
     },
   })
-  .then((data) => data.data)
+  .then((data) => {
+    console.log('data from google profile is', data);
+    ipcRenderer.send('cookies', 'logged in', data.data.id)
+    return data.data
+  })
 }
-
-// async function fetchGoogleProfile (accessToken) {
-//   const response = await axios.get(GOOGLE_PROFILE_URL, {
-//     headers: {
-//       'Content-Type': 'application/json',
-//       'Authorization': `Bearer ${accessToken}`,
-//     },
-//   })
-//   return response.data
-// }
