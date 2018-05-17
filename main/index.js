@@ -102,6 +102,7 @@ const createWindow = () => {
   app.once('before-quit', function() {
     saveStoreToSql(mainWindow)
     force_quit = true;
+    popUpWindow.destroy();
     app.quit()
   });
 
