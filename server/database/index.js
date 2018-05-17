@@ -52,15 +52,12 @@ const getProductivityClass = (appName, title, userName) => {
 
 const addOrChangeProductivity = (query) => {
   const { app_name, window_title, user_name } = query;
-  console.log('inside add or change productivity for user', user_name)
   return getProductivityClass(app_name, window_title, user_name) //add user here later
     .then(result => {
       if (result) {
-        // console.log('gotta recategorize!')
         return changeProductivityClass(query)
       }
       else {
-        // console.log('gotta add productivity!')
         return addProductivityClass(query);
       }
     })
@@ -68,15 +65,14 @@ const addOrChangeProductivity = (query) => {
 };
 
 const deleteProductivityClass = ({user_name, app_name, window_title, prod_class, isTracked}) => {
-
   let queryStr;
-
+  console.log('user name inside db delete helper is', user_name)
   if (isTracked) {
     queryStr = `DELETE FROM public.categories WHERE user_name='${user_name}' AND app_name='${app_name}' AND window_title='${window_title}'`;
   } else {
     queryStr = `DELETE FROM public.categories WHERE user_name='${user_name}' AND app_name='${app_name}'`;
   }
-
+  console.log('delete queryStr is', queryStr)
   //values are still included here, but not used, in case we need them in the future
   const values = [user_name, app_name, window_title, prod_class, isTracked];
 

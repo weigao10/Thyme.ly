@@ -6,49 +6,49 @@ const partials = require('express-partials');
 const app = express();
 const port = process.env.PORT || 3000;
 const moment = require('moment');
-const memwatch = require('memwatch-next');
+// const memwatch = require('memwatch-next');
 const chalk = require('chalk');
 
 const db = require('./database/index.js');
-// const naiveBayes = require('./learn/naiveBayes.js');
+const ml = require('./learn/naiveBayes.js');
 
 app.use(bodyParser.json());
 
-memwatch.on('leak', function(info) {
-  console.log('LEAK INFO FROM MEMWATCH')
-  console.log(chalk.red.bgYellow(info))
+//middleware
+
+app.use((req, res, next) => {
+  res.header(`Access-Control-Allow-Origin`, `*`);
+  res.header(`Access-Control-Allow-Headers`, `Origin, X-Requested-With, Content-Type, Accept`);
+  next();
 });
 
-memwatch.on('stats', function(stats) {
-  console.log('garbage collection info from memwatch')
-  console.log(stats)
+app.use('/api/classifications', (req, res, next) => {
+  //TODO: ADD JSON TOKEN VERIFICATION
+  next();
 });
 
+//api
 app.get('/api/classifications', (req, res) => {
-  // const hd = new memwatch.HeapDiff();
   const {user_name, app_name, window_title} = req.query;
-  // console.log('GET req is', req)
-  if (!user_name) {
+  console.log('req.query is', req.query)
+  if (!user_name) { //refactor to be middleware
+    console.log('NO USER NAME!')
     res.send('no user attached to this session')
   }
   return db.getProductivityClass(app_name, window_title, user_name)
     .then((prod_class) => {
-      // console.log(`prod_class is ${prod_class} and app_name is ${app_name}`) //seems to lag one behind??
-      // if (prod_class === null && app_name === 'Google Chrome') {
-      //   naiveBayes.predictProducitivityClass(window_title);
-      // }
+      if (prod_class === null && app_name === 'Google Chrome') {
+        ml.predictProductivityClass(window_title, user_name);
+      }
       res.send(prod_class);
-      // const diff = hd.end();
-      // console.log('MEMWATCH DIFF after get request')
-      // console.log(diff)
     })
     .catch((err) => res.send(err));
 });
 
 app.post('/api/classifications', (req, res) => {
-  console.log( chalk.bold.white.bgBlue('inside /api/classifications'));
-
   if (!req.body.params.user_name) {
+    console.log('req.body.params is', req.body.params)
+    console.log('NO USER NAME!')
     res.send('no user attached to this session')
   }
   return db.addOrChangeProductivity(req.body.params)
@@ -58,10 +58,13 @@ app.post('/api/classifications', (req, res) => {
     .catch(err => console.log(err))
 });
 
-app.post('/api/deleteCard', (req, res) => {
-  console.log( chalk.bold.white.bgBlue('inside /api/deleteCard'));
-
-  return db.deleteProductivityClass(req.body.params)
+app.delete('/api/classifications', (req, res) => {
+  console.log('getting a delete request for', req.body)
+  if (!req.body.user_name) {
+    console.log('NO USER NAME!')
+    res.send('no user attached to this session')
+  }
+  return db.deleteProductivityClass(req.body)
     .then(message => res.send(message))
     .catch(err => console.log(err));
 })

@@ -14,9 +14,11 @@ import RaisedButton from "material-ui/RaisedButton";
 const comparisonTarget = {
   drop(props, monitor) {
     const { activity, oldCategory } = monitor.getItem();
+    const isTracked = props.preferences.trackedApps.includes(activity.app);
     const newCategory = props.category;
     const user = props.user
-    props.changeCategory(activity, oldCategory, newCategory, user);
+    console.log(`isTracked in drop zone is ${isTracked} and user is ${user}`)
+    props.changeCategory(activity, oldCategory, newCategory, props.isTracked, user);
   }
 };
 

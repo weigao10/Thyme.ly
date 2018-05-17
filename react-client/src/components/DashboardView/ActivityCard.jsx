@@ -55,7 +55,7 @@ const ActivityCard = (props) => {
   const { connectDragSource, isDragging } = props;
 
   let isTracked;
-  if(preferences.trackedApps.includes(activity.app)) {
+  if (preferences.trackedApps.includes(activity.app)) {
     isTracked = true;
   } else {
     isTracked = false;
@@ -70,7 +70,7 @@ const ActivityCard = (props) => {
         {isTracked ? activity.title : ''} <br/>
         <i>{formattedDuration}</i>
         <br/>
-        <button onClick={() => {deleteActivity(activity, category, isTracked)}}>delete</button>
+        <button onClick={() => {deleteActivity(activity, category, isTracked, user)}}>delete</button>
       </Paper></div>
     )
 }
