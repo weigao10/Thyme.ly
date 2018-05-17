@@ -26,7 +26,7 @@ class DashboardContainer extends React.Component {
             changeCategory={changeCategory}
             deleteActivity={deleteActivity}
             preferences={preferences}
-            user={user}
+            user={user.user}
           />
           <ActivityGroup
             category='neutral'
@@ -34,7 +34,7 @@ class DashboardContainer extends React.Component {
             changeCategory={changeCategory}
             deleteActivity={deleteActivity}
             preferences={preferences}
-            user={user}
+            user={user.user}
           />
           <ActivityGroup
             category='distracting'
@@ -42,7 +42,7 @@ class DashboardContainer extends React.Component {
             changeCategory={changeCategory}
             deleteActivity={deleteActivity}
             preferences={preferences}
-            user={user}
+            user={user.user}
           />
         </Paper>
         <Paper style={{display: 'inline-block', background: '#BBB', margin: '0', padding: '5px', width: '20%', minHeight: '500px', maxHeight: '550px', verticalAlign: 'top'}}>
@@ -56,18 +56,21 @@ class DashboardContainer extends React.Component {
 const mapStateToProps = (state) => ({
   activities: state.activities,
   preferences: state.preferences,
-  user: state.user.user
+  user: state.user
 });
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    changeCategory: (activity, oldCat, newCat, user) => {
-      // console.log('user trying to change cats is', user)
-      if (oldCat !== newCat) dispatch(changeCategory(activity, oldCat, newCat, user));
+    changeCategory: (activity, oldCat, newCat, isTracked, user) => { //refactor 
+      console.log('user trying to change cats is', user)
+      if (oldCat !== newCat) {
+        dispatch(changeCategory(activity, oldCat, newCat, isTracked, user))
+      };
     },
-    deleteActivity: (activity, category, isTracked) => {
-      console.log('dispatching deleteActivity and isTracked is:', isTracked)
-      dispatch(deleteActivity(activity, category, isTracked));
+    deleteActivity: (activity, category, isTracked, user) => {
+      // console.log('dispatching deleteActivity and isTracked is:', isTracked)
+      console.log('trying to delete activity for user', user)
+      dispatch(deleteActivity(activity, category, isTracked, user));
     }
   };
 };

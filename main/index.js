@@ -1,7 +1,8 @@
 const url = require('url');
 const path = require('path');
-const windowStateKeeper = require('electron-window-state')
-const electron = require('electron')
+const windowStateKeeper = require('electron-window-state');
+const moment = require('moment');
+const electron = require('electron');
 const { app, BrowserWindow, Menu, ipcMain, Tray, nativeImage, session } = electron;
 
 const { saveStoreToSql, populateStore } = require('./helpers/sqlHelpers.js')
@@ -101,14 +102,12 @@ app.on('ready', () => {
     console.log('main window finished loading!')
   })
   electron.powerMonitor.on('suspend', () => {
+    console.log('going to sleep at', moment().format('MMMM Do YYYY, h:mm:ss a'))
     mainWindow.webContents.send('system', 'sleep')
-    // console.log('system going to sleep, so stop monitor')
-    // stopMonitorProcess();
   });
   electron.powerMonitor.on('resume', () => {
+    console.log('waking up at', moment().format('MMMM Do YYYY, h:mm:ss a'))
     mainWindow.webContents.send('system', 'resume')
-    // console.log('system waking from sleep')
-    // restartMonitorProcess(mainWindow);
   });
 });
 

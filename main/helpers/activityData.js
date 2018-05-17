@@ -1,7 +1,8 @@
 //file to get sample data chunks
 const activeWin = require('active-win');
 const moment = require('moment');
-const { ipcMain, session } = require('electron');
+const electron = require('electron')
+const { ipcMain, session } = electron;
 const axios = require('axios');
 const server = 'http://127.0.0.1:3000';
 const url = 'https://test-aws-thymely.com';
@@ -20,9 +21,7 @@ const monitorActivity = (activities, user) => {
     })
     .then((lastActivity) => {
       if (lastActivity) { //only bother if lastActivity not undefined
-        // console.log(lastActivity)
-        console.log('process memory info is', process.getProcessMemoryInfo())
-        console.log('system memory info is', process.getSystemMemoryInfo())
+        // console.log('lastActivity being sent to the server is', lastActivity)
         const qs = {
           user_name: user, //CHANGE TO USERNAME
           app_name: lastActivity.app,
@@ -40,9 +39,6 @@ const monitorActivity = (activities, user) => {
     })
     .catch((e) => {
       console.log('error in activity monitor is', e)
-      // e.time = timestamp();
-      // e.description = e.message;
-      // errors.push(e); //TODO: this loses some info but full error objects apparently can't be stored in an array
     })
 };
 
@@ -61,12 +57,11 @@ const assembleActivity = (activeWinObj) => {
 };
 
 const stripEmoji = (title) => {
-  // return title;
   const indexOfEmoji = title.indexOf('🔊'); //indicates a window is playing sound
   if (indexOfEmoji > -1) {
     const noEmoji = title.replace('🔊', '');
     return noEmoji.substring(0, noEmoji.length - 1);
- } else return title;
+  } else return title;
 }
 
 const needToInitializeChunk = (lastActivity) => {
@@ -85,27 +80,29 @@ const startMonitor = (mainWindow, activities = [], user = "test") => {
       .then((data) => {
         if (data) {
           mainWindow.sender.webContents.send('activity', data)
-          // mainWindow.webContents.send('activity', data)
         }
       })
       .catch((err) => console.error('error in activity monitor', err))
   }, 1000)
 }
 
+//closure variables
 
 let intervalId = false;
 let activities = [];
 let user = '';
 
 exports.monitor = (mainWindow, mainSession) => {
-  //TODO: CLEAR INTERVAL ON SYSTEM SLEEP
   ipcMain.on('monitor', (mainWindow, event, message) => {
+    // console.log('activity monitor received instruction of', event, message)
     if (event === 'start') {
-      console.log('messsage inside monitor is', message)
-      user = message
+      user = message;
+      activities = [];
       intervalId = startMonitor(mainWindow, activities, message);
     } else if (event === 'pause' && intervalId) {
       clearInterval(intervalId);
+      console.log('next activity should be last activity before sleep!')
+      monitorActivity(activities, user); // ♫ ♬ ONE LAST/MORE TIME ♩ ♬ 
       intervalId = false;
     } else {
       console.error('activity monitor did not understand instruction', event, message);
@@ -118,7 +115,6 @@ exports.stopMonitorProcess = () => {
 };
 
 exports.restartMonitorProcess = (mainWindow, mainSession) => {
-  console.log('main window inside restart monitor is', mainWindow);
   intervalId = startMonitor(mainWindow, activities, user);
 }
 
