@@ -30,13 +30,15 @@ app.use('/api/classifications', (req, res, next) => {
 //api
 app.get('/api/classifications', (req, res) => {
   const {user_name, app_name, window_title} = req.query;
+  console.log('req.query is', req.query)
   if (!user_name) { //refactor to be middleware
+    console.log('NO USER NAME!')
     res.send('no user attached to this session')
   }
   return db.getProductivityClass(app_name, window_title, user_name)
     .then((prod_class) => {
       if (prod_class === null && app_name === 'Google Chrome') {
-        ml.predictProductivityClass(window_title);
+        ml.predictProductivityClass(window_title, user_name);
       }
       res.send(prod_class);
     })
@@ -45,6 +47,8 @@ app.get('/api/classifications', (req, res) => {
 
 app.post('/api/classifications', (req, res) => {
   if (!req.body.params.user_name) {
+    console.log('req.body.params is', req.body.params)
+    console.log('NO USER NAME!')
     res.send('no user attached to this session')
   }
   return db.addOrChangeProductivity(req.body.params)
@@ -55,7 +59,9 @@ app.post('/api/classifications', (req, res) => {
 });
 
 app.delete('/api/classifications', (req, res) => {
+  console.log('getting a delete request for', req.body)
   if (!req.body.user_name) {
+    console.log('NO USER NAME!')
     res.send('no user attached to this session')
   }
   return db.deleteProductivityClass(req.body)

@@ -19,6 +19,7 @@ class DashboardContainer extends React.Component {
     const {activities, changeCategory, deleteActivity, preferences, user } = this.props;
     return (
       <div style={{background: '#555'}}>
+      <pre>USER IS {JSON.stringify(user)}</pre>
         <Paper style={{display: 'inline-block', background: '#AAA', margin: '0', padding: '5px', width: '75%', minHeight: '500px', maxHeight: '550px', overflowY: 'scroll', verticalAlign: 'top'}}>
           <ActivityGroup
             category='productive'
@@ -26,7 +27,7 @@ class DashboardContainer extends React.Component {
             changeCategory={changeCategory}
             deleteActivity={deleteActivity}
             preferences={preferences}
-            user={user}
+            user={user.user}
           />
           <ActivityGroup
             category='neutral'
@@ -34,7 +35,7 @@ class DashboardContainer extends React.Component {
             changeCategory={changeCategory}
             deleteActivity={deleteActivity}
             preferences={preferences}
-            user={user}
+            user={user.user}
           />
           <ActivityGroup
             category='distracting'
@@ -42,7 +43,7 @@ class DashboardContainer extends React.Component {
             changeCategory={changeCategory}
             deleteActivity={deleteActivity}
             preferences={preferences}
-            user={user}
+            user={user.user}
           />
         </Paper>
         <Paper style={{display: 'inline-block', background: '#BBB', margin: '0', padding: '5px', width: '20%', minHeight: '500px', maxHeight: '550px', verticalAlign: 'top'}}>
@@ -56,17 +57,19 @@ class DashboardContainer extends React.Component {
 const mapStateToProps = (state) => ({
   activities: state.activities,
   preferences: state.preferences,
-  user: state.user.user
+  user: state.user
 });
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    changeCategory: (activity, oldCat, newCat, user) => { //refactor 
-      // console.log('user trying to change cats is', user)
-      if (oldCat !== newCat) dispatch(changeCategory(activity, oldCat, newCat, user));
+    changeCategory: (activity, oldCat, newCat, isTracked, user) => { //refactor 
+      console.log('user trying to change cats is', user)
+      if (oldCat !== newCat) {
+        dispatch(changeCategory(activity, oldCat, newCat, isTracked, user))
+      };
     },
     deleteActivity: (activity, category, isTracked, user) => {
-      console.log('dispatching deleteActivity and isTracked is:', isTracked)
+      // console.log('dispatching deleteActivity and isTracked is:', isTracked)
       console.log('trying to delete activity for user', user)
       dispatch(deleteActivity(activity, category, isTracked, user));
     }

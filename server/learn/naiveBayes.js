@@ -8,6 +8,7 @@ const { getBrowserActivities } = require('../database/index.js');
 //find a way to periodically save its .toJson() state! (either in SQL or firebase)
 
 //TODO: save classifier into DB so it can be "revived" each time
+
 const initClassifier = (activities) => {
   activities.filter(({ app_name, prod_class }) => app_name === 'Google Chrome' && prod_class !== 'neutral')
             .forEach(({window_title, prod_class}) => {
@@ -27,7 +28,7 @@ getBrowserActivities()
   // learn either periodically using a cron or on every new user categorization
     // if latter, need to also recognize recategorizations and deletes
     
-const predictProductivityClass = (title) => {
+const predictProductivityClass = (title, user_name) => {
   console.log(`predicting productivity class of ${title}`)
   console.log(classifier.categorize(title));
 };
