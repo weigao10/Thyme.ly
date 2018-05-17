@@ -27,7 +27,7 @@ const collect = (connect, monitor) => {
 }
 
 const ActivityCard = (props) => {
-  const { activity, category, deleteActivity, index, preferences } = props;
+  const { activity, category, deleteActivity, index, preferences, user } = props;
   
   let formattedDuration = moment.duration(activity.duration, "seconds").format("h[h], m[m] s[s]");
 

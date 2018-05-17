@@ -5,6 +5,7 @@ import { DragDropContext } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import SwipeableViews from 'react-swipeable-views';
+import { ipcRenderer } from 'electron';
 
 import MonitorContainer from './containers/MonitorContainer.jsx';
 import DashboardContainer from './containers/DashboardContainer.jsx';
@@ -13,8 +14,8 @@ import ViewSelector from './components/ViewSelector.jsx';
 
 class App extends React.Component {
 
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
 
     this.state = {
       tabIndex: 0
@@ -28,6 +29,10 @@ class App extends React.Component {
     this.setState({
       tabIndex: tabIndex
     })
+  }
+
+  componentDidMount() {
+    console.log('app component got this user_id via props', this.props.user);
   }
   
   render() {
@@ -68,6 +73,14 @@ class App extends React.Component {
       </MuiThemeProvider>
       </div>
     )
+  }
+}
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    saveUserToStore: (user) => {
+      dispatch(getUser(user))
+    }
   }
 }
 

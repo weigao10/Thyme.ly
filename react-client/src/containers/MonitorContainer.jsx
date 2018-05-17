@@ -9,6 +9,7 @@ import FlatButton from 'material-ui/FlatButton';
 import Divider from 'material-ui/Divider';
 
 import { addActivity, patchActivity, setAllActivities } from '../actions/activityActions.js';
+import { setUser } from '../actions/userActions.js';
 
 class MonitorContainer extends React.Component {
   constructor(props) {
@@ -24,10 +25,10 @@ class MonitorContainer extends React.Component {
     this.checkState = this.checkState.bind(this);
     this.toggleTimerButton = this.toggleTimerButton.bind(this);
     this.handleChange = this.handleChange.bind(this);
+    this.logout = this.logout.bind(this);
   }
 
   componentDidMount() {
-    this.connectMonitor();
     ipcRenderer.on('sqlActivities', (event, message) => {
       this.props.setAllActivities(message)
     })
@@ -52,12 +53,14 @@ class MonitorContainer extends React.Component {
     });
   };
 
-  connectMonitor() {
+  connectMonitor(user) {
+    if (this.connected === true) console.log('you tried to connect monitor when it was already connected')
     this.connected = true;
-    ipcRenderer.send('monitor', 'start');
+    ipcRenderer.send('monitor', 'start', user);
   }
 
   pauseMonitor() {
+    if (this.connected === false) console.log('you tried to pause monitor when it was already paused')
     this.connected = false;
     ipcRenderer.send('monitor', 'pause');
   }
@@ -70,7 +73,7 @@ class MonitorContainer extends React.Component {
     if (!toggle) {
       this.pauseMonitor();
     } else {
-      this.connectMonitor();
+      this.connectMonitor(this.props.user.user);
     }
   }
 
@@ -105,7 +108,8 @@ class MonitorContainer extends React.Component {
     return (
       // TODO: Make this component render a Pause/Start timer button
       <div>
-    
+        <button onClick={this.logout}>Test logout button</button>
+        {/* <pre>'current user is' {JSON.stringify(this.props.user)}</pre> */}
       </div>
     )
   }
@@ -113,17 +117,21 @@ class MonitorContainer extends React.Component {
 
 const mapStateToProps = state => ({
   activities: state.activities,
-  preferences: state.preferences
+  preferences: state.preferences,
+  user: state.user
 });
 
 const mapDispatchToProps = dispatch => {
   return {
     activityHandler: (data, inState) => {
-      if (inState) dispatch(patchActivity(inState, data))
+      if (inState) dispatch(patchActivity(inState, data)) // add state.user here
       else dispatch(addActivity(data))
     },
     setAllActivities: (data) => {
       dispatch(setAllActivities(data));
+    },
+    setUser: (user) => {
+      dispatch(setUser(user))
     } 
   };
 }

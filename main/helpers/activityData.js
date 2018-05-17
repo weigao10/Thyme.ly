@@ -1,11 +1,12 @@
 //file to get sample data chunks
 const activeWin = require('active-win');
 const moment = require('moment');
-const { ipcMain } = require('electron');
+const { ipcMain, session } = require('electron');
 const axios = require('axios');
 const server = 'http://127.0.0.1:3000';
+const url = 'https://test-aws-thymely.com';
 
-const monitorActivity = (activities, errors) => {
+const monitorActivity = (activities, user) => {
   return activeWin()
     .then((data) => {
       let newActivity = assembleActivity(data);
@@ -18,24 +19,30 @@ const monitorActivity = (activities, errors) => {
       }
     })
     .then((lastActivity) => {
-      const qs = {
-        user_name: 'brian', //CHANGE TO USERNAME
-        app_name: lastActivity.app,
-        window_title: lastActivity.title
+      if (lastActivity) { //only bother if lastActivity not undefined
+        // console.log(lastActivity)
+        console.log('process memory info is', process.getProcessMemoryInfo())
+        console.log('system memory info is', process.getSystemMemoryInfo())
+        const qs = {
+          user_name: user, //CHANGE TO USERNAME
+          app_name: lastActivity.app,
+          window_title: lastActivity.title
+        }
+        return axios.get(server + '/api/classifications', {params: qs})
+          .then((resp) => {
+            return {
+              ...lastActivity,
+              productivity: resp.data || null
+            };
+          })
+          .catch((err) => console.log(err))
       }
-      return axios.get(server + '/api/classifications', {params: qs})
-        .then((resp) => {
-          return {
-            ...lastActivity,
-            productivity: resp.data || null
-          };
-        })
-        .catch((err) => console.log(err))
     })
     .catch((e) => {
-      e.time = timestamp();
-      e.description = e.message;
-      errors.push(e); //TODO: this loses some info but full error objects apparently can't be stored in an array
+      console.log('error in activity monitor is', e)
+      // e.time = timestamp();
+      // e.description = e.message;
+      // errors.push(e); //TODO: this loses some info but full error objects apparently can't be stored in an array
     })
 };
 
@@ -71,25 +78,32 @@ const chunkComplete = (lastActivity, newActivity) => {
   return (lastActivity.app !== newActivity.app) || (lastActivity.title !== newActivity.title);
 };
 
-const startMonitor = (mainWindow, activities = [], errors = []) => {
+const startMonitor = (mainWindow, activities = [], user = "test") => {
+  console.log('MONITOR WAS STARTED FOR USER', user)
   return setInterval(() => {
-    monitorActivity(activities, errors)
+    monitorActivity(activities, user)
       .then((data) => {
         if (data) {
           mainWindow.sender.webContents.send('activity', data)
+          // mainWindow.webContents.send('activity', data)
         }
       })
       .catch((err) => console.error('error in activity monitor', err))
   }, 1000)
 }
 
-exports.monitor = (mainWindow) => {
-  let intervalId = false;
-  let activities = [];
-  let errors = [];
+
+let intervalId = false;
+let activities = [];
+let user = '';
+
+exports.monitor = (mainWindow, mainSession) => {
+  //TODO: CLEAR INTERVAL ON SYSTEM SLEEP
   ipcMain.on('monitor', (mainWindow, event, message) => {
     if (event === 'start') {
-      intervalId = startMonitor(mainWindow, activities, errors);
+      console.log('messsage inside monitor is', message)
+      user = message
+      intervalId = startMonitor(mainWindow, activities, message);
     } else if (event === 'pause' && intervalId) {
       clearInterval(intervalId);
       intervalId = false;
@@ -98,6 +112,15 @@ exports.monitor = (mainWindow) => {
     }
   });
 };
+
+exports.stopMonitorProcess = () => {
+  if (intervalId) clearInterval(intervalId);
+};
+
+exports.restartMonitorProcess = (mainWindow, mainSession) => {
+  console.log('main window inside restart monitor is', mainWindow);
+  intervalId = startMonitor(mainWindow, activities, user);
+}
 
 /*
 ideas for tests:
