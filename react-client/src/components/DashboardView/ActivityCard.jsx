@@ -6,8 +6,6 @@ import { DragSource } from 'react-dnd';
 
 import { ItemTypes } from '../../constants.js';
 
-
-import { ItemTypes } from '../../constants.js';
 import Paper from 'material-ui/Paper';
 import Divider from 'material-ui/Divider';
 import RaisedButton from 'material-ui/RaisedButton';
