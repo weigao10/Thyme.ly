@@ -49,7 +49,7 @@ const ActivityGroup = props => {
         verticalAlign: "top"
       }}
     >
-      <Paper>
+      <Paper style={{margin: '5px'}}>
         <Paper style={styleMap[category]}>
           {category[0].toUpperCase() + category.slice(1, category.length)}{" "}
           &nbsp;
