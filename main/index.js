@@ -6,7 +6,7 @@ const { app, BrowserWindow, ipcMain, Menu, Tray, nativeImage } = electron;
 const { saveStoreToSql, populateStore } = require('./helpers/sqlHelpers.js')
 const { monitor } = require('../main/helpers/activityData.js');
 
-let mainWindow, addWindow, tray, splash;
+let mainWindow, popUpWindow, tray, splash;
 let force_quit = false;
 
 const createTray = () => {
@@ -23,6 +23,7 @@ const createWindow = () => {
     defaultWidth: 1200,
     defaultHeight: 900
   })
+
   splash = new BrowserWindow({
     width: 810, 
     height: 610, 
@@ -30,21 +31,30 @@ const createWindow = () => {
     frame: false, 
     alwaysOnTop: true
   });
+
   splash.loadURL(url.format({ 
     pathname: path.join(__dirname, '/../react-client/dist/splash.html'),
     protocol: 'file:',
     slashes: true
   }))
+
   mainWindow = new BrowserWindow({
-        width: winState.width,
-        height: winState.height,
-        x: winState.x,
-        y: winState.y,
-        minWidth: 400,
-        minHeight: 300,
-        show: false
-        //make non resizable?
+    width: winState.width,
+    height: winState.height,
+    x: winState.x,
+    y: winState.y,
+    minWidth: 400,
+    minHeight: 300,
+    show: false
+    //make non resizable?
   });
+
+  popUpWindow = new BrowserWindow({
+    width: 400,
+    height: 600,
+    show: false,
+    alwaysOnTop: true
+  })
 
   winState.manage(mainWindow);
 
@@ -60,8 +70,6 @@ const createWindow = () => {
     populateStore(mainWindow);
   })
 
-  // mainWindow.on('closed', () => app.quit()) 
-
   mainWindow.on('close', function(e){
     if(!force_quit){
         e.preventDefault();
@@ -75,11 +83,6 @@ const createWindow = () => {
     app.quit()
   });
 
-  //may not do anything
-  app.on('activate', function(){
-    mainWindow.show();
-  });
-
   const mainMenu = Menu.buildFromTemplate(mainMenuTemplate);
   Menu.setApplicationMenu(mainMenu);
   monitor(mainWindow)
@@ -89,7 +92,10 @@ app.on('ready', () => {
   createWindow();
   createTray();  
   electron.powerMonitor.on('suspend', () => console.log('system going to sleep'));
-  electron.powerMonitor.on('resume', () => console.log('system waking from sleep'));
+  electron.powerMonitor.on('resume', () => {
+    popUpWindow.show();
+    console.log('system waking from sleep')
+  })
 }) 
 
 const mainMenuTemplate = [
