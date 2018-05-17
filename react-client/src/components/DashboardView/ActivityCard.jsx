@@ -55,7 +55,7 @@ const ActivityCard = (props) => {
   const { connectDragSource, isDragging } = props;
 
   let isTracked;
-  if(preferences.trackedApps.includes(activity.app)) {
+  if (preferences.trackedApps.includes(activity.app)) {
     isTracked = true;
   } else {
     isTracked = false;
