@@ -8,6 +8,7 @@ import SwipeableViews from 'react-swipeable-views';
 
 import MonitorContainer from './containers/MonitorContainer.jsx';
 import DashboardContainer from './containers/DashboardContainer.jsx';
+import AnalyticsContainer from './containers/AnalyticsContainer.jsx';
 import ViewSelector from './components/ViewSelector.jsx';
 
 class App extends React.Component {
@@ -52,12 +53,11 @@ class App extends React.Component {
           // onChangeIndex={this.handleChange}
         >
           <div>
-              <DashboardContainer />
+            <DashboardContainer />
           </div>
         
           <div>
-            {/* <AnalyticsContainer /> */}
-          <strong>This is the Analytics Page and will be filled out soon</strong>
+            <AnalyticsContainer />
           </div>
           <div>
             {/* <UserSettingsContainer /> */}
