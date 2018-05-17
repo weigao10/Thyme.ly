@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Idle Thyme.ly</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+          overflow: hidden;
+        }
+    </style>
+</head>
+<body>
+<div id="login-page" class="login-page">
+  <div class="form">
+    <form class="idle-form">
+      <span>Idle time: </span>
+      <br/>
+      <br/>
+      <span>Enter Activity: </span>
+      <input id="idle-activity" type="text" placeholder="e.g., Meeting, Conversation..." />
+      <br/>
+      <br/>
+      <span>Categorize As: </span>
+      <select id="idle-productivity" name="productivity">
+        <option value="productive">Productive</option>
+        <option value="neutral">Neutral</option>
+        <option value="distracting">Distracting</option>
+      </select>
+      <br/>
+      <br/>
+      <button id="idle-button" type="button">Submit</button>
+    </form>
+  </div>
+</div>
+</body>
+<script>
+  require('../src/idle.jsx')
+</script>
+</html>
