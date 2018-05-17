@@ -17,7 +17,6 @@ const initClassifier = (activities) => {
 
 getBrowserActivities()
   .then((activities) => {
-    console.log('activities are', activities)
     initClassifier(activities);
     console.log('classifier initialized!');
   })

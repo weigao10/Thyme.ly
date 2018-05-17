@@ -14,14 +14,27 @@ const ml = require('./learn/naiveBayes.js');
 
 app.use(bodyParser.json());
 
+//middleware
+
+app.use((req, res, next) => {
+  res.header(`Access-Control-Allow-Origin`, `*`);
+  res.header(`Access-Control-Allow-Headers`, `Origin, X-Requested-With, Content-Type, Accept`);
+  next();
+});
+
+app.use('/api/classifications', (req, res, next) => {
+  //TODO: ADD JSON TOKEN VERIFICATION
+  next();
+});
+
+//api
 app.get('/api/classifications', (req, res) => {
   const {user_name, app_name, window_title} = req.query;
-  if (!user_name) {
+  if (!user_name) { //refactor to be middleware
     res.send('no user attached to this session')
   }
   return db.getProductivityClass(app_name, window_title, user_name)
     .then((prod_class) => {
-      // console.log(`prod_class is ${prod_class} and app_name is ${app_name}`) //seems to lag one behind??
       if (prod_class === null && app_name === 'Google Chrome') {
         ml.predictProductivityClass(window_title);
       }
@@ -31,8 +44,6 @@ app.get('/api/classifications', (req, res) => {
 });
 
 app.post('/api/classifications', (req, res) => {
-  console.log( chalk.bold.white.bgBlue('inside /api/classifications'));
-
   if (!req.body.params.user_name) {
     res.send('no user attached to this session')
   }
@@ -43,10 +54,11 @@ app.post('/api/classifications', (req, res) => {
     .catch(err => console.log(err))
 });
 
-app.post('/api/deleteCard', (req, res) => {
-  console.log( chalk.bold.white.bgBlue('inside /api/deleteCard'));
-
-  return db.deleteProductivityClass(req.body.params)
+app.delete('/api/classifications', (req, res) => {
+  if (!req.body.user_name) {
+    res.send('no user attached to this session')
+  }
+  return db.deleteProductivityClass(req.body)
     .then(message => res.send(message))
     .catch(err => console.log(err));
 })
