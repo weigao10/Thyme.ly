@@ -19,24 +19,27 @@ const monitorActivity = (activities, errors, user) => {
       }
     })
     .then((lastActivity) => {
-      const qs = {
-        user_name: user, //CHANGE TO USERNAME
-        app_name: lastActivity.app,
-        window_title: lastActivity.title
+      if (lastActivity) { //only bother if lastActivity not undefined
+        const qs = {
+          user_name: user, //CHANGE TO USERNAME
+          app_name: lastActivity.app,
+          window_title: lastActivity.title
+        }
+        return axios.get(server + '/api/classifications', {params: qs})
+          .then((resp) => {
+            return {
+              ...lastActivity,
+              productivity: resp.data || null
+            };
+          })
+          .catch((err) => console.log(err))
       }
-      return axios.get(server + '/api/classifications', {params: qs})
-        .then((resp) => {
-          return {
-            ...lastActivity,
-            productivity: resp.data || null
-          };
-        })
-        .catch((err) => console.log(err))
     })
     .catch((e) => {
-      e.time = timestamp();
-      e.description = e.message;
-      errors.push(e); //TODO: this loses some info but full error objects apparently can't be stored in an array
+      console.log('error in activity monitor is', e)
+      // e.time = timestamp();
+      // e.description = e.message;
+      // errors.push(e); //TODO: this loses some info but full error objects apparently can't be stored in an array
     })
 };
 
