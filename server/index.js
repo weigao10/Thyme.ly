@@ -6,7 +6,7 @@ const partials = require('express-partials');
 const app = express();
 const port = process.env.PORT || 3000;
 const moment = require('moment');
-const memwatch = require('memwatch-next');
+// const memwatch = require('memwatch-next');
 const chalk = require('chalk');
 
 const db = require('./database/index.js');
@@ -14,15 +14,15 @@ const db = require('./database/index.js');
 
 app.use(bodyParser.json());
 
-memwatch.on('leak', function(info) {
-  console.log('LEAK INFO FROM MEMWATCH')
-  console.log(chalk.red.bgYellow(info))
-});
+// memwatch.on('leak', function(info) {
+//   console.log('LEAK INFO FROM MEMWATCH')
+//   console.log(chalk.red.bgYellow(info))
+// });
 
-memwatch.on('stats', function(stats) {
-  console.log('garbage collection info from memwatch')
-  console.log(stats)
-});
+// memwatch.on('stats', function(stats) {
+//   console.log('garbage collection info from memwatch')
+//   console.log(stats)
+// });
 
 app.get('/api/classifications', (req, res) => {
   // const hd = new memwatch.HeapDiff();

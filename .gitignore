@@ -8,3 +8,4 @@ config.js
 out
 firebaseConfig.json
 serverConfig.js
+server/database/sqlite.db
