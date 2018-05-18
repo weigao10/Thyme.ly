@@ -1,4 +1,5 @@
-import { ADD_ACTIVITY, PATCH_ACTIVITY, CATEGORIZE_ACTIVITY, DELETE_ACTIVITY, SET_ALL_ACTIVITIES } from '../actions/types'; 
+import { ADD_ACTIVITY, PATCH_ACTIVITY, CATEGORIZE_ACTIVITY,
+        DELETE_ACTIVITY, SET_ALL_ACTIVITIES, AFFIRM_CATEGORIZATION } from '../actions/types'; 
 import moment from 'moment';
 
 const initialState = {
@@ -61,7 +62,7 @@ const activities = (state = initialState, action) => {
                     ]
       }
 
-    case CATEGORIZE_ACTIVITY: //SHOULD ALSO CHANGE THE ACTIVITY OBJ ITSELF
+    case CATEGORIZE_ACTIVITY:
       let { id, oldCatName, newCatName } = action.payload;
       let movingActivity = state[oldCatName].filter((el) => el.id === id)[0];
       movingActivity.productivity = {
@@ -77,6 +78,28 @@ const activities = (state = initialState, action) => {
         [newCatName]: updatedNewCat
       };
 
+    case AFFIRM_CATEGORIZATION: {
+      const { activity } = action.payload;
+      const prodClass = activity.productivity.class;
+      const activityIdx = state[prodClass].indexOf(activity);
+      console.log('idx of activity is', activityIdx);
+      const affirmedActivity = {
+        ...activity,
+        productivity: {
+          source: 'user',
+          class: prodClass
+        }
+      }
+      console.log('affirmed activity is', affirmedActivity);
+      return {
+        ...state,
+        [prodClass]: [
+          ...state[prodClass].slice(0, activityIdx),
+          affirmedActivity,
+          ...state[prodClass].slice(activityIdx + 1)
+        ]
+      }
+    }
     case SET_ALL_ACTIVITIES: //REVISE BASED ON ACTIVITY OBJ CHANGE
       let neutral = []
       let productive = []
