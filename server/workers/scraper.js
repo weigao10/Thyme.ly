@@ -1,26 +1,43 @@
 const puppeteer = require('puppeteer');
+const db = require('../database/scraper.js');
 
-const scrapeYoutubeChannel = async (url) => {
-  const browser = await puppeteer.launch({headless: true});
-  const page = await browser.newPage();
+db.getBrowserActivities().then(data => console.log(data));
 
-  await page.goto(url);
+function sleep(ms) {
+  return new Promise(resolve => {
+      setTimeout(resolve,ms)
+  })
+}
+
+const scrapeYoutubeTitles = async (url, prod_class, headless) => {
+  const browser = await puppeteer.launch({headless: headless})
+  const page = await browser.newPage()
+  await page.goto(url)
+  for (let i = 0; i < 200; i++) {
+    page.keyboard.down("PageDown");
+    page.keyboard.up("PageDown")
+    await sleep(200);
+    console.log(i);
+    //TODO: Detect if it's reached the end of the page
+  }
+
+  await page.waitFor(1000);
 
   const result = await page.evaluate(() => {
-    let data = [];
+    let titles = [];
     const elements = document.querySelectorAll('#video-title');
-
     for (let element of elements) {
-        const title = element.innerText;
-        data.push(title);
+      const title = element.innerText;
+      titles.push(title);
     }
-    return data;
+    return titles;
   });
 
-  browser.close();
-  return result;
-};
+  await browser.close();
+  const db = require('./database/index.js');
+  fs.writeFileSync('./titles.txt', result.join('\n') + '\n') //TODO: Save to db, not to file
+}
 
-scrapeYoutubeChannel('https://www.youtube.com/user/TechGuyWeb/video').then((value) => {
-    console.log(value); // Success!
-});
+const url = 'https://www.youtube.com/channel/UCU7iRrk3xfpUk0R6VdyC1Ow/videos'
+// scrapeYoutubeTitles(url, false);
+// scrapeYoutubeTitles('https://www.youtube.com/user/TechGuyWeb/videos?view=0&sort=dd&shelf_id=1')

@@ -240,6 +240,7 @@ exports.getProductivityClass = getProductivityClass;
 exports.deleteProductivityClass = deleteProductivityClass;
 exports.addOrChangeProductivity = addOrChangeProductivity;
 exports.getBrowserActivities = getBrowserActivities;
+exports.pool = pool;
 // insertActivity();
 // getActivities();
 
