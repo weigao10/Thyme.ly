@@ -67,6 +67,10 @@ app.delete('/api/classifications', (req, res) => {
   return db.deleteProductivityClass(req.body)
     .then(message => res.send(message))
     .catch(err => console.log(err));
+});
+
+app.get('/learn/scrape', (req, res) => {
+  
 })
 
 let server = app.listen(port, () => {
