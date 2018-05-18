@@ -1,5 +1,4 @@
-import { ADD_ACTIVITY, PATCH_ACTIVITY, CATEGORIZE_ACTIVITY, DELETE_ACTIVITY, SET_ALL_ACTIVITIES } from './types'; 
-// import { createStore } from 'redux';
+import { ADD_ACTIVITY, PATCH_ACTIVITY, CATEGORIZE_ACTIVITY, DELETE_ACTIVITY, SET_ALL_ACTIVITIES, AFFIRM_CATEGORIZATION } from './types'; 
 import moment from 'moment';
 import axios from 'axios';
 const url = 'http://127.0.0.1:3000'
@@ -56,6 +55,24 @@ export const changeCategory = (activity, oldCatName, newCatName, isTracked, user
       id: activity.id,
       oldCatName,
       newCatName
+    }
+  }
+}
+
+export const affirmCategorization = (activity, category, isTracked, user) => {
+  const params = {
+    user_name: user,
+    app_name: activity.app,
+    window_title: activity.title,
+    prod_class: category,
+    isTracked: isTracked
+  };
+  const request = axios.post(url + '/api/classifications', {params: params});
+  return {
+    type: AFFIRM_CATEGORIZATION,
+    payload: {
+      request,
+      activity,
     }
   }
 }
