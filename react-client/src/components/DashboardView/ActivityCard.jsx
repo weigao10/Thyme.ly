@@ -67,6 +67,7 @@ const ActivityCard = (props) => {
         style={index % 2 === 0 ? styleTick : styleTock}
       >
         <b>{activity.app}</b> <br/>
+        {activity.productivity.source === 'ml' ? <span>SUGGESTED BY ML<br/></span> : null}
         {isTracked ? activity.title : ''} <br/>
         <i>{formattedDuration}</i>
         <br/>
