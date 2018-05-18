@@ -16,7 +16,7 @@ class DashboardContainer extends React.Component {
   }
   
   render() {
-    const {activities, changeCategory, deleteActivity, preferences, user } = this.props;
+    const { activities, changeCategory, deleteActivity, preferences, user } = this.props;
     return (
       <div style={{background: '#555'}}>
         <Paper style={{display: 'inline-block', background: '#AAA', margin: '0', padding: '5px', width: '75%', minHeight: '500px', maxHeight: '550px', overflowY: 'scroll', verticalAlign: 'top'}}>

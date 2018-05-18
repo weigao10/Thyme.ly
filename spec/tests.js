@@ -28,3 +28,16 @@ describe('machine learning functionality' , function(){
   it(`renders an activity card with a suggested classification differently than a user-classified activity`, function(){
   });
 });
+
+describe('scraper functionality' , function(){
+  it(`scrapes all titles in a given Youtube playlist URL`, function(){
+  });
+  it(`scrolls down the page if the page uses infinite scrolling`, function(){
+  });
+  it(`works for at least youtube and medium`, function(){
+  });
+  it(`saves the titles into a scraping table in the database`, function(){
+  });
+  it(`saves its results with a session id so that bad scraping sessions can easily be deleted from the db` , function(){
+  });
+});

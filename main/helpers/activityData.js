@@ -29,9 +29,10 @@ const monitorActivity = (activities, user) => {
         }
         return axios.get(server + '/api/classifications', {params: qs})
           .then((resp) => {
+            console.log('productivity obj is', resp.data)
             return {
               ...lastActivity,
-              productivity: resp.data || null
+              productivity: resp.data
             };
           })
           .catch((err) => console.log(err))
@@ -101,7 +102,7 @@ exports.monitor = (mainWindow, mainSession) => {
       intervalId = startMonitor(mainWindow, activities, message);
     } else if (event === 'pause' && intervalId) {
       clearInterval(intervalId);
-      console.log('next activity should be last activity before sleep!')
+      // console.log('next activity should be last activity before sleep!')
       monitorActivity(activities, user); // ♫ ♬ ONE LAST/MORE TIME ♩ ♬ 
       intervalId = false;
     } else {
