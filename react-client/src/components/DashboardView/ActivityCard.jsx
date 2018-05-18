@@ -27,7 +27,7 @@ const collect = (connect, monitor) => {
 }
 
 const ActivityCard = (props) => {
-  const { activity, category, deleteActivity, index, preferences, user } = props;
+  const { activity, category, deleteActivity, index, preferences, user, affirmCategorization } = props;
   
   let formattedDuration = moment.duration(activity.duration, "seconds").format("h[h], m[m] s[s]");
 
@@ -72,6 +72,9 @@ const ActivityCard = (props) => {
         <i>{formattedDuration}</i>
         <br/>
         <button onClick={() => {deleteActivity(activity, category, isTracked, user)}}>delete</button>
+    {activity.productivity.source === 'ml' ? (
+      <button onClick={() => {affirmCategorization(activity, category, isTracked, user)}}>THANKS ML!
+    </button>) : null}
       </Paper></div>
     )
 }
