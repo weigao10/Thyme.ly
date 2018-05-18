@@ -61,10 +61,14 @@ const activities = (state = initialState, action) => {
                     ]
       }
 
-    case CATEGORIZE_ACTIVITY:
+    case CATEGORIZE_ACTIVITY: //SHOULD ALSO CHANGE THE ACTIVITY OBJ ITSELF
       let { id, oldCatName, newCatName } = action.payload;
-      const movingActivity = state[oldCatName].filter((el) => el.id === id)[0];
-      movingActivity.productivity = newCatName;
+      let movingActivity = state[oldCatName].filter((el) => el.id === id)[0];
+      movingActivity.productivity = {
+        source: 'user',
+        class: newCatName
+      };
+      console.log('moving activity is', movingActivity)
       const updatedOldCat = state[oldCatName].filter((el) => el.id !== id);
       const updatedNewCat = [...state[newCatName] , movingActivity];
       return {
@@ -73,14 +77,16 @@ const activities = (state = initialState, action) => {
         [newCatName]: updatedNewCat
       };
 
-    case SET_ALL_ACTIVITIES:
+    case SET_ALL_ACTIVITIES: //REVISE BASED ON ACTIVITY OBJ CHANGE
       let neutral = []
       let productive = []
       let distracting = []
       action.payload.forEach((activity) => {
-        if(activity.productivity === 'neutral') neutral.push(activity);
-        if(activity.productivity === 'productive') productive.push(activity);
-        if(activity.productivity === 'distracting') distracting.push(activity);
+        console.log('activity inside set all activities is', activity)
+        if (activity.productivity === 'neutral') neutral.push(activity);
+        if (activity.productivity === 'productive') productive.push(activity);
+        if (activity.productivity === 'distracting') distracting.push(activity);
+        // if (activity.productivity === null) neutral.push(activity); //JUST IN CASE
       })
 
     return {
