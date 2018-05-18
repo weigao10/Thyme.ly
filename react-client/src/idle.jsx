@@ -1,14 +1,42 @@
+import { ipcRenderer } from 'electron'
+import moment from "moment";
+import momentFormat from "moment-duration-format";
 
-var idleButton = document.getElementById('idle-button')
+const idleButton = document.getElementById('idle-button')
+const idleTime = document.getElementById("idle-time");
+
+let idleDuration, start, end;
 idleButton.addEventListener('click', () => {
-  console.log('in event listener!')
   saveIdleTime()
 })
-//document innerHTML
+
+ipcRenderer.on('gone-to-idle', (event, message) => {
+  idleTime.innerHTML = '<span id="idle-time">Idle time: </span>'
+})
+
+ipcRenderer.on('wake-from-idle', (event, {idleStart, idleEnd, duration}) => {
+  let formatDuration = moment
+    .duration(duration, "seconds")
+    .format("h[h], m[m] s[s]");
+
+  idleDuration = formatDuration
+  start = idleStart
+  end = idleEnd
+  idleTime.innerHTML += '<span>'+formatDuration+'</span>'
+})
 
 function saveIdleTime () {
-  let idleActivity = document.getElementById("idle-activity").value;
+  let activity = document.getElementById("idle-activity").value;
   let idleProductivity = document.getElementById("idle-productivity").value;
-  console.log('idle acti is', idleActivity);
-  console.log('idle prod is ', idleProductivity)
+
+  let idleActivity = {
+    app: 'Idle',
+    title: activity,
+    startTime: start,
+    endTime: end,
+    productivity: idleProductivity,
+    duration: idleDuration
+  }
+
+  ipcRenderer.send('got-idle-activity', idleActivity)
 }

@@ -62,6 +62,10 @@ class MonitorContainer extends React.Component {
       this.props.setUser(message.value)
       if (message.value) this.connectMonitor(message.value)
     });
+
+    ipcRenderer.on('add-idle-activity', (event, message) => {
+      this.props.activityHandler(message, this.checkState(message, true))
+    })
   }
 
   logout() {
@@ -103,23 +107,17 @@ class MonitorContainer extends React.Component {
   checkState (data, isTracked) {
     for (let category in this.props.activities) {
       let activities = this.props.activities[category]
-
+      
       for (let i = 0; i < activities.length; i++) {
-        if(isTracked){
-          if (activities[i].title === data.title && activities[i].app === data.app) {
-            return {
-              'activity': activities[i],
-              'productivity': category,
-              'index': i
-            }
-          }
-        } else{
-          if (activities[i].app === data.app) {
-            return {
-              'activity': activities[i],
-              'productivity': category,
-              'index': i
-            }
+
+        let inState = (isTracked) ? 
+                    activities[i].title === data.title && activities[i].app === data.app : 
+                    activities[i].app === data.app
+        if(inState){
+          return {
+            'activity': activities[i],
+            'productivity': category,
+            'index': i
           }
         }
       }
