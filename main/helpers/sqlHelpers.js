@@ -38,7 +38,8 @@ const saveStoreToSql = (mainWindow) => {
   clearDb();
   mainWindow.send("windowClose", "close")
   ipcMain.once("store", (event, data) => {
-    let { activities, preferences } = JSON.parse(data)
+    let { activities, preferences } = JSON.parse(data);
+    console.log('the store upon window close is', data)
     for(let category in activities){
       if(category !== 'nextId'){
         activities[category].forEach((el) => {
