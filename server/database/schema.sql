@@ -31,10 +31,11 @@ CREATE TABLE categories(
   prod_class VARCHAR NOT NULL CHECK (prod_class = 'productive' or prod_class = 'neutral' or prod_class = 'distracting')
 );
 
-CREATE TABLE scrape_results(
+CREATE TABLE scrape_categories(
   activity_id serial NOT NULL PRIMARY KEY,
-  window_title VARCHAR NOT NULL,
-  prod_class VARCHAR NOT NULL CHECK (prod_class = 'productive' or prod_class = 'neutral' or prod_class = 'distracting')
+  scrape_session integer NOT NULL,
+  window_title VARCHAR UNIQUE,
+  prod_class VARCHAR NOT NULL CHECK (prod_class = 'productive' or prod_class = 'distracting')
 );
 
 CREATE TABLE user_metrics(

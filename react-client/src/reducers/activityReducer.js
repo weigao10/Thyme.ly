@@ -12,20 +12,25 @@ const activities = (state = initialState, action) => {
 
   switch(action.type){
     case ADD_ACTIVITY:
-      console.log('action payload', action.payload)
+      // console.log('action payload', action.payload)
       let {app, title, startTime, endTime, productivity} = action.payload
       let duration = getDuration(startTime, endTime)
+      const convertedProd = { //expand because app should know whether it was from ML or not
+        ...productivity,
+        class: productivity.class || 'neutral'
+      };
+      // console.log('converted productivity inside add activity reducer', convertedProd)
       let newData = {
         'id': state.nextId,
         'app': app,
         'title': title,
         'spurts': [{'startTime': startTime, 'endTime': endTime}],
         'duration': duration,
-        'productivity': productivity || 'neutral' //if null, make neutral for now
+        'productivity': convertedProd
       }
       return {
         ...state,
-        [newData.productivity]: [... state[newData.productivity], newData],
+        [newData.productivity.class]: [... state[newData.productivity.class], newData],
         nextId: ++state.nextId
       }
 
@@ -43,14 +48,16 @@ const activities = (state = initialState, action) => {
       let updatedActivity = Object.assign({
         spurts: copySpurts
       }, activity);
+      // console.log('activity.productivity is', activity.productivity)
+      // console.log('activity.productivity.class is', activity.productivity.class)
       updatedActivity.spurts.push({'startTime': data.startTime, 'endTime': data.endTime})
       updatedActivity.duration += getDuration(data.startTime, data.endTime)
       return {
         ...state,
-        [activity.productivity]: [
-                    ...state[activity.productivity].slice(0,index),
+        [activity.productivity.class]: [
+                    ...state[activity.productivity.class].slice(0,index),
                     updatedActivity,
-                    ...state[activity.productivity].slice(index + 1)
+                    ...state[activity.productivity.class].slice(index + 1)
                     ]
       }
 

@@ -10,6 +10,7 @@ const moment = require('moment');
 const chalk = require('chalk');
 
 const db = require('./database/index.js');
+const scrapeDb = require('./database/scraper.js');
 const ml = require('./learn/naiveBayes.js');
 
 app.use(bodyParser.json());
@@ -38,9 +39,17 @@ app.get('/api/classifications', (req, res) => {
   return db.getProductivityClass(app_name, window_title, user_name)
     .then((prod_class) => {
       if (prod_class === null && app_name === 'Google Chrome') {
-        ml.predictProductivityClass(window_title, user_name);
+        const predictedProdClass = ml.predictProductivityClass(window_title, user_name)
+        console.log('predicted prod is', predictedProdClass);
+        res.send({
+          source: predictedProdClass ? 'ml' : 'user',
+          class: ml.predictProductivityClass(window_title, user_name)
+        })
       }
-      res.send(prod_class);
+      res.send({
+        source: 'user',
+        class: prod_class
+      });
     })
     .catch((err) => res.send(err));
 });
@@ -70,8 +79,8 @@ app.delete('/api/classifications', (req, res) => {
 });
 
 app.get('/learn/scrape', (req, res) => {
-  
-})
+  scrapeDb.addScrapingResults()
+});
 
 let server = app.listen(port, () => {
   console.log(`listening on port ${port}`);
