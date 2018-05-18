@@ -2,6 +2,7 @@ const url = require('url');
 const path = require('path');
 const windowStateKeeper = require('electron-window-state');
 const moment = require('moment');
+const momentFormat = require("moment-duration-format");
 const electron = require('electron');
 const { app, BrowserWindow, Menu, ipcMain, Tray, nativeImage, session } = electron;
 
@@ -67,9 +68,6 @@ const createWindow = () => {
     slashes: true
   }))
 
-  // popUpWindow.on('closed', function () {
-  //   popWindow=null;
-  // })
   popUpWindow.on('close', function (event) {
     popUpWindow.hide();
     event.preventDefault();
@@ -117,16 +115,36 @@ app.on('ready', () => {
   mainWindow.webContents.on('did-finish-load', () => {
     console.log('main window finished loading!')
   })
+
+  let idleStart, idleEnd, duration;
   electron.powerMonitor.on('suspend', () => {
     console.log('going to sleep at', moment().format('MMMM Do YYYY, h:mm:ss a'))
+    idleStart = moment()
+    popUpWindow.webContents.send('gone-to-idle', 'sleep')
     mainWindow.webContents.send('system', 'sleep')
   });
+
   electron.powerMonitor.on('resume', () => {
     console.log('waking up at', moment().format('MMMM Do YYYY, h:mm:ss a'))
+
+    if(idleStart){
+      idleEnd = moment()
+      duration = idleEnd.diff(idleStart, "s")
+      popUpWindow.webContents.send('wake-from-idle', {
+        idleStart: idleStart.format('MMMM Do YYYY, h:mm:ss a'),
+        idleEnd: moment().format('MMMM Do YYYY, h:mm:ss a'),
+        duration: duration
+      })
+    }
     popUpWindow.show();
     mainWindow.webContents.send('system', 'resume')
   });
 });
+
+ipcMain.on('got-idle-activity', (event, message) => {
+  mainWindow.webContents.send('add-idle-activity', message)
+  popUpWindow.hide()
+})
 
 const mainMenuTemplate = [
   //if mac, need an empty object here
