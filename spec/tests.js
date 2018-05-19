@@ -10,7 +10,10 @@ describe('cloud database functionality' , function(){
   it(`does not save neutral apps into the database` , function(){
   });
   it(`deletes a user's categorization of an app or window title if a user recategorizes it as neutral`, function(){
-    //in progress
+  });
+  it(`does not save window title if app is an "untracked" app`, function(){
+  });
+  it(`it deletes all instances of an app regardless of window title if app is "untracked"`, function(){
   });
 });
 
