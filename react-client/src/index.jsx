@@ -2,12 +2,14 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './App.jsx';
 import $ from 'jquery';
-import config from '../../config.js'
-import { bundleId, clientId, redirectURI } from '../../config.js'
 import { parse } from 'url'
 import { remote, ipcRenderer } from 'electron'
 import axios from 'axios'
 import qs from 'qs'
+import Notification from 'node-mac-notifier';
+
+import config from '../../config.js'
+import { bundleId, clientId, redirectURI } from '../../config.js'
 
 const SERVER_URL = 'http://127.0.0.1:3000';
 
@@ -136,6 +138,7 @@ function signInWithPopup () {
           //move this to google event listener
           ReactDOM.render((<App />), document.getElementById('app'))
           document.getElementById('login-page').innerHTML = ''
+          displayNotification();
         }
       }
     }
@@ -180,4 +183,16 @@ function fetchGoogleProfile (accessToken) {
   })
 }
 
-//------------------------------------------------------------------------- IDLE FORM
+//------------------------------------------------------------------------- GOOGLE CALENDAR
+
+function fetchGcalEvents () {
+  //axios request
+}
+
+//cron, moment worker
+
+function displayNotification () {
+  console.log('in display notification')
+  let noti = new Notification('Hello from OS X', {body: 'It Works!'});
+}
+
