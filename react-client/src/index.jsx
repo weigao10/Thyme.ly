@@ -1,15 +1,17 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import App from './App.jsx';
 import $ from 'jquery';
 import { parse } from 'url'
 import { remote, ipcRenderer } from 'electron'
 import axios from 'axios'
 import qs from 'qs'
 import Notification from 'node-mac-notifier';
+import readline from 'readline';
+import { google } from 'googleapis'
 
+import App from './App.jsx';
 import config from '../../config.js'
-import { bundleId, clientId, redirectURI } from '../../config.js'
+import { apiKey, bundleId, clientId, redirectURI, discoveryDocs, scopes, clientSecret } from '../../config.js'
 
 const SERVER_URL = 'http://127.0.0.1:3000';
 
@@ -34,6 +36,7 @@ ipcRenderer.on('cookies', (event, message) => {
   document.getElementById('login-page').innerHTML = '';
 });
 
+
 $('.message a').click(function(){
   $('form').animate({height: "toggle", opacity: "toggle"}, "slow");
 });
@@ -42,6 +45,8 @@ if (!firebase.apps.length) {
   firebase.initializeApp(config);
 }
 const auth = firebase.auth();
+export const provider = new firebase.auth.GoogleAuthProvider();
+// provider.addScope('https://www.googleapis.com/auth/calendar')
 
 var registerButton = document.getElementById('register')
 var loginButton = document.getElementById('login')
@@ -77,7 +82,8 @@ loginButton.addEventListener('click', () => {
     const uId = data.user.uid;
     ipcRenderer.send('cookies', 'logged in', uId)
     ReactDOM.render((<App user={uId}/>), document.getElementById('app'))
-    document.getElementById('login-page').innerHTML = '';
+    document.getElementById('login-page').style.display = 'none'
+    
   })
   .catch((err) => {
     console.error(err);
@@ -109,7 +115,7 @@ const GOOGLE_AUTHORIZATION_URL = 'https://accounts.google.com/o/oauth2/v2/auth'
 const GOOGLE_TOKEN_URL = 'https://www.googleapis.com/oauth2/v4/token'
 const GOOGLE_PROFILE_URL = 'https://www.googleapis.com/userinfo/v2/me'
 
-function signInWithPopup () {
+function signInWithPopup (provider) {
   return new Promise((resolve, reject) => {
     const authWindow = new remote.BrowserWindow({
       width: 500,
@@ -121,7 +127,7 @@ function signInWithPopup () {
       response_type: 'code',
       redirect_uri: bundleId + ':' +redirectURI,
       client_id: clientId,
-      scope: 'profile email',
+      scope: 'profile email https://www.googleapis.com/auth/calendar',
     }
     const authUrl = `${GOOGLE_AUTHORIZATION_URL}?${qs.stringify(urlParams)}`
 
@@ -138,6 +144,8 @@ function signInWithPopup () {
           //move this to google event listener
           ReactDOM.render((<App />), document.getElementById('app'))
           document.getElementById('login-page').innerHTML = ''
+          // fetchGcalEvents();
+          // listEvents()
           displayNotification();
         }
       }
@@ -170,6 +178,7 @@ function fetchAccessTokens (code) {
 }
 
 function fetchGoogleProfile (accessToken) {
+  listEvents(accessToken)
   return axios.get(GOOGLE_PROFILE_URL, {
     headers: {
       'Content-Type': 'application/json',
@@ -185,14 +194,39 @@ function fetchGoogleProfile (accessToken) {
 
 //------------------------------------------------------------------------- GOOGLE CALENDAR
 
-function fetchGcalEvents () {
-  //axios request
+function listEvents(accessToken) {
+  const calendar = google.calendar({version: 'v3', auth});
+  let oauth = new google.auth.OAuth2(
+    clientId, clientSecret, redirectURI);
+  oauth.setCredentials({access_token: accessToken});
+  console.log('calendar', calendar)
+  console.log('access token', accessToken)
+  console.log('oauth', oauth)
+  calendar.events.list({
+    calendarId: 'primary',
+    auth: oauth,
+    maxResults: 10,
+    singleEvents: true,
+    orderBy: 'startTime'
+  }, (err, {data}) => {
+    console.log('err from api call', err)
+    console.log('data from api call', data)
+    if (err) return console.log('The API returned an error: ' + err);
+    const events = data.items;
+    if (events.length) {
+      console.log('Upcoming 10 events:');
+      events.map((event, i) => {
+        const start = event.start.dateTime || event.start.date;
+        console.log(`${start} - ${event.summary}`);
+      });
+    } else {
+      console.log('No upcoming events found.');
+    }
+  });
 }
 
 //cron, moment worker
 
 function displayNotification () {
-  console.log('in display notification')
-  let noti = new Notification('Hello from OS X', {body: 'It Works!'});
-}
 
+}
