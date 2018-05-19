@@ -36,14 +36,14 @@ const getProductivityClass = (appName, title, userName) => {
   const queryStr = `SELECT prod_class FROM public.categories where\
                     (app_name = $1) AND (window_title = $2) AND (user_name = $3)`;
   const values = [appName, title, userName];
-  console.log('inside get productivity class for', userName);
+  // console.log('inside get productivity class for', userName);
   return pool.query(queryStr, values)
     .then((data) => {
       if (data.rows.length) {
-        console.log('productivity class is', data.rows[0].prod_class)
+        // console.log('productivity class is', data.rows[0].prod_class)
         return data.rows[0].prod_class
       } else {
-        console.log('productivity class not found')
+        // console.log('productivity class not found')
         return null;
       }
     })
@@ -66,17 +66,17 @@ const addOrChangeProductivity = (query) => {
 
 const deleteProductivityClass = ({user_name, app_name, window_title, prod_class, isTracked}) => {
   let queryStr;
-  console.log('user name inside db delete helper is', user_name)
+  // console.log('user name inside db delete helper is', user_name)
   if (isTracked) {
     queryStr = `DELETE FROM public.categories WHERE user_name='${user_name}' AND app_name='${app_name}' AND window_title='${window_title}'`;
   } else {
     queryStr = `DELETE FROM public.categories WHERE user_name='${user_name}' AND app_name='${app_name}'`;
   }
-  console.log('delete queryStr is', queryStr)
+  // console.log('delete queryStr is', queryStr)
   //values are still included here, but not used, in case we need them in the future
   const values = [user_name, app_name, window_title, prod_class, isTracked];
 
-  console.log('values to delete are', values);
+  // console.log('values to delete are', values);
   return pool.query(queryStr)
     .catch(err => console.error('error in deleting prod-class', err));
 }

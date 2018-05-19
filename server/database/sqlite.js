@@ -9,19 +9,19 @@ let date = moment().format('YYYY-MM-DD')
 
 //PRODUCTIVITY NOW IS AN OBJ LIKE THIS
 //{ class: 'productive', source: 'user' }
-//NEED TO ADD DATE COLUMN
 const createTable = () => {
   console.log("createTable");
-  db.run("CREATE TABLE IF NOT EXISTS activities (id INT, date DATE, productivity TEXT, app TEXT, title TEXT, duration INT)")
+  db.run("CREATE TABLE IF NOT EXISTS activities (id INT, date DATE, productivity TEXT, source TEXT, app TEXT, title TEXT, duration INT)")
   db.run("CREATE TABLE IF NOT EXISTS preferences (category TEXT, data TEXT)")
   db.run("CREATE TABLE IF NOT EXISTS spurts (id INT, date DATE, productivity TEXT, app TEXT, title TEXT, startTime TEXT, endTime TEXT)")
 }
 
-//NEED TO ADD DATE COLUMN
 const insertActivities = ({id, productivity, app, title, duration}) => {
-  console.log('date is', date)
-  let query = `INSERT INTO activities(id, date, productivity, app, title, duration) VALUES(?, ?, ?, ?, ?, ?)`;
-  let params = [id, date, productivity, app, title, duration];
+  // console.log('date is', date)
+  if (typeof productivity !== 'object') console.log(`productivity for ${app} and ${title} was not an object!`)
+  // console.log('productivity inside insert activities is', productivity)
+  let query = `INSERT INTO activities(id, date, productivity, source, app, title, duration) VALUES(?, ?, ?, ?, ?, ?, ?)`;
+  let params = [id, date, productivity.class, productivity.source, app, title, duration];
   return new Promise ((resolve, reject) => {
     db.run(query, params, (err, result) => {
       if (err) reject(err)
@@ -43,12 +43,10 @@ const insertPreferences = (data, category) => {
 
 //NEED TO ADD DATE
 const insertSpurts = ({id, productivity, app, title}, {startTime, endTime}) => {
-  //PRODUCTIVITY NOW IS AN OBJ LIKE THIS
-  //{ class: 'productive', source: 'user' }
-  console.log('insert spurt');
+  // console.log('insert spurt');
   let query = `INSERT INTO spurts(id, date, productivity, app, title, startTime, endTime) VALUES(?, ?, ?, ?, ?, ?, ?)`;
   let params = [id, date, productivity, app, title, startTime, endTime];
-  console.log('productivity inside insert spurts is', productivity)
+  // console.log('productivity inside insert spurts is', productivity)
   return new Promise ((resolve, reject) => {
     db.run(query, params, (err, result) => {
       if (err) reject(err)
@@ -59,7 +57,7 @@ const insertSpurts = ({id, productivity, app, title}, {startTime, endTime}) => {
 
 const getActivities = () => {
   console.log("get activities");
-  let query = `SELECT id, date, productivity, app, title, duration FROM activities`;
+  let query = `SELECT id, date, productivity, source, app, title, duration FROM activities`;
   return new Promise ((resolve, reject) => {
     db.all(query, [], (err, result) => {
       if (err) reject(err)
