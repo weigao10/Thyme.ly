@@ -6,7 +6,7 @@ const initialState = {
 
 const preferences = (state = initialState, action) => {
 
-  switch(action.type){
+  switch (action.type) {
     case TRACK_APP_TITLE:
       return {
         ...state,
@@ -14,10 +14,9 @@ const preferences = (state = initialState, action) => {
       }
 
     case UNTRACK_APP_TITLE:
-      let newArr = state.trackedApps.filter((el) => el !== action.payload.data);
       return {
         ...state,
-        trackedApps: newArr
+        trackedApps: state.trackedApps.filter((el) => el !== action.payload.data)
       };
     
     default: 
