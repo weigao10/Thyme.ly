@@ -28,3 +28,6 @@ describe('machine learning functionality' , function(){
   it(`renders an activity card with a suggested classification differently than a user-classified activity`, function(){
   });
 });
+
+//should logout upon quitting out of application
+//should stop tracking upon log out
