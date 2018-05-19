@@ -9,3 +9,4 @@ out
 firebaseConfig.json
 serverConfig.js
 server/database/sqlite.db
+titles.txt
