@@ -11,7 +11,8 @@ const ViewSelector = (props) => {
     >
       <Tab label="Activity" value={0} />
       <Tab label="Analytics" value={1} />
-      <Tab label="Settings" value={2} />
+      <Tab label="Pomodoro Timer" value={2} />
+      <Tab label="Settings" value={3} />
     </Tabs>
   )
 }

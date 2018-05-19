@@ -44,3 +44,18 @@ describe('scraper functionality' , function(){
   it(`saves its results with a session id so that bad scraping sessions can easily be deleted from the db` , function(){
   });
 });
+
+describe('pomodoro timer' , function(){
+  it(`should animate as time passes`, function(){
+  });
+  it(`should animate short spurt and long spurt progress`, function(){
+  });
+  it(`should display the amount of time left in the current session`, function(){
+  });
+  it(`should allow the user to pause and restart the timer`, function(){
+  });
+  it(`should keep track of the time even when it's not the active tab`, function(){
+  });
+  it(`should alert the user when a new session is starting`, function(){
+  });
+});
