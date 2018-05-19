@@ -1,3 +1,5 @@
+import { logout } from '../react-client/src/actions/userActions.js';
+
 const url = require('url');
 const path = require('path');
 const windowStateKeeper = require('electron-window-state');
@@ -146,6 +148,15 @@ ipcMain.on('got-idle-activity', (event, message) => {
   popUpWindow.hide()
 })
 
+
+function logoutAndQuit (mainSession) {
+  saveStoreToSql(mainWindow)
+  force_quit = true;
+  popUpWindow.destroy();
+  mainSession.clearStorageData();
+  app.quit()
+}
+
 const mainMenuTemplate = [
   //if mac, need an empty object here
   {
@@ -206,3 +217,5 @@ if (process.env.NODE_ENV !== 'production'){
     ]
   })
 }
+
+exports.logoutAndQuit = logoutAndQuit;

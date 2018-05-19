@@ -3,8 +3,10 @@ const { app, BrowserWindow, ipcMain, session } = electron;
 const url = 'https://test-aws-thymely.com';
 const moment = require('moment')
 
+const index = require('../index.js')
+
 //handle whether user can skip login, needs to login, or handle user logout
-const manageCookies = (mainSession) => {
+const manageCookies = (mainSession, mainWindow) => {
   ipcMain.on('cookies', (mainWindow, event, message) => {
     console.log('event is', event);
     console.log('message is', message);
@@ -34,7 +36,9 @@ const manageCookies = (mainSession) => {
         }
       });
     } else if (event === 'logout') {
-      mainSession.clearStorageData();
+      // mainSession.clearStorageData();
+      index.logoutAndQuit(mainSession);
+      
     }
   })
 }
