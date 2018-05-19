@@ -100,7 +100,7 @@ const activities = (state = initialState, action) => {
         ]
       }
     }
-    case SET_ALL_ACTIVITIES: //REVISE BASED ON ACTIVITY OBJ CHANGE
+    case SET_ALL_ACTIVITIES: {
       let neutral = []
       let productive = []
       let distracting = []
@@ -109,19 +109,21 @@ const activities = (state = initialState, action) => {
         if (activity.productivity.class === 'neutral') neutral.push(activity);
         if (activity.productivity.class === 'productive') productive.push(activity);
         if (activity.productivity.class === 'distracting') distracting.push(activity);
-        // if (activity.productivity === null) neutral.push(activity); //JUST IN CASE
-      })
+      });
 
-    return {
-      ...state,
-      neutral: neutral,
-      productive: productive,
-      distracting: distracting,
-      nextId: action.payload.length
+      return {
+        ...state,
+        neutral: neutral,
+        productive: productive,
+        distracting: distracting,
+        nextId: action.payload.length
+      }
     }
+    
     default: 
       return state;
   }
+  
 }
 
 const getDuration = (start, end) => {
