@@ -34,7 +34,10 @@ function saveIdleTime () {
     title: activity,
     startTime: start,
     endTime: end,
-    productivity: idleProductivity,
+    productivity: {
+      source: 'user',
+      class: idleProductivity
+    },
     duration: idleDuration
   }
 
