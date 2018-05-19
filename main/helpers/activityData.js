@@ -4,6 +4,7 @@ const moment = require('moment');
 const electron = require('electron')
 const { ipcMain, session } = electron;
 const axios = require('axios');
+const chalk = require('chalk');
 const server = 'http://127.0.0.1:3000';
 const url = 'https://test-aws-thymely.com';
 
@@ -21,15 +22,14 @@ const monitorActivity = (activities, user) => {
     })
     .then((lastActivity) => {
       if (lastActivity) { //only bother if lastActivity not undefined
-        // console.log('lastActivity being sent to the server is', lastActivity)
         const qs = {
-          user_name: user, //CHANGE TO USERNAME
+          user_name: user,
           app_name: lastActivity.app,
           window_title: lastActivity.title
         }
         return axios.get(server + '/api/classifications', {params: qs})
           .then((resp) => {
-            console.log('productivity obj is', resp.data)
+            if (typeof resp.data !== 'object') console.log(chalk.blue('RECEIVED PROD OBJ FROM SERVER THAT IS NOT OBJECT!'))
             return {
               ...lastActivity,
               productivity: resp.data
@@ -75,7 +75,7 @@ const chunkComplete = (lastActivity, newActivity) => {
 };
 
 const startMonitor = (mainWindow, activities = [], user = "test") => {
-  console.log('MONITOR WAS STARTED FOR USER', user)
+  // console.log('MONITOR WAS STARTED FOR USER', user)
   return setInterval(() => {
     monitorActivity(activities, user)
       .then((data) => {

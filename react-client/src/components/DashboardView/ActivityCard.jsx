@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import moment from 'moment';
 import momentFormat from 'moment-duration-format';
 import clone from 'clone';
@@ -78,5 +79,16 @@ const ActivityCard = (props) => {
       </Paper></div>
     )
 }
+
+ActivityCard.propTypes = {
+  activity: (props, propName, componentName) => {
+    if (typeof props.activity.productivity !== 'object') {
+      console.log('custom error incoming for activity', props.activity)
+      return new Error(`
+        Required prop "productivity" was not an object, instead it was ${props.activity.productivity}
+      `)
+    }
+  }
+};
 
 export default DragSource(ItemTypes.CARD, cardSource, collect)(ActivityCard);

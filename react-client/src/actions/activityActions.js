@@ -11,7 +11,7 @@ export const addActivity = (data) => {
 }
 
 export const deleteActivity = (activity, category, isTracked, user) => {
-  console.log('deleting this activity card isTracked is:', isTracked);
+  // console.log('deleting this activity card isTracked is:', isTracked);
   let id = activity.id;
 
   const params = {
@@ -30,6 +30,7 @@ export const deleteActivity = (activity, category, isTracked, user) => {
 }
 
 export const patchActivity = ({ activity, category, index }, data) => {
+  console.log('activity inside patchActivity is', activity)
   return {
     type: PATCH_ACTIVITY,
     payload: {activity, category, index, data}

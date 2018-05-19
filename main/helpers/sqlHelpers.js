@@ -9,13 +9,25 @@ const populateStore = (mainWindow) => {
   createTable();
   getActivities()
   .then((activities) => {
-    newActivities = activities;
+    //FIX THIS!!
+    newActivities = activities.map(activityObj => {
+      const mappedAct = {
+        ...activityObj,
+        productivity: {
+          source: activityObj.source,
+          class: activityObj.productivity
+        }
+      }
+      const {source, ...noSource} = mappedAct;
+      return noSource;
+    });
     return getSpurts()
   })
   .then((spurts) => {
     spurts.forEach((spurt) => {
       let isTracked = trackedApps.includes(spurt.app);
-      for(let activity of newActivities){
+      for (let activity of newActivities) {
+        console.log('activity being loaded is', activity)
         let query = isTracked ? 
                   spurt.title === activity.title && spurt.app === activity.app : 
                   spurt.app === activity.app
@@ -29,6 +41,7 @@ const populateStore = (mainWindow) => {
         }
       }
     })
+    console.log('activities inside populate store are', newActivities)
     mainWindow.send('sqlActivities', newActivities)
   })
 
