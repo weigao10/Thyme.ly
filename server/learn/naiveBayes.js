@@ -27,10 +27,15 @@ getBrowserActivities()
 
   // learn either periodically using a cron or on every new user categorization
     // if latter, need to also recognize recategorizations and deletes
-    
+const REQUIRED_CONFIDENCE = 0.9; //calibrate as necessary    
 const predictProductivityClass = (title, user_name) => {
-  console.log(`predicting productivity class of ${title}`)
-  console.log(classifier.categorize(title));
+  // console.log(`predicting productivity class of ${title}`)
+  // console.log(classifier.categorize(title));
+  const prediction = classifier.categorize(title).likelihoods
+                                .filter(cat => cat.proba > REQUIRED_CONFIDENCE)
+  // console.log('prediction is', prediction)
+  if (prediction.length) return prediction[0].category;
+  else return null;
 };
 
 exports.predictProductivityClass = predictProductivityClass;

@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import moment from 'moment';
 import momentFormat from 'moment-duration-format';
 import clone from 'clone';
@@ -27,7 +28,7 @@ const collect = (connect, monitor) => {
 }
 
 const ActivityCard = (props) => {
-  const { activity, category, deleteActivity, index, preferences, user } = props;
+  const { activity, category, deleteActivity, index, preferences, user, affirmCategorization } = props;
   
   let formattedDuration = moment.duration(activity.duration, "seconds").format("h[h], m[m] s[s]");
 
@@ -67,12 +68,27 @@ const ActivityCard = (props) => {
         style={index % 2 === 0 ? styleTick : styleTock}
       >
         <b>{activity.app}</b> <br/>
+        {activity.productivity.source === 'ml' ? <span>SUGGESTED BY ML<br/></span> : null}
         {isTracked ? activity.title : ''} <br/>
         <i>{formattedDuration}</i>
         <br/>
         <button onClick={() => {deleteActivity(activity, category, isTracked, user)}}>delete</button>
+    {activity.productivity.source === 'ml' ? (
+      <button onClick={() => {affirmCategorization(activity, category, isTracked, user)}}>THANKS ML!
+    </button>) : null}
       </Paper></div>
     )
 }
+
+ActivityCard.propTypes = {
+  activity: (props, propName, componentName) => {
+    if (typeof props.activity.productivity !== 'object') {
+      console.log('custom error incoming for activity', props.activity)
+      return new Error(`
+        Required prop "productivity" was not an object, instead it was ${props.activity.productivity}
+      `)
+    }
+  }
+};
 
 export default DragSource(ItemTypes.CARD, cardSource, collect)(ActivityCard);

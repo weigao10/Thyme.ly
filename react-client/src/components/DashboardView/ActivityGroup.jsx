@@ -39,7 +39,8 @@ const ActivityGroup = props => {
     deleteActivity,
     style,
     preferences,
-    user
+    user,
+    affirmCategorization
   } = props;
   const sortedActivities = [...activities].sort(
     (a, b) => b.duration - a.duration
@@ -77,6 +78,7 @@ const ActivityGroup = props => {
               deleteActivity={deleteActivity}
               preferences={preferences}
               user={user}
+              affirmCategorization={affirmCategorization}
             />
           );
         })}

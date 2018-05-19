@@ -1,4 +1,5 @@
-import { ADD_ACTIVITY, PATCH_ACTIVITY, CATEGORIZE_ACTIVITY, DELETE_ACTIVITY, SET_ALL_ACTIVITIES } from '../actions/types'; 
+import { ADD_ACTIVITY, PATCH_ACTIVITY, CATEGORIZE_ACTIVITY,
+        DELETE_ACTIVITY, SET_ALL_ACTIVITIES, AFFIRM_CATEGORIZATION } from '../actions/types'; 
 import moment from 'moment';
 
 const initialState = {
@@ -12,20 +13,25 @@ const activities = (state = initialState, action) => {
 
   switch(action.type){
     case ADD_ACTIVITY:
-      console.log('action payload', action.payload)
+      // console.log('action payload', action.payload)
       let {app, title, startTime, endTime, productivity} = action.payload
       let duration = getDuration(startTime, endTime)
+      const convertedProd = { //expand because app should know whether it was from ML or not
+        ...productivity,
+        class: productivity.class || 'neutral'
+      };
+      // console.log('converted productivity inside add activity reducer', convertedProd)
       let newData = {
         'id': state.nextId,
         'app': app,
         'title': title,
         'spurts': [{'startTime': startTime, 'endTime': endTime}],
         'duration': duration,
-        'productivity': productivity || 'neutral' //if null, make neutral for now
+        'productivity': convertedProd
       }
       return {
         ...state,
-        [newData.productivity]: [... state[newData.productivity], newData],
+        [newData.productivity.class]: [... state[newData.productivity.class], newData],
         nextId: ++state.nextId
       }
 
@@ -43,21 +49,27 @@ const activities = (state = initialState, action) => {
       let updatedActivity = Object.assign({
         spurts: copySpurts
       }, activity);
+      console.log('old activity.productivity inside PATCH is', activity.productivity)
+      console.log('new activity.productivity inside PATCH is', updatedActivity.productivity)
       updatedActivity.spurts.push({'startTime': data.startTime, 'endTime': data.endTime})
       updatedActivity.duration += getDuration(data.startTime, data.endTime)
       return {
         ...state,
-        [activity.productivity]: [
-                    ...state[activity.productivity].slice(0,index),
+        [activity.productivity.class]: [
+                    ...state[activity.productivity.class].slice(0,index),
                     updatedActivity,
-                    ...state[activity.productivity].slice(index + 1)
+                    ...state[activity.productivity.class].slice(index + 1)
                     ]
       }
 
     case CATEGORIZE_ACTIVITY:
       let { id, oldCatName, newCatName } = action.payload;
-      const movingActivity = state[oldCatName].filter((el) => el.id === id)[0];
-      movingActivity.productivity = newCatName;
+      let movingActivity = state[oldCatName].filter((el) => el.id === id)[0];
+      movingActivity.productivity = {
+        source: 'user',
+        class: newCatName
+      };
+      console.log('moving activity is', movingActivity)
       const updatedOldCat = state[oldCatName].filter((el) => el.id !== id);
       const updatedNewCat = [...state[newCatName] , movingActivity];
       return {
@@ -66,26 +78,52 @@ const activities = (state = initialState, action) => {
         [newCatName]: updatedNewCat
       };
 
-    case SET_ALL_ACTIVITIES:
+    case AFFIRM_CATEGORIZATION: {
+      const { activity } = action.payload;
+      const prodClass = activity.productivity.class;
+      const activityIdx = state[prodClass].indexOf(activity);
+      console.log('idx of activity is', activityIdx);
+      const affirmedActivity = {
+        ...activity,
+        productivity: {
+          source: 'user',
+          class: prodClass
+        }
+      }
+      console.log('affirmed activity is', affirmedActivity);
+      return {
+        ...state,
+        [prodClass]: [
+          ...state[prodClass].slice(0, activityIdx),
+          affirmedActivity,
+          ...state[prodClass].slice(activityIdx + 1)
+        ]
+      }
+    }
+    case SET_ALL_ACTIVITIES: {
       let neutral = []
       let productive = []
       let distracting = []
       action.payload.forEach((activity) => {
-        if(activity.productivity === 'neutral') neutral.push(activity);
-        if(activity.productivity === 'productive') productive.push(activity);
-        if(activity.productivity === 'distracting') distracting.push(activity);
-      })
+        console.log('activity inside set all activities is', activity)
+        if (activity.productivity.class === 'neutral') neutral.push(activity);
+        if (activity.productivity.class === 'productive') productive.push(activity);
+        if (activity.productivity.class === 'distracting') distracting.push(activity);
+      });
 
-    return {
-      ...state,
-      neutral: neutral,
-      productive: productive,
-      distracting: distracting,
-      nextId: action.payload.length
+      return {
+        ...state,
+        neutral: neutral,
+        productive: productive,
+        distracting: distracting,
+        nextId: action.payload.length
+      }
     }
+    
     default: 
       return state;
   }
+  
 }
 
 const getDuration = (start, end) => {
