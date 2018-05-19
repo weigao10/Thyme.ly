@@ -38,6 +38,7 @@ export const patchActivity = ({ activity, category, index }, data) => {
 }
 
 export const changeCategory = (activity, oldCatName, newCatName, isTracked, user) => {
+  console.log('isTracked inside changeCat is', isTracked)
   const params = {
     user_name: user,
     app_name: activity.app,
@@ -61,6 +62,7 @@ export const changeCategory = (activity, oldCatName, newCatName, isTracked, user
 }
 
 export const affirmCategorization = (activity, category, isTracked, user) => {
+  console.log('isTracked inside affirmCat is', isTracked)
   const params = {
     user_name: user,
     app_name: activity.app,

@@ -1,4 +1,4 @@
-import { ipcRenderer } from 'electron'
+import { ipcRenderer } from 'electron';
 import moment from "moment";
 import momentFormat from "moment-duration-format";
 
@@ -34,7 +34,10 @@ function saveIdleTime () {
     title: activity,
     startTime: start,
     endTime: end,
-    productivity: idleProductivity,
+    productivity: {
+      source: 'user',
+      class: idleProductivity
+    },
     duration: idleDuration
   }
 

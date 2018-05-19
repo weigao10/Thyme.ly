@@ -31,7 +31,8 @@ class MonitorContainer extends React.Component {
   componentDidMount() {
     ipcRenderer.on('sqlActivities', (event, message) => {
       this.props.setAllActivities(message)
-    })
+    });
+
     ipcRenderer.on('activity', (event, message) => {
       let isTracked = this.props.preferences.trackedApps.includes(message.app)
       let inState = this.checkState(message, isTracked);
@@ -47,24 +48,25 @@ class MonitorContainer extends React.Component {
     });
 
     ipcRenderer.on('system', (event, message) => {
-      console.log('got system message of', message)
+      // console.log('got system message of', message)
       if (message === 'sleep') {
-        this.pauseMonitor()
+        this.pauseMonitor();
       }
       else if (message === 'resume') {
-        this.connectMonitor(this.props.user.user)
+        this.connectMonitor(this.props.user.user);
       };
     });
 
     ipcRenderer.send('cookies', 'check');
+
     ipcRenderer.on('cookies', (event, message) => {
       console.log('monitor container got this user_id via IPC', message.value)
-      this.props.setUser(message.value)
-      if (message.value) this.connectMonitor(message.value)
+      this.props.setUser(message.value);
+      if (message.value) this.connectMonitor(message.value);
     });
 
     ipcRenderer.on('add-idle-activity', (event, message) => {
-      this.props.activityHandler(message, this.checkState(message, true))
+      this.props.activityHandler(message, this.checkState(message, true));
     })
   }
 
@@ -81,13 +83,13 @@ class MonitorContainer extends React.Component {
   }
 
   connectMonitor(user) {
-    if (this.connected === true) console.log('you tried to connect monitor when it was already connected')
+    if (this.connected) console.log('you tried to connect monitor when it was already connected')
     this.connected = true;
     ipcRenderer.send('monitor', 'start', user);
   }
 
   pauseMonitor() {
-    if (this.connected === false) console.log('you tried to pause monitor when it was already paused')
+    if (!this.connected) console.log('you tried to pause monitor when it was already paused')
     this.connected = false;
     ipcRenderer.send('monitor', 'pause');
   }
@@ -107,13 +109,11 @@ class MonitorContainer extends React.Component {
   checkState (data, isTracked) {
     for (let category in this.props.activities) {
       let activities = this.props.activities[category]
-      
       for (let i = 0; i < activities.length; i++) {
-
         let inState = (isTracked) ? 
                     activities[i].title === data.title && activities[i].app === data.app : 
                     activities[i].app === data.app
-        if(inState){
+        if (inState) {
           return {
             'activity': activities[i],
             'productivity': category,
@@ -145,7 +145,7 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => {
   return {
     activityHandler: (data, inState) => {
-      if (inState) dispatch(patchActivity(inState, data)) // add state.user here
+      if (inState) dispatch(patchActivity(inState, data))
       else dispatch(addActivity(data))
     },
     setAllActivities: (data) => {
