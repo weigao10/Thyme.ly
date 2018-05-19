@@ -70,7 +70,7 @@ class MonitorContainer extends React.Component {
 
   logout() {
     ipcRenderer.send('cookies', 'logout');
-    
+    //display login page
     //actually destroys the cookie but also need to remove it from the store
   }
 
