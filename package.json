@@ -98,6 +98,7 @@
     "nodemon": "^1.17.3",
     "pg": "^7.4.2",
     "pg-promise": "^8.4.4",
+    "prop-types": "^15.6.1",
     "puppeteer": "^1.4.0",
     "react": "^16.3.2",
     "react-d3-charts": "^1.0.46",

@@ -1,7 +1,8 @@
 const puppeteer = require('puppeteer');
 const db = require('../database/scraper.js');
+const fs = require('fs'); //for testing only!
 
-db.getBrowserActivities().then(data => console.log(data));
+// db.getBrowserActivities().then(data => console.log(data));
 
 function sleep(ms) {
   return new Promise(resolve => {
@@ -34,10 +35,11 @@ const scrapeYoutubeTitles = async (url, prod_class, headless) => {
   });
 
   await browser.close();
-  const db = require('./database/index.js');
+  console.log(result)
+  // const db = require('./database/index.js');
   fs.writeFileSync('./titles.txt', result.join('\n') + '\n') //TODO: Save to db, not to file
 }
 
-const url = 'https://www.youtube.com/channel/UCU7iRrk3xfpUk0R6VdyC1Ow/videos'
-// scrapeYoutubeTitles(url, false);
+const url = 'https://www.youtube.com/user/TechGuyWeb/videos?view=0&sort=dd&shelf_id=1'
+scrapeYoutubeTitles(url, false);
 // scrapeYoutubeTitles('https://www.youtube.com/user/TechGuyWeb/videos?view=0&sort=dd&shelf_id=1')

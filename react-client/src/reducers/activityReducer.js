@@ -49,8 +49,8 @@ const activities = (state = initialState, action) => {
       let updatedActivity = Object.assign({
         spurts: copySpurts
       }, activity);
-      // console.log('activity.productivity is', activity.productivity)
-      // console.log('activity.productivity.class is', activity.productivity.class)
+      console.log('old activity.productivity inside PATCH is', activity.productivity)
+      console.log('new activity.productivity inside PATCH is', updatedActivity.productivity)
       updatedActivity.spurts.push({'startTime': data.startTime, 'endTime': data.endTime})
       updatedActivity.duration += getDuration(data.startTime, data.endTime)
       return {
@@ -106,9 +106,9 @@ const activities = (state = initialState, action) => {
       let distracting = []
       action.payload.forEach((activity) => {
         console.log('activity inside set all activities is', activity)
-        if (activity.productivity === 'neutral') neutral.push(activity);
-        if (activity.productivity === 'productive') productive.push(activity);
-        if (activity.productivity === 'distracting') distracting.push(activity);
+        if (activity.productivity.class === 'neutral') neutral.push(activity);
+        if (activity.productivity.class === 'productive') productive.push(activity);
+        if (activity.productivity.class === 'distracting') distracting.push(activity);
         // if (activity.productivity === null) neutral.push(activity); //JUST IN CASE
       })
 

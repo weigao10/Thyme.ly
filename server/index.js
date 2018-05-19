@@ -31,9 +31,9 @@ app.use('/api/classifications', (req, res, next) => {
 //api
 app.get('/api/classifications', (req, res) => {
   const {user_name, app_name, window_title} = req.query;
-  console.log('req.query is', req.query)
   if (!user_name) { //refactor to be middleware
-    console.log('NO USER NAME!')
+    console.log(chalk.blue('NO USER NAME!'))
+    console.log('req.query is', req.query)
     res.send('no user attached to this session')
   }
   return db.getProductivityClass(app_name, window_title, user_name)
@@ -45,11 +45,12 @@ app.get('/api/classifications', (req, res) => {
           source: predictedProdClass ? 'ml' : 'user',
           class: ml.predictProductivityClass(window_title, user_name)
         })
+      } else {
+        res.send({
+          source: 'user',
+          class: prod_class
+        });
       }
-      res.send({
-        source: 'user',
-        class: prod_class
-      });
     })
     .catch((err) => res.send(err));
 });
@@ -57,7 +58,7 @@ app.get('/api/classifications', (req, res) => {
 app.post('/api/classifications', (req, res) => {
   if (!req.body.params.user_name) {
     console.log('req.body.params is', req.body.params)
-    console.log('NO USER NAME!')
+    console.log(chalk.blue('NO USER NAME!'))
     res.send('no user attached to this session')
   }
   return db.addOrChangeProductivity(req.body.params)
@@ -68,9 +69,9 @@ app.post('/api/classifications', (req, res) => {
 });
 
 app.delete('/api/classifications', (req, res) => {
-  console.log('getting a delete request for', req.body)
+  // console.log('getting a delete request for', req.body)
   if (!req.body.user_name) {
-    console.log('NO USER NAME!')
+    console.log(chalk.blue('NO USER NAME!'))
     res.send('no user attached to this session')
   }
   return db.deleteProductivityClass(req.body)
