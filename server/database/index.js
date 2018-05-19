@@ -33,14 +33,18 @@ const getActivities = () => {
 };
 
 const getProductivityClass = (appName, title, userName) => {
-  const queryStr = `SELECT prod_class FROM public.categories where\
-                    (app_name = $1) AND (window_title = $2) AND (user_name = $3)`;
-  const values = [appName, title, userName];
+  const queryStr = (appName === 'Google Chrome' ? //refactor to not hardcode
+                   `SELECT prod_class FROM public.categories where\
+                   (app_name = $1) AND (user_name = $2) AND (window_title = $3)` :
+                   `SELECT prod_class FROM public.categories where\
+                   (app_name = $1) AND (user_name = $2)`);
+  console.log('queryStr inside getProductivityClass is', queryStr)
+  const values = (appName === 'Google Chrome' ? [appName, userName, title] : [appName, userName]);
   // console.log('inside get productivity class for', userName);
   return pool.query(queryStr, values)
     .then((data) => {
       if (data.rows.length) {
-        // console.log('productivity class is', data.rows[0].prod_class)
+        console.log('productivity class is', data.rows)
         return data.rows[0].prod_class
       } else {
         // console.log('productivity class not found')
@@ -51,7 +55,7 @@ const getProductivityClass = (appName, title, userName) => {
 };
 
 const addOrChangeProductivity = (query) => {
-  const { app_name, window_title, user_name } = query;
+  const { app_name, window_title, user_name, isTracked } = query;
   return getProductivityClass(app_name, window_title, user_name) //add user here later
     .then(result => {
       if (result) {
@@ -72,8 +76,6 @@ const deleteProductivityClass = ({user_name, app_name, window_title, prod_class,
   } else {
     queryStr = `DELETE FROM public.categories WHERE user_name='${user_name}' AND app_name='${app_name}'`;
   }
-  // console.log('delete queryStr is', queryStr)
-  //values are still included here, but not used, in case we need them in the future
   const values = [user_name, app_name, window_title, prod_class, isTracked];
 
   // console.log('values to delete are', values);
@@ -82,16 +84,22 @@ const deleteProductivityClass = ({user_name, app_name, window_title, prod_class,
 }
 
 const addProductivityClass = ({user_name, app_name, window_title, prod_class}) => {
-  const queryStr = `INSERT INTO public.categories(user_name, app_name, window_title, prod_class)\
-                    VALUES ($1, $2, $3, $4)`;
+  const queryStr = appName === 'Google Chrome' ?
+                               `INSERT INTO public.categories(user_name, app_name, window_title, prod_class)\
+                                VALUES ($1, $2, $3, $4)` : 
+                               `INSERT INTO public.categories(user_name, app_name, prod_class)\
+                                VALUES ($1, $2, $4)`;
   const values = [user_name, app_name, window_title, prod_class];
   return pool.query(queryStr, values)
     .catch(err => console.error('error in adding prod_class', err)) 
 };
 
 const changeProductivityClass = ({user_name, app_name, window_title, prod_class}) => {
-  const queryStr = `UPDATE public.categories SET prod_class = $1\
-                    WHERE app_name = $2 AND window_title = $3`;
+  const queryStr = appName === 'Google Chrome' ?
+                               `UPDATE public.categories SET prod_class = $1\
+                                WHERE app_name = $2 AND window_title = $3` :
+                               `UPDATE public.categories SET prod_class = $1\
+                                WHERE app_name = $2`;
   const values = [prod_class, app_name, window_title];
   return pool.query(queryStr, values)
     .catch(err => console.error('error in changing prod_class', err)) 

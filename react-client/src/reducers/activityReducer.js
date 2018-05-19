@@ -107,12 +107,12 @@ const activities = (state = initialState, action) => {
       }
     }
     case SET_ALL_ACTIVITIES: {
-      console.log('payload inside set all activities is', action.payload)
+      // console.log('payload inside set all activities is', action.payload)
       let neutral = []
       let productive = []
       let distracting = []
       action.payload.forEach((activity) => {
-        console.log('activity inside set all activities is', activity)
+        // console.log('activity inside set all activities is', activity)
         if (activity.productivity.class === 'neutral') neutral.push(activity);
         if (activity.productivity.class === 'productive') productive.push(activity);
         if (activity.productivity.class === 'distracting') distracting.push(activity);
