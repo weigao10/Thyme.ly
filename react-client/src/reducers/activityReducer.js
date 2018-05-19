@@ -11,17 +11,17 @@ const initialState = {
 
 const activities = (state = initialState, action) => {
 
-  switch(action.type){
-    case ADD_ACTIVITY:
+  switch (action.type) {
+    case ADD_ACTIVITY: {
       // console.log('action payload', action.payload)
-      let {app, title, startTime, endTime, productivity} = action.payload
-      let duration = getDuration(startTime, endTime)
-      const convertedProd = { //expand because app should know whether it was from ML or not
+      const {app, title, startTime, endTime, productivity} = action.payload
+      const duration = getDuration(startTime, endTime)
+      const convertedProd = {
         ...productivity,
         class: productivity.class || 'neutral'
       };
       // console.log('converted productivity inside add activity reducer', convertedProd)
-      let newData = {
+      const newData = {
         'id': state.nextId,
         'app': app,
         'title': title,
@@ -31,58 +31,64 @@ const activities = (state = initialState, action) => {
       }
       return {
         ...state,
-        [newData.productivity.class]: [... state[newData.productivity.class], newData],
+        [newData.productivity.class]: [...state[newData.productivity.class], newData],
         nextId: ++state.nextId
       }
+    }
 
-    case DELETE_ACTIVITY:
-      let { category } = action.payload
-      let newArr = state[category].filter((el) => el.id !== action.payload.id); //don't deconstruct id
+    case DELETE_ACTIVITY: {
+      const { id, category } = action.payload;
+      const updatedCategoryArray = state[category].filter((el) => el.id !== id);
       return {
         ...state,
-        [category]: newArr
+        [category]: updatedCategoryArray
       };
+    }
 
-    case PATCH_ACTIVITY:
-      let { index, activity, data } = action.payload
-      let copySpurts = (activity.spurts) ? activity.spurts.slice() : []
-      let updatedActivity = Object.assign({
-        spurts: copySpurts
-      }, activity);
-      console.log('old activity.productivity inside PATCH is', activity.productivity)
-      console.log('new activity.productivity inside PATCH is', updatedActivity.productivity)
-      updatedActivity.spurts.push({'startTime': data.startTime, 'endTime': data.endTime})
-      updatedActivity.duration += getDuration(data.startTime, data.endTime)
+    case PATCH_ACTIVITY: {
+      const { index, activity, data } = action.payload;
+      const { startTime, endTime } = data;
+      const prodClass = activity.productivity.class;
+
+      const updatedActivity = {
+        ...activity,
+        spurts: [...activity.spurts, {'startTime': startTime, 'endTime': endTime}],
+        duration: activity.duration + getDuration(startTime, endTime)
+      };
       return {
         ...state,
-        [activity.productivity.class]: [
-                    ...state[activity.productivity.class].slice(0,index),
+        [prodClass]: [
+                    ...state[prodClass].slice(0,index),
                     updatedActivity,
-                    ...state[activity.productivity.class].slice(index + 1)
+                    ...state[prodClass].slice(index + 1)
                     ]
-      }
-
-    case CATEGORIZE_ACTIVITY:
-      let { id, oldCatName, newCatName } = action.payload;
-      let movingActivity = state[oldCatName].filter((el) => el.id === id)[0];
-      movingActivity.productivity = {
-        source: 'user',
-        class: newCatName
       };
-      console.log('moving activity is', movingActivity)
-      const updatedOldCat = state[oldCatName].filter((el) => el.id !== id);
-      const updatedNewCat = [...state[newCatName] , movingActivity];
+    }
+
+    case CATEGORIZE_ACTIVITY: {
+      const { id, oldCatName, newCatName } = action.payload;
+      const movingActivity = state[oldCatName].filter((el) => el.id === id)[0];
+      const updatedActivity = {
+        ...movingActivity,
+        productivity: {
+          source: 'user',
+          class: newCatName
+        }
+      };
+      console.log('updated moving activity is', updatedActivity)
+      const updatedOldCategoryActivities = state[oldCatName].filter((el) => el.id !== id);
+      const updatedNewCategoryActivities = [...state[newCatName] , updatedActivity];
       return {
         ...state,
-        [oldCatName]: updatedOldCat,
-        [newCatName]: updatedNewCat
+        [oldCatName]: updatedOldCategoryActivities,
+        [newCatName]: updatedNewCategoryActivities
       };
+    }
 
     case AFFIRM_CATEGORIZATION: {
       const { activity } = action.payload;
       const prodClass = activity.productivity.class;
       const activityIdx = state[prodClass].indexOf(activity);
-      console.log('idx of activity is', activityIdx);
       const affirmedActivity = {
         ...activity,
         productivity: {
@@ -90,7 +96,7 @@ const activities = (state = initialState, action) => {
           class: prodClass
         }
       }
-      console.log('affirmed activity is', affirmedActivity);
+      // console.log('affirmed activity is', affirmedActivity);
       return {
         ...state,
         [prodClass]: [
@@ -101,6 +107,7 @@ const activities = (state = initialState, action) => {
       }
     }
     case SET_ALL_ACTIVITIES: {
+      console.log('payload inside set all activities is', action.payload)
       let neutral = []
       let productive = []
       let distracting = []
@@ -110,7 +117,6 @@ const activities = (state = initialState, action) => {
         if (activity.productivity.class === 'productive') productive.push(activity);
         if (activity.productivity.class === 'distracting') distracting.push(activity);
       });
-
       return {
         ...state,
         neutral: neutral,
