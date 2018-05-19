@@ -26,7 +26,7 @@ const populateStore = (mainWindow) => {
       spurts.forEach((spurt) => {
         let isTracked = trackedApps.includes(spurt.app);
         for (let activity of newActivities) {
-          console.log('activity being loaded is', activity)
+          // console.log('activity being loaded is', activity)
           let query = isTracked ? 
                     spurt.title === activity.title && spurt.app === activity.app : 
                     spurt.app === activity.app
@@ -40,7 +40,7 @@ const populateStore = (mainWindow) => {
           }
         }
       })
-      console.log('activities inside populate store are', newActivities)
+      // console.log('activities inside populate store are', newActivities)
       mainWindow.send('sqlActivities', newActivities)
     })
 
@@ -51,7 +51,7 @@ const saveStoreToSql = (mainWindow) => {
   mainWindow.send("windowClose", "close")
   ipcMain.once("store", (event, data) => {
     let { activities, preferences } = JSON.parse(data);
-    console.log('the store upon window close is', data)
+    // console.log('the store upon window close is', data)
     for(let category in activities){
       if(category !== 'nextId'){
         activities[category].forEach((el) => {

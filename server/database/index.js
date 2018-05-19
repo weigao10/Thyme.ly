@@ -11,7 +11,7 @@ const pool = new Pool({
   database,
   password,
   port
-})
+});
 
 const client = new Client({
   user,
@@ -19,7 +19,7 @@ const client = new Client({
   database,
   password,
   port
-})
+});
 
 //----Activity Helper Functions----
 
@@ -38,13 +38,12 @@ const getProductivityClass = (appName, title, userName) => {
                    (app_name = $1) AND (user_name = $2) AND (window_title = $3)` :
                    `SELECT prod_class FROM public.categories where\
                    (app_name = $1) AND (user_name = $2)`);
-  console.log('queryStr inside getProductivityClass is', queryStr)
+  // console.log('user inside getProductivityClass is', userName)
   const values = (appName === 'Google Chrome' ? [appName, userName, title] : [appName, userName]);
-  // console.log('inside get productivity class for', userName);
+  // console.log('values inside get productivity class are', values);
   return pool.query(queryStr, values)
     .then((data) => {
       if (data.rows.length) {
-        console.log('productivity class is', data.rows)
         return data.rows[0].prod_class
       } else {
         // console.log('productivity class not found')
@@ -84,23 +83,27 @@ const deleteProductivityClass = ({user_name, app_name, window_title, prod_class,
 }
 
 const addProductivityClass = ({user_name, app_name, window_title, prod_class}) => {
-  const queryStr = appName === 'Google Chrome' ?
+  const queryStr = app_name === 'Google Chrome' ?
                                `INSERT INTO public.categories(user_name, app_name, window_title, prod_class)\
                                 VALUES ($1, $2, $3, $4)` : 
                                `INSERT INTO public.categories(user_name, app_name, prod_class)\
-                                VALUES ($1, $2, $4)`;
-  const values = [user_name, app_name, window_title, prod_class];
+                                VALUES ($1, $2, $3)`;
+  const values = (app_name === 'Google Chrome' ?
+                             [user_name, app_name, window_title, prod_class]:
+                             [user_name, app_name, prod_class]);
   return pool.query(queryStr, values)
     .catch(err => console.error('error in adding prod_class', err)) 
 };
 
 const changeProductivityClass = ({user_name, app_name, window_title, prod_class}) => {
-  const queryStr = appName === 'Google Chrome' ?
+  const queryStr = app_name === 'Google Chrome' ?
                                `UPDATE public.categories SET prod_class = $1\
                                 WHERE app_name = $2 AND window_title = $3` :
                                `UPDATE public.categories SET prod_class = $1\
                                 WHERE app_name = $2`;
-  const values = [prod_class, app_name, window_title];
+  const values = (app_name === 'Google Chrome' ?
+                              [prod_class, app_name, window_title]:
+                              [prod_class, app_name]);
   return pool.query(queryStr, values)
     .catch(err => console.error('error in changing prod_class', err)) 
 };
