@@ -30,6 +30,7 @@ app.use('/api/classifications', (req, res, next) => {
 
 //api
 app.get('/api/classifications', (req, res) => {
+  //MAIN FILE NEEDS ACCESS TO 'IS TRACKED'
   const {user_name, app_name, window_title} = req.query;
   if (!user_name) { //refactor to be middleware
     console.log(chalk.blue('NO USER NAME!'))
@@ -38,7 +39,7 @@ app.get('/api/classifications', (req, res) => {
   }
   return db.getProductivityClass(app_name, window_title, user_name)
     .then((prod_class) => {
-      if (prod_class === null && app_name === 'Google Chrome') {
+      if (prod_class === null && app_name === 'Google Chrome') { //add other tracked app
         const predictedProdClass = ml.predictProductivityClass(window_title, user_name)
         console.log('predicted prod is', predictedProdClass);
         res.send({
@@ -61,6 +62,7 @@ app.post('/api/classifications', (req, res) => {
     console.log(chalk.blue('NO USER NAME!'))
     res.send('no user attached to this session')
   }
+  console.log(chalk.blue('req.body.params is', JSON.stringify(req.body.params)));
   return db.addOrChangeProductivity(req.body.params)
     .then(message => {
       res.send(message)
@@ -69,7 +71,7 @@ app.post('/api/classifications', (req, res) => {
 });
 
 app.delete('/api/classifications', (req, res) => {
-  // console.log('getting a delete request for', req.body)
+  console.log(chalk.blue('getting a delete request for', JSON.stringify(req.body)));
   if (!req.body.user_name) {
     console.log(chalk.blue('NO USER NAME!'))
     res.send('no user attached to this session')

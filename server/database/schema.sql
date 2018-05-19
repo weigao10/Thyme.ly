@@ -27,7 +27,7 @@ CREATE TABLE categories(
   activity_id serial NOT NULL PRIMARY KEY,
   user_name VARCHAR,
   app_name VARCHAR NOT NULL,
-  window_title VARCHAR NOT NULL,
+  window_title VARCHAR,
   prod_class VARCHAR NOT NULL CHECK (prod_class = 'productive' or prod_class = 'neutral' or prod_class = 'distracting')
 );
 
