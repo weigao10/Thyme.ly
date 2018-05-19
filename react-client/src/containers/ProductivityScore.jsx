@@ -55,10 +55,38 @@ class ProductivityScore extends React.Component {
   //   });
   }
 
+  calculateProductivityScore() {
+    //add up all the time spent on (1) productive activities (2) distracting activities
+    //then, return the score according to a formula
+    var productive = 0; 
+    var neutral = 0;
+    var distracting = 0;
+    var productivityScore = 0;
+
+    this.props.activities.productive.forEach((activityCard) => {
+      productive += activityCard.duration;
+    })
+
+    this.props.activities.neutral.forEach((activityCard) => {
+      neutral += activityCard.duration;
+    })
+
+    this.props.activities.distracting.forEach((activityCard) => {
+      distracting += activityCard.duration;
+    })
+
+    productivityScore = Math.floor( (productive / (productive + neutral + distracting) * 100 ) );
+
+    console.error('productivity score is:', productivityScore)
+    console.error('productivity and distracting are:', productive, distracting, neutral)
+
+    return productivityScore;
+  }
 
 
   render() {
  
+    console.log('PROD SCORE props.activities are:', this.props.activities)
     // const data = {}
     // data.width = 500;
     // data.height = 750;
@@ -81,7 +109,7 @@ class ProductivityScore extends React.Component {
           {/* <div id="gauge" style={{ lineHeight: "300px" }} /> */}
 
           <ReactSpeedometer 
-            value={96}
+            value={this.calculateProductivityScore()}
             minValue={0}
             maxValue={100}
             segments={5}
