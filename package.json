@@ -5,10 +5,10 @@
   "main": "main/index.js",
   "scripts": {
     "start": "electron main/index.js",
-    "dev": "nodemon server/index.js && electron .",
     "react-dev": "webpack -d --watch",
     "react-build": "webpack --mode production",
-    "server-dev": "nodemon server/index.js"
+    "server-dev": "nodemon server/index.js",
+    "scrape": "node server/workers/scraper.js"
   },
   "repository": {
     "type": "git",
@@ -97,6 +97,9 @@
     "moment-duration-format": "^2.2.2",
     "nodemon": "^1.17.3",
     "pg": "^7.4.2",
+    "pg-promise": "^8.4.4",
+    "prop-types": "^15.6.1",
+    "puppeteer": "^1.4.0",
     "react": "^16.3.2",
     "react-d3-charts": "^1.0.46",
     "react-d3-components": "^0.9.1",
