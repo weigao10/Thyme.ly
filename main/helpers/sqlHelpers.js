@@ -1,6 +1,6 @@
-const { createTable, insertActivities, insertPreferences, getActivities, insertSpurts, getSpurts, clearDb, closeDb } = require('../../server/database/sqlite.js')
-const electron = require('electron')
-const { ipcMain } = electron;
+const { createTable, insertActivities, insertPreferences, getActivities, insertSpurts,
+        getSpurts, clearDb, closeDb } = require('../../database/sqlite.js');
+const { ipcMain } = require('electron');
 
 
 const populateStore = (mainWindow) => {
@@ -8,42 +8,41 @@ const populateStore = (mainWindow) => {
   let newActivities;
   createTable();
   getActivities()
-  .then((activities) => {
-    //FIX THIS!!
-    newActivities = activities.map(activityObj => {
-      const mappedAct = {
-        ...activityObj,
-        productivity: {
-          source: activityObj.source,
-          class: activityObj.productivity
+    .then((activities) => {
+      newActivities = activities.map(activityObj => {
+        const mappedAct = {
+          ...activityObj,
+          productivity: {
+            source: activityObj.source,
+            class: activityObj.productivity
+          }
         }
-      }
-      const {source, ...noSource} = mappedAct;
-      return noSource;
-    });
-    return getSpurts()
-  })
-  .then((spurts) => {
-    spurts.forEach((spurt) => {
-      let isTracked = trackedApps.includes(spurt.app);
-      for (let activity of newActivities) {
-        console.log('activity being loaded is', activity)
-        let query = isTracked ? 
-                  spurt.title === activity.title && spurt.app === activity.app : 
-                  spurt.app === activity.app
-
-        if(query){
-          activity.spurts = activity.spurts || []
-          activity.spurts.push({
-            startTime: spurt.startTime,
-            endTime: spurt.endTime
-          })
-        }
-      }
+        const {source, ...noSource} = mappedAct;
+        return noSource;
+      });
+      return getSpurts()
     })
-    console.log('activities inside populate store are', newActivities)
-    mainWindow.send('sqlActivities', newActivities)
-  })
+    .then((spurts) => {
+      spurts.forEach((spurt) => {
+        let isTracked = trackedApps.includes(spurt.app);
+        for (let activity of newActivities) {
+          console.log('activity being loaded is', activity)
+          let query = isTracked ? 
+                    spurt.title === activity.title && spurt.app === activity.app : 
+                    spurt.app === activity.app
+
+          if(query){
+            activity.spurts = activity.spurts || []
+            activity.spurts.push({
+              startTime: spurt.startTime,
+              endTime: spurt.endTime
+            })
+          }
+        }
+      })
+      console.log('activities inside populate store are', newActivities)
+      mainWindow.send('sqlActivities', newActivities)
+    })
 
 }
 
