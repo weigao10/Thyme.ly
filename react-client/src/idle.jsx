@@ -1,4 +1,4 @@
-import { ipcRenderer } from 'electron'
+import { ipcRenderer } from 'electron';
 import moment from "moment";
 import momentFormat from "moment-duration-format";
 
