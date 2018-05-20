@@ -5,12 +5,21 @@ const timestamp = () => {
   return moment().format('LTS');
 }
 
+//intervals for testing...should eventually hook up to user pomodoro's prefs
+const TEN_SECONDS = 10 * 1000;
+const FIVE_SECONDS = 5 * 1000;
+const INTERVAL_MAP = {
+  'work': TEN_SECONDS,
+  'shortBreak': FIVE_SECONDS,
+  'longBreak': TEN_SECONDS
+};
+
 const initialState = {
   pomStartTime: null, // consider actual usefulness of this
   status: 'not started',
   currentSpurt: {
     type: null,
-    startTime: null // or just calculate elapsed time in the component itself
+    length: null
   },
   completedSpurtCount: {
     work: 0,
@@ -28,7 +37,7 @@ const pomodoro = (state = initialState, action) => {
         pomStartTime: timestamp(),
         currentSpurt: {
           type: 'work',
-          startTime: timestamp()
+          length: TEN_SECONDS
         }
       }
     }
@@ -73,7 +82,7 @@ const pomodoro = (state = initialState, action) => {
         ...state,
         currentSpurt: {
           type: nextSpurtType,
-          startTime: timestamp()
+          length: INTERVAL_MAP[nextSpurtType]
         },
         completedSpurtCount: {
           ...state.completedSpurtCount,
