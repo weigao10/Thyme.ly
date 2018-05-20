@@ -11,33 +11,41 @@ class PomodoroContainer extends React.Component {
     super(props);
     this.state = { //local state, everything else is in the store
       timerIntervalId: null,
-      elapsedTime: 0,
-      currentSpurtLength: 50 //this should come from redux?
+      lastCheckedTime: null, //used to compare to current time to increment elapsed time
+      elapsedTime: 0
     }
-    this.elapseTime = this.elapseTime.bind(this);
+    this.trackTime = this.trackTime.bind(this);
     this.startTimer = this.startTimer.bind(this);
     this.pauseTimer = this.pauseTimer.bind(this);
     this.resumeTimer = this.resumeTimer.bind(this);
     this.clearTimer = this.clearTimer.bind(this);
-    this.skipAhead = this.skipAhead.bind(this);
+    this.skipAhead = this.skipAhead.bind(this); //for testing only?
   }
 
-  elapseTime() {
-    if (this.state.elapsedTime >= this.state.currentSpurtLength) {
-      // console.log('FINISHED POM SPURT OF', this.props.pomodoro.currentSpurt.type);
+  trackTime() {
+    //FIND A WAY TO SMOOTH THIS TIMER OUT BETTER
+    if (this.state.elapsedTime >= this.props.pomodoro.currentSpurt.length ||
+    (this.props.pomodoro.currentSpurt.length - this.state.elapsedTime) < 20) { //must be better way to smooth out
       this.props.completeSpurt();
-      // console.log('NOW ON SPURT', this.props.pomodoro.currentSpurt)
-      this.setState({elapsedTime: 0}) //also need to change currentSpurtLength based on its type
-    } else {
       this.setState({
-        elapsedTime: this.state.elapsedTime + 1,
+        lastCheckedTime: Date.now(),
+        elapsedTime: 0
+      })
+    } else {
+      const elapsedMS = Date.now() - this.state.lastCheckedTime;
+      this.setState({
+        lastCheckedTime: Date.now(),
+        elapsedTime: this.state.elapsedTime + elapsedMS,
       });
     }
   }
 
+  //add error checking to buttons so that nothing happens if you press start if the timer is already started, etc.
+
   startTimer() {
     this.setState({
-      timerIntervalId: setInterval(this.elapseTime, 100),
+      timerIntervalId: setInterval(this.trackTime, 500),
+      lastCheckedTime: Date.now()
     }, this.props.startPom())
   }
 
@@ -47,19 +55,26 @@ class PomodoroContainer extends React.Component {
   }
 
   resumeTimer() {
+    const resumedTime = Date.now();
     this.setState({
-      timerIntervalId: setInterval(this.elapseTime, 100),
+      timerIntervalId: setInterval(this.trackTime, 500),
+      lastCheckedTime: resumedTime
     }, this.props.resumePom())
   }
 
   clearTimer() {
     clearInterval(this.state.timerIntervalId);
+    this.setState({
+      lastCheckedTime: null,
+      elapsedTime: 0
+    });
     this.props.clearPom();
   }
 
   skipAhead() {
     this.setState({
-      elapsedTime: this.state.currentSpurtLength
+      elapsedTime: this.props.pomodoro.currentSpurt.length,
+      lastCheckedTime: Date.now()
     });
   }
 
@@ -94,7 +109,7 @@ class PomodoroContainer extends React.Component {
         <pre>pom's status is {this.props.pomodoro.status}</pre>
         <pre>current session is {this.props.pomodoro.currentSpurt.type}</pre>
         <pre>{JSON.stringify(this.props.pomodoro)}</pre>
-        <pre>elapsed time: {this.state.elapsedTime} and remaining time: {this.state.currentSpurtLength - this.state.elapsedTime}</pre>
+        <pre>elapsed time: {this.state.elapsedTime} and remaining time: {this.props.pomodoro.currentSpurt.length - this.state.elapsedTime}</pre>
         {/* {/* <PieChart width={800} height={400}>
           <Pie dataKey="value" data={data02} cx={200} cy={200} outerRadius={60} fill="#8884d8" paddingAngle={5}>
           {
