@@ -9,75 +9,62 @@ import { startPom, pausePom, resumePom, clearPom, completeSpurt } from '../actio
 class PomodoroContainer extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
+    this.state = { //local state, everything else is in the store
       timerIntervalId: null,
-      data: [{name: 'Elapsed Time', value: 400},
-             {name: 'Time Remaining', value: 300}]
+      elapsedTime: 0,
+      currentSpurtLength: 50 //this should come from redux?
     }
-    // this.elapseTime = this.elapseTime.bind(this);
-    // this.startTimer = this.startTimer.bind(this);
-    // this.finishSpurt = this.finishSpurt.bind(this);
+    this.elapseTime = this.elapseTime.bind(this);
+    this.startTimer = this.startTimer.bind(this);
+    this.pauseTimer = this.pauseTimer.bind(this);
+    this.resumeTimer = this.resumeTimer.bind(this);
+    this.clearTimer = this.clearTimer.bind(this);
+    this.skipAhead = this.skipAhead.bind(this);
   }
 
   elapseTime() {
-    const [ elapsed, remaining ] = this.state.data;
-    if (remaining.value === 0) {
-      console.log('FINISHED POM SESSION:', this.state.currentSpurt.type);
-      this.finishSpurt();
+    if (this.state.elapsedTime >= this.state.currentSpurtLength) {
+      // console.log('FINISHED POM SPURT OF', this.props.pomodoro.currentSpurt.type);
+      this.props.completeSpurt();
+      // console.log('NOW ON SPURT', this.props.pomodoro.currentSpurt)
+      this.setState({elapsedTime: 0}) //also need to change currentSpurtLength based on its type
     } else {
       this.setState({
-        currentTime: moment(),
-        data: [{name: 'Elapsed Time', value: elapsed.value + 10},
-               {name: 'Time Remaining', value: remaining.value - 10}]
+        elapsedTime: this.state.elapsedTime + 1,
       });
     }
   }
 
   startTimer() {
     this.setState({
-      pomStartTime: this.state.pomStartTime || moment(),
-      intervalId: setInterval(this.elapseTime, 200),
-      currentSpurt: {
-        type: this.state.currentSpurt.type,
-        startTime: moment()
-      }
-    })
+      timerIntervalId: setInterval(this.elapseTime, 100),
+    }, this.props.startPom())
   }
 
   pauseTimer() {
-
+    clearInterval(this.state.timerIntervalId);
+    this.props.pausePom();
   }
 
-  restartTimer() {
-
+  resumeTimer() {
+    this.setState({
+      timerIntervalId: setInterval(this.elapseTime, 100),
+    }, this.props.resumePom())
   }
 
-  finishSpurt() {
-    clearInterval(this.state.intervalId);
-    if (this.state.currentSpurt.type === 'work' ) {
-      //add last spurt to completed
-      this.setState({
-        data: [{name: 'Elapsed Time', value: 400}, {name: 'Time Remaining', value: 300}],
-        currentSpurt: {
-          type: 'break',
-          startTime: moment()
-        }
-      });
-      this.startTimer()
-    }
-    //put current spurt data inside completed spurts
-    //spin up the next spurt
-      //if last spurt was work, start up a short or long break
-        // depends on the number of work spurts % 4
-      //if last spurt was break, start up a new work spurt
+  clearTimer() {
+    clearInterval(this.state.timerIntervalId);
+    this.props.clearPom();
   }
 
-  resetTimer() {
-    //set everything to initial state
+  skipAhead() {
+    this.setState({
+      elapsedTime: this.state.currentSpurtLength
+    });
   }
 
   componentDidMount() {
-    console.log('pomodoro mounted!');
+    
   }
 
   render() {
@@ -107,6 +94,7 @@ class PomodoroContainer extends React.Component {
         <pre>pom's status is {this.props.pomodoro.status}</pre>
         <pre>current session is {this.props.pomodoro.currentSpurt.type}</pre>
         <pre>{JSON.stringify(this.props.pomodoro)}</pre>
+        <pre>elapsed time: {this.state.elapsedTime} and remaining time: {this.state.currentSpurtLength - this.state.elapsedTime}</pre>
         {/* {/* <PieChart width={800} height={400}>
           <Pie dataKey="value" data={data02} cx={200} cy={200} outerRadius={60} fill="#8884d8" paddingAngle={5}>
           {
@@ -118,11 +106,11 @@ class PomodoroContainer extends React.Component {
             <Cell fill={'#ffffff'}/>
           </Pie>
         </PieChart> */}
-        <button onClick={this.props.startPom}>start timer</button> */}
-        <button onClick={this.props.pausePom}>pause</button> */}
-        <button onClick={this.props.resumePom}>resume</button> */}
-        <button onClick={this.props.clearPom}>clear</button> */}
-        <button onClick={this.props.completeSpurt}>complete spurt</button> */}
+        <button onClick={this.startTimer}>start timer</button> */}
+        <button onClick={this.pauseTimer}>pause</button> */}
+        <button onClick={this.resumeTimer}>resume</button> */}
+        <button onClick={this.clearTimer}>clear</button> */}
+        <button onClick={this.skipAhead}>complete spurt</button> */}
       </Paper>
     )
   }
