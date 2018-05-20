@@ -1,30 +1,22 @@
+import { connect } from 'react-redux';
 import React from 'react';
 import Paper from 'material-ui/Paper';
 import {RadialBarChart, RadialBar, PieChart, Pie, Legend, Cell} from 'recharts';
 import moment from 'moment';
 
+import { startPom, pausePom, resumePom, clearPom, completeSpurt } from '../actions/pomodoroActions';
+
 class PomodoroContainer extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      pomStartTime: null, // maybe not super useful b/c user might pause 
-      currentTime: null,
-      currentSpurt: {
-        type: 'work',
-        startTime: null
-      },
-      completedSpurts: {
-        work: null,
-        shortBreaks: null,
-        longBreaks: null
-      },
-      intervalId: null,
+      timerIntervalId: null,
       data: [{name: 'Elapsed Time', value: 400},
              {name: 'Time Remaining', value: 300}]
     }
-    this.elapseTime = this.elapseTime.bind(this);
-    this.startTimer = this.startTimer.bind(this);
-    this.finishSpurt = this.finishSpurt.bind(this);
+    // this.elapseTime = this.elapseTime.bind(this);
+    // this.startTimer = this.startTimer.bind(this);
+    // this.finishSpurt = this.finishSpurt.bind(this);
   }
 
   elapseTime() {
@@ -112,10 +104,10 @@ class PomodoroContainer extends React.Component {
 
     return (
       <Paper style={stylePaper}>
-        <pre>pom was started at time {JSON.stringify(this.state.pomStartTime)}</pre>
-        <pre>pom's current spurt is {JSON.stringify(this.state.currentSpurt)}</pre>
-        <pre>pom's data is {JSON.stringify(this.state.data)}</pre>
-        <PieChart width={800} height={400}>
+        <pre>pom's status is {this.props.pomodoro.status}</pre>
+        <pre>current session is {this.props.pomodoro.currentSpurt.type}</pre>
+        <pre>{JSON.stringify(this.props.pomodoro)}</pre>
+        {/* {/* <PieChart width={800} height={400}>
           <Pie dataKey="value" data={data02} cx={200} cy={200} outerRadius={60} fill="#8884d8" paddingAngle={5}>
           {
           	data02.map((entry, index) => <Cell fill={COLORS[index % COLORS.length]} key={index}/>)
@@ -125,12 +117,40 @@ class PomodoroContainer extends React.Component {
             <Cell fill={'#00C49F'}/>
             <Cell fill={'#ffffff'}/>
           </Pie>
-        </PieChart>
-        <button onClick={this.startTimer}>start timer</button>
+        </PieChart> */}
+        <button onClick={this.props.startPom}>start timer</button> */}
+        <button onClick={this.props.pausePom}>pause</button> */}
+        <button onClick={this.props.resumePom}>resume</button> */}
+        <button onClick={this.props.clearPom}>clear</button> */}
+        <button onClick={this.props.completeSpurt}>complete spurt</button> */}
       </Paper>
     )
   }
 
+}
+
+const mapStateToProps = (state) => ({
+  pomodoro: state.pomodoro
+})
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    startPom: () => {
+      dispatch(startPom())
+    },
+    pausePom: () => {
+      dispatch(pausePom())
+    },
+    resumePom: () => {
+      dispatch(resumePom())
+    },
+    clearPom: () => {
+      dispatch(clearPom())
+    },
+    completeSpurt: () => {
+      dispatch(completeSpurt())
+    }
+  }
 }
 
 let stylePaper = {
@@ -139,4 +159,4 @@ let stylePaper = {
   minHeight: '425px'
 };
 
-export default PomodoroContainer;
+export default connect(mapStateToProps, mapDispatchToProps)(PomodoroContainer);

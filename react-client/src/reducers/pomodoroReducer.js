@@ -1,4 +1,4 @@
-import { START_POM, PAUSE_POM, CLEAR_POM } from '../actions/types';
+import { START_POM, PAUSE_POM, RESUME_POM, CLEAR_POM, COMPLETE_SPURT } from '../actions/types';
 import moment from 'moment';
 
 const timestamp = () => {
@@ -27,7 +27,7 @@ const pomodoro = (state = initialState, action) => {
         status: 'running',
         pomStartTime: timestamp(),
         currentSpurt: {
-          type: state.nextSpurtType,
+          type: 'work',
           startTime: timestamp()
         }
       }
@@ -46,16 +46,22 @@ const pomodoro = (state = initialState, action) => {
     }
     case CLEAR_POM: {
       return {
-        initialState
+        ...initialState,
+        currentSpurt: {
+          ...initialState.currentSpurt
+        },
+        completedSpurtCount: {
+          ...initialState.completedSpurtCount
+        }
       }
     }
     case COMPLETE_SPURT: {
       const lastSpurtType = state.currentSpurt.type;
-      const lastSpurtCount = state.completedSpurtsCount[lastSpurtType];
+      const updatedLastSpurtCount = state.completedSpurtCount[lastSpurtType] + 1;
       const { work, shortBreak, longBreak } = state.completedSpurtCount;
-      //expand logic to depend on user prefs
+      
       let nextSpurtType;
-      if (lastSpurtType === 'work' && work % 4 === 0) {
+      if (lastSpurtType === 'work' && updatedLastSpurtCount % 4 === 0) { //expand logic to depend on user prefs
         nextSpurtType = 'longBreak';
       } else if (lastSpurtType === 'work') {
         nextSpurtType = 'shortBreak';
@@ -70,7 +76,8 @@ const pomodoro = (state = initialState, action) => {
           startTime: timestamp()
         },
         completedSpurtCount: {
-          [lastSpurtType]: lastSpurtCount + 1
+          ...state.completedSpurtCount,
+          [lastSpurtType]: updatedLastSpurtCount
         }
       }
     }
@@ -79,4 +86,4 @@ const pomodoro = (state = initialState, action) => {
   }
 }
 
-export default user;
+export default pomodoro;
