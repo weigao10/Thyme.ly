@@ -27,27 +27,26 @@ class AnalyticsContainer extends React.Component {
     };
 
     return (
-      <div>hi</div>
-      // <Paper style={stylePaper}>
-      //   <h3>Radial Bar</h3>
-      //   <RadialBarChart width={500} height={300} cx={100} cy={100} innerRadius={10} outerRadius={120} barSize={20} data={data}>
-      //   <RadialBar minAngle={15} label={{ position: 'insideStart', fill: '#fff' }} background clockWise={true} dataKey='uv'/>
-      //   </RadialBarChart>
+      <Paper style={stylePaper}>
+        <h3>Radial Bar</h3>
+        <RadialBarChart width={500} height={300} cx={100} cy={100} innerRadius={10} outerRadius={120} barSize={20} data={data}>
+        <RadialBar minAngle={15} label={{ position: 'insideStart', fill: '#fff' }} background clockWise={true} dataKey='uv'/>
+        </RadialBarChart>
 
-      //   <h3>Line Chart</h3>
-      //   <LineChart
-      //     width={400}
-      //     height={400}
-      //     data={data}
-      //     margin={{ top: 5, right: 20, left: 10, bottom: 5 }}
-      //   >
-      //     <XAxis dataKey="name" />
-      //     <Tooltip />
-      //     <CartesianGrid stroke="#f5f5f5" />
-      //     <Line type="monotone" dataKey="uv" stroke="#ff7300" yAxisId={0} />
-      //     <Line type="monotone" dataKey="pv" stroke="#387908" yAxisId={1} />
-      //   </LineChart>
-      // </Paper>
+        <h3>Line Chart</h3>
+        <LineChart
+          width={400}
+          height={400}
+          data={data}
+          margin={{ top: 5, right: 20, left: 10, bottom: 5 }}
+        >
+          <XAxis dataKey="name" />
+          <Tooltip />
+          <CartesianGrid stroke="#f5f5f5" />
+          <Line type="monotone" dataKey="uv" stroke="#ff7300" yAxisId={0} />
+          <Line type="monotone" dataKey="pv" stroke="#387908" yAxisId={1} />
+        </LineChart>
+      </Paper>
     )
   }
 
