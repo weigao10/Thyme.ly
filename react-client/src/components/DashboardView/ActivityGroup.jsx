@@ -68,7 +68,7 @@ const ActivityGroup = props => {
             {getTotalDuration(activities)}
           </span>
         </Paper>
-        <Paper zDepth={0} style={{overflowY: 'scroll', minHeight: '475px'}}>
+        <Paper zDepth={0} style={{overflowY: 'scroll', minHeight: '475px', maxHeight: '475px'}}>
           {sortedActivities.map((activity, index) => {
             return (
               <ActivityCard
