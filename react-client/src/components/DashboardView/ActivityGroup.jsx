@@ -55,8 +55,8 @@ const ActivityGroup = props => {
         verticalAlign: "top"
       }}
     >
-      <Paper style={{background: 'white', margin: '5px', minHeight: '500px', overflowY: 'scroll'}}>
-        <Paper style={styleMap[category]}>
+      <Paper style={{background: 'white', margin: '5px'}}>
+        <Paper zDepth={2} style={styleMap[category]}>
           {category[0].toUpperCase() + category.slice(1, category.length)}{" "}
           &nbsp;
           <span
@@ -68,21 +68,23 @@ const ActivityGroup = props => {
             {getTotalDuration(activities)}
           </span>
         </Paper>
-        {sortedActivities.map((activity, index) => {
-          return (
-            <ActivityCard
-              key={activity + index + Math.random() * 10}
-              activity={activity}
-              index={index}
-              category={category}
-              changeCategory={changeCategory}
-              deleteActivity={deleteActivity}
-              preferences={preferences}
-              user={user}
-              affirmCategorization={affirmCategorization}
-            />
-          );
-        })}
+        <Paper zDepth={0} style={{overflowY: 'scroll', minHeight: '475px'}}>
+          {sortedActivities.map((activity, index) => {
+            return (
+              <ActivityCard
+                key={activity + index + Math.random() * 10}
+                activity={activity}
+                index={index}
+                category={category}
+                changeCategory={changeCategory}
+                deleteActivity={deleteActivity}
+                preferences={preferences}
+                user={user}
+                affirmCategorization={affirmCategorization}
+              />
+            );
+          })}
+        </Paper>
       </Paper>
     </div>
   );
