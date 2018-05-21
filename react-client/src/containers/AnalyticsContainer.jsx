@@ -21,9 +21,9 @@ class AnalyticsContainer extends React.Component {
     ];
     
     const style = {
-    top: 0,
-    left: 350,
-    lineHeight: '24px'
+      top: 0,
+      left: 350,
+      lineHeight: '24px'
     };
 
     return (
@@ -55,7 +55,7 @@ class AnalyticsContainer extends React.Component {
 
 
 let stylePaper = {
-  background: '#EEE',
+  background: 'white',
   padding: '15px',
   minHeight: '425px'
 }
