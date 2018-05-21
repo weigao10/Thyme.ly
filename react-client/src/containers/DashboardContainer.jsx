@@ -20,7 +20,7 @@ class DashboardContainer extends React.Component {
     
     return (
       <div style={{margin: '0px', background: 'white'}}>
-        <Paper style={{display: 'inline-block', background: 'white', margin: '0', padding: '5px', width: '75%', minHeight: '500px', maxHeight: '550px', verticalAlign: 'top'}}>
+        <Paper zDepth={1} style={{display: 'inline-block', background: 'white', margin: '0', padding: '5px', width: '75%', minHeight: '500px', maxHeight: '550px', verticalAlign: 'top'}}>
           <ActivityGroup
             category='productive'
             activities={activities.productive}
@@ -49,7 +49,7 @@ class DashboardContainer extends React.Component {
             affirmCategorization={affirmCategorization}
           />
         </Paper>
-        <Paper style={{display: 'inline-block', background: '#E8F5E9', margin: '0', padding: '5px', width: '25%', minHeight: '500px', maxHeight: '550px', verticalAlign: 'top'}}>
+        <Paper style={{display: 'inline-block', background: 'white', margin: '0', padding: '0px', width: '25%', minHeight: '520px', maxHeight: '550px', verticalAlign: 'top'}}>
           <ProductivityScore 
             activities={activities}
           />
