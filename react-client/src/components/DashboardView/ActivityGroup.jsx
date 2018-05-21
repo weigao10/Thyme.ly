@@ -49,13 +49,14 @@ const ActivityGroup = props => {
     <div
       style={{
         background: 'white',
-        width: "33%",
+        width: "31%",
         height: "100%",
         display: "inline-block",
-        verticalAlign: "top"
+        verticalAlign: "top",
+        margin: '8px'
       }}
     >
-      <Paper style={{background: 'white', margin: '5px'}}>
+      <Paper style={{background: 'white', margin: '0px 0px 5px 0px'}}>
         <Paper zDepth={2} style={styleMap[category]}>
           {category[0].toUpperCase() + category.slice(1, category.length)}{" "}
           &nbsp;
