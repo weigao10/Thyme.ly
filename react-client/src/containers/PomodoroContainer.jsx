@@ -67,8 +67,7 @@ class PomodoroContainer extends React.Component {
     this.setState({
       lastCheckedTime: null,
       elapsedTime: 0
-    });
-    this.props.clearPom();
+    }, this.props.clearPom());
   }
 
   skipAhead() {
@@ -107,6 +106,11 @@ class PomodoroContainer extends React.Component {
     const currentSpurtLength = this.props.pomodoro.currentSpurt.length;
     const currentSpurtData = [{name: 'elapsed time', value: this.state.elapsedTime},
                               {name: 'time remaining', value: currentSpurtLength - this.state.elapsedTime}];
+    const completedSpurtLength = this.props.pomodoro.elapsedTimeFromCompletedSpurts;
+    const totalGoalLength = this.props.pomodoro.goalLength;
+    const totalDayData = [{name: 'total elapsed time', value: this.state.elapsedTime + completedSpurtLength},
+                          {name: 'total time remaining', value: totalGoalLength - this.state.elapsedTime - completedSpurtLength}]
+
 
     return (
       <Paper style={stylePaper}>
@@ -115,13 +119,12 @@ class PomodoroContainer extends React.Component {
         <pre>{JSON.stringify(this.props.pomodoro)}</pre>
         <pre>elapsed time: {this.state.elapsedTime} and remaining time: {this.props.pomodoro.currentSpurt.length - this.state.elapsedTime}</pre>
         <PieChart width={800} height={400}>
-          <Pie dataKey="value" data={[]} cx={200} cy={200} outerRadius={60} fill="#8884d8" paddingAngle={5}>
-          {
-          	data02.map((entry, index) => <Cell fill={COLORS[index % COLORS.length]} key={index}/>)
-          }
-          </Pie>
           <Pie dataKey="value" data={currentSpurtData} cx={200} cy={200} innerRadius={70} outerRadius={90} fill="#82ca9d" label>
             <Cell fill={'#00C49F'}/>
+            <Cell fill={'#ffffff'}/>
+          </Pie>
+          <Pie dataKey="value" data={totalDayData} cx={200} cy={200} innerRadius={100} outerRadius={150} fill="#82ca9d" label>
+            <Cell fill={'#0088FE'}/>
             <Cell fill={'#ffffff'}/>
           </Pie>
         </PieChart>
