@@ -1,7 +1,7 @@
 import { ADD_ACTIVITY, PATCH_ACTIVITY, CATEGORIZE_ACTIVITY, DELETE_ACTIVITY, SET_ALL_ACTIVITIES, AFFIRM_CATEGORIZATION } from './types'; 
 import moment from 'moment';
 import axios from 'axios';
-const url = 'http://127.0.0.1:3000'
+import { serverURL } from '../../../config';
 
 export const addActivity = (data) => {
   return {
@@ -22,7 +22,7 @@ export const deleteActivity = (activity, category, isTracked, user) => {
     isTracked: isTracked
   }
 
-  const request = axios.delete(url + '/api/classifications', {data: params});
+  const request = axios.delete(serverURL + '/api/classifications', {data: params});
   return {
     type: DELETE_ACTIVITY,
     payload: {id, category}
@@ -47,8 +47,8 @@ export const changeCategory = (activity, oldCatName, newCatName, isTracked, user
     isTracked: isTracked
   };
 
-  const request = newCatName === 'neutral' ? axios.delete(url + '/api/classifications', {data: params}) :
-  axios.post(url + '/api/classifications', {params: params});
+  const request = newCatName === 'neutral' ? axios.delete(serverURL + '/api/classifications', {data: params}) :
+  axios.post(serverURL + '/api/classifications', {params: params});
   
   return {
     type: CATEGORIZE_ACTIVITY,
@@ -70,7 +70,7 @@ export const affirmCategorization = (activity, category, isTracked, user) => {
     prod_class: category,
     isTracked: isTracked
   };
-  const request = axios.post(url + '/api/classifications', {params: params});
+  const request = axios.post(serverURL + '/api/classifications', {params: params});
   return {
     type: AFFIRM_CATEGORIZATION,
     payload: {

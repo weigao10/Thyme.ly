@@ -1,0 +1,44 @@
+{
+  "name": "thyme.ly-server",
+  "version": "1.0.0",
+  "description": "Productivity Manager (Server)",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon index.js",
+    "scrape": "node ./workers/scraper.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Romulan-Empire/productivity-manager.git"
+  },
+  "keywords": [
+    "productivity"
+  ],
+  "author": "Andrew Lee, Wei Gao, Brian Lee",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Romulan-Empire/productivity-manager/issues"
+  },
+  "homepage": "https://github.com/Romulan-Empire/productivity-manager#readme",
+  "devDependencies": {},
+  "dependencies": {
+    "axios": "^0.18.0",
+    "bluebird": "^3.5.1",
+    "body-parser": "^1.18.2",
+    "classificator": "^0.2.3",
+    "clone": "^2.1.1",
+    "express": "^4.15.0",
+    "express-partials": "^0.3.0",
+    "express-session": "^1.15.6",
+    "firebase-admin": "^5.12.0",
+    "fs": "0.0.1-security",
+    "googleapis": "^30.0.0",
+    "jquery": "^3.3.1",
+    "moment": "^2.22.1",
+    "moment-duration-format": "^2.2.2",
+    "nodemon": "^1.17.3",
+    "pg": "^7.4.2",
+    "pg-promise": "^8.4.4",
+    "puppeteer": "^1.4.0"
+  }
+}

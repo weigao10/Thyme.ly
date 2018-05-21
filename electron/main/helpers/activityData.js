@@ -5,8 +5,8 @@ const electron = require('electron')
 const { ipcMain, session } = electron;
 const axios = require('axios');
 const chalk = require('chalk');
-const server = 'http://127.0.0.1:3000';
-const url = 'https://test-aws-thymely.com';
+
+const { serverURL } = require('../../config.js');
 
 const monitorActivity = (activities, user) => {
   return activeWin()
@@ -27,7 +27,7 @@ const monitorActivity = (activities, user) => {
           app_name: lastActivity.app,
           window_title: lastActivity.title
         }
-        return axios.get(server + '/api/classifications', {params: qs})
+        return axios.get(serverURL + '/api/classifications', {params: qs})
           .then((resp) => {
             if (typeof resp.data !== 'object') console.log(chalk.blue('RECEIVED PROD OBJ FROM SERVER THAT IS NOT OBJECT!'))
             return {

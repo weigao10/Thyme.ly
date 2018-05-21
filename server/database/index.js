@@ -1,7 +1,7 @@
 const chalk = require('chalk');
 const { Pool, Client } = require('pg');
-const { user, host, database, password } = require('../../serverConfig.js');
-const port = require('../../serverConfig.js').port;
+const { user, host, database, password } = require('../config.js');
+const port = require('../config.js').port;
 
 //Create connection to AWS database
 

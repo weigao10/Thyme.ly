@@ -1,6 +1,8 @@
 const electron = require('electron')
 const { app, BrowserWindow, ipcMain, session } = electron;
-const url = 'https://test-aws-thymely.com';
+const { serverURL } = require('../../config.js');
+
+// const url = 'https://test-aws-thymely.com';
 const moment = require('moment')
 
 const index = require('../index.js')
@@ -12,14 +14,14 @@ const manageCookies = (mainSession, mainWindow) => {
     console.log('message is', message);
 
     if (event === 'check') {
-      mainSession.cookies.get({name: 'userId', url}, (err, cookies) => {
+      mainSession.cookies.get({name: 'userId', serverURL}, (err, cookies) => {
         if (cookies.length) mainWindow.sender.webContents.send('cookies', cookies[0]);
         //if cookie does not exist, don't send it back
       });
     } else if (event === 'logged in') {
       console.log('user logged in with id', message)
       const cookie = {
-        url,
+        serverURL,
         name: 'userId',
         value: message,
         secure: true,
@@ -28,7 +30,7 @@ const manageCookies = (mainSession, mainWindow) => {
       mainSession.cookies.set(cookie, (err) => {
         if (err) console.log(err);
         else {
-          mainSession.cookies.get({name: 'userId', url}, (err, cookies) => {
+          mainSession.cookies.get({name: 'userId', serverURL}, (err, cookies) => {
             console.log('COOKIE SET!', cookies[0]);
             console.log('this should be 1 (no duplicate cookies)', cookies.length)
             if (cookies.length) mainWindow.sender.webContents.send('cookies', cookies[0]);
