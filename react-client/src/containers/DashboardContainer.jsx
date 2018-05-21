@@ -17,9 +17,10 @@ class DashboardContainer extends React.Component {
   
   render() {
     const { activities, changeCategory, deleteActivity, preferences, user, affirmCategorization } = this.props;
+    
     return (
-      <div style={{background: '#555'}}>
-        <Paper style={{display: 'inline-block', background: '#AAA', margin: '0', padding: '5px', width: '75%', minHeight: '500px', maxHeight: '550px', overflowY: 'scroll', verticalAlign: 'top'}}>
+      <div style={{margin: '0px', background: 'white'}}>
+        <Paper style={{display: 'inline-block', background: 'white', margin: '0', padding: '5px', width: '75%', minHeight: '500px', maxHeight: '550px', verticalAlign: 'top'}}>
           <ActivityGroup
             category='productive'
             activities={activities.productive}
@@ -48,8 +49,10 @@ class DashboardContainer extends React.Component {
             affirmCategorization={affirmCategorization}
           />
         </Paper>
-        <Paper style={{display: 'inline-block', background: '#BBB', margin: '0', padding: '5px', width: '20%', minHeight: '500px', maxHeight: '550px', verticalAlign: 'top'}}>
-          <ProductivityScore />
+        <Paper style={{display: 'inline-block', background: '#E8F5E9', margin: '0', padding: '5px', width: '25%', minHeight: '500px', maxHeight: '550px', verticalAlign: 'top'}}>
+          <ProductivityScore 
+            activities={activities}
+          />
         </Paper>
       </div>
     )

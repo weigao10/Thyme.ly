@@ -48,13 +48,14 @@ const ActivityGroup = props => {
   return connectDropTarget(
     <div
       style={{
+        background: 'white',
         width: "33%",
         height: "100%",
         display: "inline-block",
         verticalAlign: "top"
       }}
     >
-      <Paper style={{margin: '5px'}}>
+      <Paper style={{background: 'white', margin: '5px', minHeight: '500px', overflowY: 'scroll'}}>
         <Paper style={styleMap[category]}>
           {category[0].toUpperCase() + category.slice(1, category.length)}{" "}
           &nbsp;
@@ -142,7 +143,6 @@ const style = {
   verticalAlign: "top",
   minHeight: "475px",
   maxHeight: "475px",
-  overflowY: "scroll",
   background: "#E0F2F1"
 };
 
