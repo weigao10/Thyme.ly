@@ -8,6 +8,7 @@ const timestamp = () => {
 //intervals for testing...should eventually hook up to user pomodoro's prefs
 const TEN_SECONDS = 10 * 1000;
 const FIVE_SECONDS = 5 * 1000;
+const TOTAL_PLANNED_WORKDAY =  TEN_SECONDS * 4 + FIVE_SECONDS * 3
 const INTERVAL_MAP = {
   'work': TEN_SECONDS,
   'shortBreak': FIVE_SECONDS,
