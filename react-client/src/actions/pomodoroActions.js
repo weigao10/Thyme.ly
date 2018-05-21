@@ -1,7 +1,6 @@
 import { START_POM, PAUSE_POM, RESUME_POM, CLEAR_POM, COMPLETE_SPURT } from './types'; 
 
 export const startPom = () => {
-  console.log('pom start action fired!')
   return {
     type: START_POM
   }
