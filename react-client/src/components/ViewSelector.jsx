@@ -11,7 +11,8 @@ const ViewSelector = (props) => {
     >
       <Tab buttonStyle={buttonStyle} label="Activity" value={0} />
       <Tab buttonStyle={buttonStyle} label="Analytics" value={1} />
-      <Tab buttonStyle={buttonStyle} label="Settings" value={2} />
+      <Tab buttonStyle={buttonStyle} label="Pomodoro Timer" value={2} />
+      <Tab buttonStyle={buttonStyle} label="Settings" value={3} />
     </Tabs>
   )
 }

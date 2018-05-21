@@ -9,6 +9,8 @@ describe('cloud database functionality' , function(){
   });
   it(`does not save neutral apps into the database` , function(){
   });
+  it(`deletes apps that are categorized as "neutral" if they exist in the database` , function(){
+  });
   it(`deletes a user's categorization of an app or window title if a user recategorizes it as neutral`, function(){
   });
   it(`does not save window title if app is an "untracked" app`, function(){
@@ -42,5 +44,20 @@ describe('scraper functionality' , function(){
   it(`saves the titles into a scraping table in the database`, function(){
   });
   it(`saves its results with a session id so that bad scraping sessions can easily be deleted from the db` , function(){
+  });
+});
+
+describe('pomodoro timer' , function(){
+  it(`should animate as time passes`, function(){
+  });
+  it(`should animate short spurt and long spurt progress`, function(){
+  });
+  it(`should display the amount of time left in the current session`, function(){
+  });
+  it(`should allow the user to pause and restart the timer`, function(){
+  });
+  it(`should keep track of the time even when it's not the active tab`, function(){
+  });
+  it(`should alert the user when a new session is starting`, function(){
   });
 });
