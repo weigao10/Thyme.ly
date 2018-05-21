@@ -1,14 +1,4 @@
 node_modules
-.DS_Store
 .vscode
-react-client/.DS_Store
-react-client/dist/bundle.js
 package-lock.json
-config.js
-out
-firebaseConfig.json
-serverConfig.js
-server/database/sqlite.db
-titles.txt
-main/database/sqlite.db
-database/sqlite.db
+.DS_Store
