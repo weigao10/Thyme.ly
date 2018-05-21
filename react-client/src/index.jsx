@@ -199,9 +199,6 @@ function listEvents(accessToken) {
   let oauth = new google.auth.OAuth2(
     clientId, clientSecret, redirectURI);
   oauth.setCredentials({access_token: accessToken});
-  console.log('calendar', calendar)
-  console.log('access token', accessToken)
-  console.log('oauth', oauth)
   calendar.events.list({
     calendarId: 'primary',
     auth: oauth,
@@ -209,8 +206,6 @@ function listEvents(accessToken) {
     singleEvents: true,
     orderBy: 'startTime'
   }, (err, {data}) => {
-    console.log('err from api call', err)
-    console.log('data from api call', data)
     if (err) return console.log('The API returned an error: ' + err);
     const events = data.items;
     if (events.length) {
