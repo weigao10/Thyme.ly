@@ -10,6 +10,7 @@ import { ipcRenderer } from 'electron';
 import MonitorContainer from './containers/MonitorContainer.jsx';
 import DashboardContainer from './containers/DashboardContainer.jsx';
 import AnalyticsContainer from './containers/AnalyticsContainer.jsx';
+import PomodoroContainer from './containers/PomodoroContainer.jsx';
 import ViewSelector from './components/ViewSelector.jsx';
 
 class App extends React.Component {
@@ -64,6 +65,9 @@ class App extends React.Component {
         
           <div>
             <AnalyticsContainer />
+          </div>
+          <div>
+            <PomodoroContainer />
           </div>
           <div>
             {/* <UserSettingsContainer /> */}
