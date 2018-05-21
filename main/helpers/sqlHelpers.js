@@ -47,7 +47,7 @@ const populateStore = (mainWindow) => {
 }
 
 const saveStoreToSql = (mainWindow) => {
-  clearDb();
+  clearDb(); //make a promise
   mainWindow.send("windowClose", "close")
   ipcMain.once("store", (event, data) => {
     let { activities, preferences } = JSON.parse(data);
