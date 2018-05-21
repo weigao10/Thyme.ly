@@ -5,7 +5,7 @@ import { parse } from 'url'
 import { remote, ipcRenderer } from 'electron'
 import axios from 'axios'
 import qs from 'qs'
-import Notification from 'node-mac-notifier';
+// import Notification from 'node-mac-notifier';
 import readline from 'readline';
 import { google } from 'googleapis'
 
