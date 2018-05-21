@@ -26,7 +26,9 @@ const initialState = {
     work: 0,
     shortBreak: 0,
     longBreak: 0
-  }
+  },
+  elapsedTimeFromCompletedSpurts: 0, //i.e. not from current spurt, which only React knows about
+  goalLength: TOTAL_PLANNED_WORKDAY
 };
 
 const pomodoro = (state = initialState, action) => {
@@ -66,21 +68,29 @@ const pomodoro = (state = initialState, action) => {
       }
     }
     case COMPLETE_SPURT: {
+      const lastElapsedTime = state.elapsedTimeFromCompletedSpurts;
       const lastSpurtType = state.currentSpurt.type;
       const updatedLastSpurtCount = state.completedSpurtCount[lastSpurtType] + 1;
       const { work, shortBreak, longBreak } = state.completedSpurtCount;
       
-      let nextSpurtType;
+      let nextSpurtType, elapsedTime;
       if (lastSpurtType === 'work' && updatedLastSpurtCount % 4 === 0) { //expand logic to depend on user prefs
         nextSpurtType = 'longBreak';
+        elapsedTime = TEN_SECONDS;
       } else if (lastSpurtType === 'work') {
         nextSpurtType = 'shortBreak';
+        elapsedTime = TEN_SECONDS;
       } else {
         nextSpurtType = 'work'
+        if (lastSpurtType === 'shortBreak') elapsedTime = FIVE_SECONDS;
+        else elapsedTime = TEN_SECONDS;
       }
+
+      const updatedElapsedTime = lastElapsedTime + elapsedTime;
 
       return {
         ...state,
+        elapsedTimeFromCompletedSpurts: updatedElapsedTime,
         currentSpurt: {
           type: nextSpurtType,
           length: INTERVAL_MAP[nextSpurtType]
