@@ -1,12 +1,10 @@
 const express = require('express');
 const path = require('path');
 const bodyParser = require('body-parser');
-// const session = require('express-session');
 const partials = require('express-partials');
 const app = express();
 const port = process.env.PORT || 3000;
 const moment = require('moment');
-// const memwatch = require('memwatch-next');
 const chalk = require('chalk');
 
 const db = require('./database/index.js');
@@ -14,7 +12,7 @@ const scrapeDb = require('./database/scraper.js');
 const ml = require('./learn/naiveBayes.js');
 
 app.use(bodyParser.json());
-
+app.use(express.static(path.join(__dirname, './client/dist')));
 //middleware
 
 app.use((req, res, next) => {
