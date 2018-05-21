@@ -8,6 +8,9 @@ import qs from 'qs'
 // import Notification from 'node-mac-notifier';
 import readline from 'readline';
 import { google } from 'googleapis'
+import cron from 'cron';
+import moment from 'moment';
+import Notification from 'node-mac-notifier';
 
 import App from './App.jsx';
 import config from '../../config.js'
@@ -31,7 +34,6 @@ const SERVER_URL = 'http://127.0.0.1:3000';
 //cookie checking routine (MOVE TO ANOTHER COMPONENT SO LOGIN NEVER EVEN RENDERS IF USER IS LOGGED IN)
 ipcRenderer.send('cookies', 'check');
 ipcRenderer.on('cookies', (event, message) => {
-  // console.log('already logged-in user id is', message.value);
   ReactDOM.render((<App user={message.value}/>), document.getElementById('app'))
   document.getElementById('login-page').innerHTML = '';
 });
@@ -63,7 +65,6 @@ registerButton.addEventListener('click', () => {
 
   auth.createUserWithEmailAndPassword(email, password)
   .then((data) => {
-    // console.log('data from new user is', data.user.uid);
     ipcRenderer.send('cookies', 'logged in', data.user.uid);
     ReactDOM.render((<App />), document.getElementById('app'))
     document.getElementById('login-page').innerHTML = ''
@@ -77,8 +78,6 @@ loginButton.addEventListener('click', () => {
   let password = document.getElementById('password').value
   auth.signInWithEmailAndPassword(email, password)
   .then((data) => {
-    console.log('entire data obj is', data)
-    console.log('user id from regular login is', data.user.uid)
     const uId = data.user.uid;
     ipcRenderer.send('cookies', 'logged in', uId)
     ReactDOM.render((<App user={uId}/>), document.getElementById('app'))
@@ -97,13 +96,13 @@ function googleSignIn () {
   .then((code) => {
     return fetchAccessTokens(code)
   })
-  .then((tokens) => {
-    return fetchGoogleProfile(tokens.access_token)
+  .then((token) => {
+    //save token to store?
+    listEvents(token)
+    return fetchGoogleProfile(token)
   })
   .then(({id, email, name}) => {
-    console.log('google oauth id', id)
     return {
-      //use to identify google oauth log ins?
       id: id,
       email: email,
       name: name
@@ -144,9 +143,8 @@ function signInWithPopup (provider) {
           //move this to google event listener
           ReactDOM.render((<App />), document.getElementById('app'))
           document.getElementById('login-page').innerHTML = ''
-          // fetchGcalEvents();
-          // listEvents()
-          displayNotification();
+
+          // displayNotification();
         }
       }
     }
@@ -174,11 +172,11 @@ function fetchAccessTokens (code) {
       'Content-Type': 'application/x-www-form-urlencoded',
     },
   })
-  .then((data) => data.data)
+  .then((data) => data.data.access_token)
 }
 
 function fetchGoogleProfile (accessToken) {
-  listEvents(accessToken)
+  // listEvents(accessToken)
   return axios.get(GOOGLE_PROFILE_URL, {
     headers: {
       'Content-Type': 'application/json',
@@ -186,7 +184,7 @@ function fetchGoogleProfile (accessToken) {
     },
   })
   .then((data) => {
-    console.log('data from google profile is', data);
+    // console.log('data from google profile is', data);
     ipcRenderer.send('cookies', 'logged in', data.data.id)
     return data.data
   })
@@ -194,6 +192,7 @@ function fetchGoogleProfile (accessToken) {
 
 //------------------------------------------------------------------------- GOOGLE CALENDAR
 
+let upcomingEvents = [];
 function listEvents(accessToken) {
   const calendar = google.calendar({version: 'v3', auth});
   let oauth = new google.auth.OAuth2(
@@ -204,6 +203,8 @@ function listEvents(accessToken) {
     auth: oauth,
     maxResults: 10,
     singleEvents: true,
+    timeMin: '2018-05-22T00:00:00+04:00',
+    timeMax: '2018-05-22T11:59:59+04:00',
     orderBy: 'startTime'
   }, (err, {data}) => {
     if (err) return console.log('The API returned an error: ' + err);
@@ -211,6 +212,7 @@ function listEvents(accessToken) {
     if (events.length) {
       console.log('Upcoming 10 events:');
       events.map((event, i) => {
+        upcomingEvents.push(event)
         const start = event.start.dateTime || event.start.date;
         console.log(`${start} - ${event.summary}`);
       });
@@ -222,6 +224,28 @@ function listEvents(accessToken) {
 
 //cron, moment worker
 
-function displayNotification () {
+function notificationSender(upcomingEvents) {
+  // console.log('upcoming', upcomingEvents)
 
+  let eventTime = upcomingEvents[0].start.dateTime
+  let currentTime = JSON.stringify(moment().format()).split('T').join(' ').slice(0, 20)
+  let difference = moment.duration(moment(eventTime).diff(moment(currentTime))).asSeconds();
+  if (difference < 1) {
+    let noti = new Notification('Hello from OS X', {body: 'in notification sender!'});
+    upcomingEvents.shift();
+  }
 }
+
+let timer = new cron.CronJob({
+  cronTime: '* * * * * *',
+  onTick: function () {
+    // console.log('in scheduler factory')
+    // reminderFetcher()
+    //   .then((data) => {
+    //     reminderSender(data)
+    //   })
+    if(upcomingEvents.length > 0) notificationSender(upcomingEvents);
+  },
+  start: true,
+  timeZone: 'America/New_York'
+});
