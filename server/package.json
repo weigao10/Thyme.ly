@@ -4,6 +4,8 @@
   "description": "Productivity Manager (Server)",
   "main": "index.js",
   "scripts": {
+    "production-mode": "pm2 start index.js",
+    "install-pm2": "npm install pm2 -g",
     "dev": "nodemon index.js",
     "scrape": "node ./workers/scraper.js"
   },
@@ -20,7 +22,9 @@
     "url": "https://github.com/Romulan-Empire/productivity-manager/issues"
   },
   "homepage": "https://github.com/Romulan-Empire/productivity-manager#readme",
-  "devDependencies": {},
+  "devDependencies": {
+    "pm2": "^2.10.4"
+  },
   "dependencies": {
     "axios": "^0.18.0",
     "bluebird": "^3.5.1",
