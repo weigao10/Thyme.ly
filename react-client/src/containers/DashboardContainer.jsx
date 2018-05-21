@@ -20,7 +20,7 @@ class DashboardContainer extends React.Component {
     
     return (
       <div style={{margin: '0px', background: 'white'}}>
-        <Paper zDepth={1} style={{display: 'inline-block', background: 'white', margin: '0', padding: '5px', width: '75%', minHeight: '500px', maxHeight: '550px', verticalAlign: 'top'}}>
+        <Paper zDepth={1} style={{display: 'inline-block', background: 'white', margin: '0px', padding: '0px', width: '75%', minHeight: '500px', maxHeight: '550px', verticalAlign: 'top'}}>
           <ActivityGroup
             category='productive'
             activities={activities.productive}
