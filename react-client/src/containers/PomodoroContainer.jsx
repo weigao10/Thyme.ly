@@ -44,7 +44,7 @@ class PomodoroContainer extends React.Component {
 
   startTimer() {
     this.setState({
-      timerIntervalId: setInterval(this.trackTime, 500),
+      timerIntervalId: setInterval(this.trackTime, 100),
       lastCheckedTime: Date.now()
     }, this.props.startPom())
   }
@@ -57,7 +57,7 @@ class PomodoroContainer extends React.Component {
   resumeTimer() {
     const resumedTime = Date.now();
     this.setState({
-      timerIntervalId: setInterval(this.trackTime, 500),
+      timerIntervalId: setInterval(this.trackTime, 100),
       lastCheckedTime: resumedTime
     }, this.props.resumePom())
   }
@@ -104,23 +104,27 @@ class PomodoroContainer extends React.Component {
       lineHeight: '24px'
     };
 
+    const currentSpurtLength = this.props.pomodoro.currentSpurt.length;
+    const currentSpurtData = [{name: 'elapsed time', value: this.state.elapsedTime},
+                              {name: 'time remaining', value: currentSpurtLength - this.state.elapsedTime}];
+
     return (
       <Paper style={stylePaper}>
         <pre>pom's status is {this.props.pomodoro.status}</pre>
         <pre>current session is {this.props.pomodoro.currentSpurt.type}</pre>
         <pre>{JSON.stringify(this.props.pomodoro)}</pre>
         <pre>elapsed time: {this.state.elapsedTime} and remaining time: {this.props.pomodoro.currentSpurt.length - this.state.elapsedTime}</pre>
-        {/* {/* <PieChart width={800} height={400}>
-          <Pie dataKey="value" data={data02} cx={200} cy={200} outerRadius={60} fill="#8884d8" paddingAngle={5}>
+        <PieChart width={800} height={400}>
+          <Pie dataKey="value" data={[]} cx={200} cy={200} outerRadius={60} fill="#8884d8" paddingAngle={5}>
           {
           	data02.map((entry, index) => <Cell fill={COLORS[index % COLORS.length]} key={index}/>)
           }
           </Pie>
-          <Pie dataKey="value" data={this.state.data} cx={200} cy={200} innerRadius={70} outerRadius={90} fill="#82ca9d" label>
+          <Pie dataKey="value" data={currentSpurtData} cx={200} cy={200} innerRadius={70} outerRadius={90} fill="#82ca9d" label>
             <Cell fill={'#00C49F'}/>
             <Cell fill={'#ffffff'}/>
           </Pie>
-        </PieChart> */}
+        </PieChart>
         <button onClick={this.startTimer}>start timer</button> */}
         <button onClick={this.pauseTimer}>pause</button> */}
         <button onClick={this.resumeTimer}>resume</button> */}
