@@ -1,18 +1,54 @@
+import { connect } from 'react-redux';
 import React from 'react';
 import Paper from 'material-ui/Paper';
+import {Tabs, Tab} from 'material-ui/Tabs';
+import {PieChart, Pie, Label} from 'recharts';
 import {RadialBar, RadialBarChart, Legend} from 'recharts';
 import {LineChart, XAxis, CartesianGrid, Line, Tooltip} from 'recharts';
 
 class AnalyticsContainer extends React.Component {
   constructor(props) {
     super(props);
-  }
-
-  componentDidMount() {
 
   }
 
   render() {
+
+    let { productive } = this.props.activities;
+    productive = productive.sort();
+
+    let productiveData = [];
+
+    // console.log('props.activities in Analytics Container is', productive);
+    
+    if (productive.length > 0) {
+      for (var i = 0; i < productive.length; i++) {
+        productiveData.push({
+          name: productive[i].title,
+          duration: productive[i].duration
+        });
+
+        if (i === 4) break;
+      }
+    }
+
+    let { distracting } = this.props.activities;
+    distracting = distracting.sort();
+
+    let distractingData = [];
+
+    if (distracting.length > 0) {
+      for (var i = 0; i < distracting.length; i++) {
+        distractingData.push({
+          name: distracting[i].title,
+          duration: distracting[i].duration
+        });
+
+        if (i === 4) break;
+      }
+    }
+
+    
 
     const data = [
       {name: 'productive', uv: 31.47, pv: 2400, fill: '#8884d8'},
@@ -26,17 +62,54 @@ class AnalyticsContainer extends React.Component {
       lineHeight: '24px'
     };
 
+    // console.error('productiveData is:', productiveData)
     return (
       <Paper style={stylePaper}>
-        <h3>Radial Bar</h3>
-        <RadialBarChart width={500} height={300} cx={100} cy={100} innerRadius={10} outerRadius={120} barSize={20} data={data}>
-        <RadialBar minAngle={15} label={{ position: 'insideStart', fill: '#fff' }} background clockWise={true} dataKey='uv'/>
-        </RadialBarChart>
 
+      <Tabs>
+        <Tab label='Pie Chart'>
+
+            <h3>Top 5 Productive Apps</h3>
+            <PieChart width={550} height={300}>
+              <Pie 
+                data={productiveData} 
+                dataKey="duration" 
+                nameKey="name" 
+                cx="50%" 
+                cy="50%" 
+                outerRadius={50} 
+                fill="#8884d8"
+                label={(activity)=> `${activity.name}`}
+              >
+                
+              </Pie>
+          
+            </PieChart>
+
+            <h3>Top 5 Distracting Apps</h3>
+            <PieChart width={550} height={300}>
+              <Pie 
+                data={distractingData} 
+                dataKey="duration" 
+                nameKey="name" 
+                cx="50%" 
+                cy="50%" 
+                outerRadius={50} 
+                fill="#8884d8"
+                label={(activity)=> `${activity.name}`}
+              >
+                
+              </Pie>
+          
+            </PieChart>
+
+        </Tab>
+
+        <Tab label='chart2'>
         <h3>Line Chart</h3>
         <LineChart
-          width={400}
-          height={400}
+          width={300}
+          height={300}
           data={data}
           margin={{ top: 5, right: 20, left: 10, bottom: 5 }}
         >
@@ -46,6 +119,15 @@ class AnalyticsContainer extends React.Component {
           <Line type="monotone" dataKey="uv" stroke="#ff7300" yAxisId={0} />
           <Line type="monotone" dataKey="pv" stroke="#387908" yAxisId={1} />
         </LineChart>
+        </Tab>
+
+        <Tab label="chart3"/>
+
+      </Tabs>
+
+        
+
+        
       </Paper>
     )
   }
@@ -57,6 +139,20 @@ class AnalyticsContainer extends React.Component {
 let stylePaper = {
   background: 'white',
   padding: '15px',
-  minHeight: '425px'
+  minHeight: '550px',
+  maxHeight: '550px',
+  overflowY: 'scroll'
 }
-export default AnalyticsContainer;
+
+const mapStateToProps = (state) => {
+  return {
+    activities: state.activities
+  }
+}
+
+const mapDispatchToProps = (dispatch) => {
+  return {};
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(AnalyticsContainer);
+
