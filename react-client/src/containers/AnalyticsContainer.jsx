@@ -17,6 +17,42 @@ class AnalyticsContainer extends React.Component {
 
   render() {
 
+    let { productive } = this.props.activities;
+    productive = productive.sort();
+
+    let productiveData = [];
+
+    // console.log('props.activities in Analytics Container is', productive);
+    
+    if (productive.length > 0) {
+      for (var i = 0; i < productive.length; i++) {
+        productiveData.push({
+          name: productive[i].title,
+          duration: productive[i].duration
+        });
+
+        if (i === 4) break;
+      }
+    }
+
+    let { distracting } = this.props.activities;
+    distracting = distracting.sort();
+
+    let distractingData = [];
+
+    if (distracting.length > 0) {
+      for (var i = 0; i < distracting.length; i++) {
+        distractingData.push({
+          name: distracting[i].title,
+          duration: distracting[i].duration
+        });
+
+        if (i === 4) break;
+      }
+    }
+
+    
+
     const data = [
       {name: 'productive', uv: 31.47, pv: 2400, fill: '#8884d8'},
       {name: 'neutral', uv: 26.69, pv: 4567, fill: '#83a6ed'},
