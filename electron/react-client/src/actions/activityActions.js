@@ -30,7 +30,7 @@ export const deleteActivity = (activity, category, isTracked, user) => {
 }
 
 export const patchActivity = ({ activity, category, index }, data) => {
-  console.log('activity inside patchActivity is', activity)
+  //console.log('activity inside patchActivity is', activity)
   return {
     type: PATCH_ACTIVITY,
     payload: {activity, category, index, data}
