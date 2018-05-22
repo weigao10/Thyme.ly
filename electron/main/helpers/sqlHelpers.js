@@ -26,7 +26,6 @@ const populateStore = (mainWindow) => {
       spurts.forEach((spurt) => {
         let isTracked = trackedApps.includes(spurt.app);
         for (let activity of newActivities) {
-          // console.log('activity being loaded is', activity)
           let query = isTracked ? 
                     spurt.title === activity.title && spurt.app === activity.app : 
                     spurt.app === activity.app
@@ -40,32 +39,35 @@ const populateStore = (mainWindow) => {
           }
         }
       })
-      // console.log('activities inside populate store are', newActivities)
       mainWindow.send('sqlActivities', newActivities)
     })
 
 }
 
 const saveStoreToSql = (mainWindow) => {
-  clearDb(); //make a promise
-  mainWindow.send("windowClose", "close")
-  ipcMain.once("store", (event, data) => {
-    let { activities, preferences } = JSON.parse(data);
-    for(let category in activities){
-      if(category !== 'nextId'){
-        activities[category].forEach((el) => {
-          el.spurts.forEach((spurt) => {
-            insertSpurts(el, spurt)
+  clearDb()
+  .then((data) => {
+    mainWindow.send("windowClose", "close")
+    ipcMain.once("store", (event, data) => {
+      let { activities, preferences } = JSON.parse(data);
+      for(let category in activities){
+        if(category !== 'nextId'){
+          activities[category].forEach((el) => {
+            el.spurts.forEach((spurt) => {
+              insertSpurts(el, spurt)
+            })
+            insertActivities(el)
           })
-          insertActivities(el)
-        })
+        }
       }
-    }
-
-    for(let category in preferences){ //ex: category = trackedApps, el = Google Chrome
-      preferences[category].forEach((el) => (insertPreferences(el, category)))
-    }
+  
+      for(let category in preferences){ //ex: category = trackedApps, el = Google Chrome
+        preferences[category].forEach((el) => (insertPreferences(el, category)))
+      }
+    })
+    
   })
+  .catch((err) => console.log('ERR IN CLEARING DB', err))
 }
 
 
