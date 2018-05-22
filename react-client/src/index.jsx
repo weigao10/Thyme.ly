@@ -198,13 +198,21 @@ function listEvents(accessToken) {
   let oauth = new google.auth.OAuth2(
     clientId, clientSecret, redirectURI);
   oauth.setCredentials({access_token: accessToken});
+  let timeMin = moment().format()
+  let timeMax = moment().format().slice(0, 11) + '11:59:59-04:00'
+  let momentTime = moment().format()
+  //2014-05-28T13:00:00-04:00
+  //2018-05-21T00:00:00+04:00
+  console.log('time min is', timeMin)
+
+  console.log('current time is', momentTime)
   calendar.events.list({
     calendarId: 'primary',
     auth: oauth,
     maxResults: 10,
     singleEvents: true,
-    timeMin: '2018-05-22T00:00:00+04:00',
-    timeMax: '2018-05-22T11:59:59+04:00',
+    timeMin: '2018-05-21T00:00:00+04:00',
+    timeMax: '2018-05-23T11:59:59+04:00',
     orderBy: 'startTime'
   }, (err, {data}) => {
     if (err) return console.log('The API returned an error: ' + err);
@@ -225,8 +233,6 @@ function listEvents(accessToken) {
 //cron, moment worker
 
 function notificationSender(upcomingEvents) {
-  // console.log('upcoming', upcomingEvents)
-
   let eventTime = upcomingEvents[0].start.dateTime
   let currentTime = JSON.stringify(moment().format()).split('T').join(' ').slice(0, 20)
   let difference = moment.duration(moment(eventTime).diff(moment(currentTime))).asSeconds();
@@ -237,7 +243,7 @@ function notificationSender(upcomingEvents) {
 }
 
 let timer = new cron.CronJob({
-  cronTime: '* * * * * *',
+  cronTime: '* * * * * *', //checking every second
   onTick: function () {
     // console.log('in scheduler factory')
     // reminderFetcher()
