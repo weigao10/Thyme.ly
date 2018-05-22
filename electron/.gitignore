@@ -3,8 +3,9 @@ node_modules
 .vscode
 react-client/.DS_Store
 react-client/dist/bundle.js
-react-client/config.js
 package-lock.json
+react-client/config.js
+main/config.js
 config.js
 out
 database/sqlite.db

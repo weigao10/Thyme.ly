@@ -1,3 +1,18 @@
+describe('monitor' , function(){
+  it(`start automatically once a user logs in`, function(){
+  });
+  it(`should pause and resume based on user button click`, function(){
+  });
+  it(`should pause on a pomodoro break`, function(){
+  });
+  it(`should resume on a pomodoro work session`, function(){
+  });
+  it(`should make its status available to the rest of the app`, function(){
+  });
+  it(`should never be able to be started again if its current status is running`, function(){
+  });
+});
+
 describe('sessions' , function(){
   it(`should set a cookie that lasts a week once a user logs in`, function(){
   });

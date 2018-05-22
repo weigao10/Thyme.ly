@@ -1,8 +1,12 @@
 node_modules
 .vscode
 package-lock.json
+<<<<<<< HEAD
 .DS_Store
 out
 config.js
 serverConfig.js
 react-client/dist/bundle.js
+=======
+.DS_Store
+>>>>>>> deploy2

@@ -11,20 +11,18 @@ import Divider from 'material-ui/Divider';
 import { addActivity, patchActivity, setAllActivities } from '../actions/activityActions.js';
 import { setUser, setToken } from '../actions/userActions.js';
 import { listEvents } from '../index.jsx'
+import { startMonitor, pauseMonitor, toggleMonitor } from '../actions/monitorActions.js';
 
 class MonitorContainer extends React.Component {
   constructor(props) {
     super(props);
-
     this.state = {
       showTimerButton: true,
       slideIndex: 0
     }
 
-    this.connectMonitor = this.connectMonitor.bind(this);
-    this.pauseMonitor = this.pauseMonitor.bind(this);
     this.checkState = this.checkState.bind(this);
-    this.toggleTimerButton = this.toggleTimerButton.bind(this);
+    // this.toggleTimerButton = this.toggleTimerButton.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.logout = this.logout.bind(this);
   }
@@ -49,11 +47,12 @@ class MonitorContainer extends React.Component {
     });
 
     ipcRenderer.on('system', (event, message) => {
+      // console.log('got system message of', message)
       if (message === 'sleep') {
-        this.pauseMonitor();
+        this.props.pauseMonitor();
       }
       else if (message === 'resume') {
-        this.connectMonitor(this.props.user.user);
+        this.props.startMonitor(this.props.user.user)
       };
     });
 
@@ -61,7 +60,7 @@ class MonitorContainer extends React.Component {
 
     ipcRenderer.on('cookies', (event, message) => {
       this.props.setUser(message.value);
-      if (message.value) this.connectMonitor(message.value);
+      if (message.value) this.props.startMonitor(message.value);
     });
 
     ipcRenderer.send('token', 'check');
@@ -79,8 +78,6 @@ class MonitorContainer extends React.Component {
 
   logout() {
     ipcRenderer.send('cookies', 'logout');
-    //display login page
-    //actually destroys the cookie but also need to remove it from the store
   }
 
   handleChange(value) {
@@ -89,29 +86,17 @@ class MonitorContainer extends React.Component {
     });
   }
 
-  connectMonitor(user) {
-    if (this.connected) console.log('you tried to connect monitor when it was already connected')
-    this.connected = true;
-    ipcRenderer.send('monitor', 'start', user);
-  }
-
-  pauseMonitor() {
-    if (!this.connected) console.log('you tried to pause monitor when it was already paused')
-    this.connected = false;
-    ipcRenderer.send('monitor', 'pause');
-  }
-
-  toggleTimerButton() {
-    let toggle = !this.state.showTimerButton;
-    this.setState({
-      showTimerButton: toggle
-    });
-    if (!toggle) {
-      this.pauseMonitor();
-    } else {
-      this.connectMonitor(this.props.user.user);
-    }
-  }
+  // toggleTimerButton() { //call this.props.pauseMonitor or this.props.startMonitor depending on current this.props.monitor.running
+  //   let toggle = !this.state.showTimerButton;
+  //   this.setState({
+  //     showTimerButton: toggle
+  //   });
+  //   if (!toggle) {
+  //     this.pauseMonitor();
+  //   } else {
+  //     this.connectMonitor(this.props.user.user);
+  //   }
+  // }
 
   checkState (data, isTracked) {
     for (let category in this.props.activities) {
@@ -137,6 +122,9 @@ class MonitorContainer extends React.Component {
       // TODO: Make this component render a Pause/Start timer button
       <div>
         <button onClick={this.logout}>Test logout button</button>
+        IS MONITOR RUNNING? {JSON.stringify(this.props.monitor.running)}
+        <button onClick={this.props.pauseMonitor}>Test pause button</button>
+        <button onClick={() => this.props.startMonitor(this.props.user.user)}>Test start button</button>
         {/* <pre>'current user is' {JSON.stringify(this.props.user)}</pre> */}
       </div>
     )
@@ -144,6 +132,7 @@ class MonitorContainer extends React.Component {
 }
 
 const mapStateToProps = state => ({
+  monitor: state.monitor,
   activities: state.activities,
   preferences: state.preferences,
   user: state.user,
@@ -157,14 +146,20 @@ const mapDispatchToProps = dispatch => {
       else dispatch(addActivity(data))
     },
     setAllActivities: (data) => {
-      dispatch(setAllActivities(data))
+      dispatch(setAllActivities(data));
     },
     setUser: (user) => {
       dispatch(setUser(user))
     },
     setToken: (token) => {
       dispatch(setToken(token))
-    }
+    },
+    startMonitor: (user) => {
+      dispatch(startMonitor(user))
+    },
+    pauseMonitor: () => {
+      dispatch(pauseMonitor())
+    } 
   };
 }
 

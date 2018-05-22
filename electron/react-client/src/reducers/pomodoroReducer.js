@@ -7,13 +7,16 @@ const timestamp = () => {
 }
 
 //intervals for testing...should eventually hook up to user pomodoro's prefs
-const TEN_SECONDS = 10 * 1000;
-const FIVE_SECONDS = 5 * 1000;
-const TOTAL_PLANNED_WORKDAY =  TEN_SECONDS * 4 + FIVE_SECONDS * 3
+const WORK_LENGTH = 1000 * 60 * 25;
+const LONG_BREAK_LENGTH = 1000 * 60 * 25;
+const SHORT_BREAK_LENGTH = 1000 * 60 * 5;
+const TOTAL_PLANNED_WORKDAY =  (WORK_LENGTH * 4 * 4)
+                               + SHORT_BREAK_LENGTH * 4 * 3
+                               + LONG_BREAK_LENGTH * 3;
 const INTERVAL_MAP = {
-  'work': TEN_SECONDS,
-  'shortBreak': FIVE_SECONDS,
-  'longBreak': TEN_SECONDS
+  'work': WORK_LENGTH,
+  'shortBreak': SHORT_BREAK_LENGTH,
+  'longBreak': LONG_BREAK_LENGTH
 };
 
 const initialState = {
@@ -41,7 +44,7 @@ const pomodoro = (state = initialState, action) => {
         pomStartTime: timestamp(),
         currentSpurt: {
           type: 'work',
-          length: TEN_SECONDS
+          length: WORK_LENGTH
         }
       }
     }
@@ -77,14 +80,14 @@ const pomodoro = (state = initialState, action) => {
       let nextSpurtType, elapsedTime;
       if (lastSpurtType === 'work' && updatedLastSpurtCount % 4 === 0) { //expand logic to depend on user prefs
         nextSpurtType = 'longBreak';
-        elapsedTime = TEN_SECONDS;
+        elapsedTime = WORK_LENGTH;
       } else if (lastSpurtType === 'work') {
         nextSpurtType = 'shortBreak';
-        elapsedTime = TEN_SECONDS;
+        elapsedTime = WORK_LENGTH;
       } else {
         nextSpurtType = 'work'
-        if (lastSpurtType === 'shortBreak') elapsedTime = FIVE_SECONDS;
-        else elapsedTime = TEN_SECONDS;
+        if (lastSpurtType === 'shortBreak') elapsedTime = SHORT_BREAK_LENGTH;
+        else elapsedTime = LONG_BREAK_LENGTH;
       }
       let noti = new Notification('Pomodoro Alert', {body: lastSpurtType + ' over! Time for ' + nextSpurtType});
       const updatedElapsedTime = lastElapsedTime + elapsedTime;

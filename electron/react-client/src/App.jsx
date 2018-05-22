@@ -32,7 +32,6 @@ class App extends React.Component {
   }
 
   componentDidMount() {
-
     // console.log('app component got this user_id via props', this.props.user);
   }
   
