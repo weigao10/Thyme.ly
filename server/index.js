@@ -12,7 +12,7 @@ const scrapeDb = require('./database/scraper.js');
 const ml = require('./learn/naiveBayes.js');
 
 app.use(bodyParser.json());
-app.use(express.static(path.join(__dirname, './client/dist')));
+app.use(express.static(path.join(__dirname, './splash-client/dist')));
 //middleware
 
 app.use((req, res, next) => {
