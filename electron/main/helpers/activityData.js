@@ -5,8 +5,9 @@ const electron = require('electron')
 const { ipcMain, session } = electron;
 const axios = require('axios');
 const chalk = require('chalk');
+const path = require('path');
 
-const { serverURL } = require('../../config.js');
+const { serverURL } = require(path.join(__dirname, '../config.js'));
 
 const monitorActivity = (activities, user) => {
   return activeWin()
