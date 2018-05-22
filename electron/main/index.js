@@ -10,7 +10,7 @@ const { app, BrowserWindow, Menu, ipcMain, Tray, nativeImage, session } = electr
 
 const { saveStoreToSql, populateStore } = require('./helpers/sqlHelpers.js')
 const { monitor } = require('./helpers/activityData.js');
-const { manageCookies } = require('./helpers/manageSession.js');
+const { manageCookies, manageToken } = require('./helpers/manageSession.js');
 
 let mainWindow, popUpWindow, tray, splash;
 let force_quit = false;
@@ -75,6 +75,7 @@ const createWindow = () => {
 
   let mainSession = mainWindow.webContents.session;
   manageCookies(mainSession, mainWindow);
+  manageToken(mainSession, mainWindow);
 
   winState.manage(mainWindow);
 
