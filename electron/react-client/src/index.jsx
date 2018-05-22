@@ -35,6 +35,11 @@ ipcRenderer.on('cookies', (event, message) => {
   document.getElementById('login-page').innerHTML = '';
 });
 
+ipcRenderer.send('token', 'check');
+ipcRenderer.on('token', (event, token) => {
+  //listEvents(token)
+});
+
 
 $('.message a').click(function(){
   $('form').animate({height: "toggle", opacity: "toggle"}, "slow");
@@ -196,13 +201,8 @@ function listEvents(accessToken) {
     clientId, clientSecret, redirectURI);
   oauth.setCredentials({access_token: accessToken});
   let timeMin = moment().format()
-  let timeMax = moment().format().slice(0, 11) + '11:59:59-04:00'
+  let timeMax = moment().format().slice(0, 11) + '23:59:59-04:00'
   let momentTime = moment().format()
-  //2014-05-28T13:00:00-04:00
-  //2018-05-21T00:00:00+04:00
-  console.log('time min is', timeMin)
-
-  console.log('current time is', momentTime)
   calendar.events.list({
     calendarId: 'primary',
     auth: oauth,
@@ -233,7 +233,7 @@ function notificationSender(upcomingEvents) {
   let eventTime = upcomingEvents[0].start.dateTime
   let currentTime = JSON.stringify(moment().format()).split('T').join(' ').slice(0, 20)
   let difference = moment.duration(moment(eventTime).diff(moment(currentTime))).asSeconds();
-  if (difference < 1) {
+  if (difference < 600) { //10 minutes
     let noti = new Notification('Hello from OS X', {body: 'in notification sender!'});
     upcomingEvents.shift();
   }
@@ -242,12 +242,8 @@ function notificationSender(upcomingEvents) {
 let timer = new cron.CronJob({
   cronTime: '* * * * * *', //checking every second
   onTick: function () {
-    // console.log('in scheduler factory')
-    // reminderFetcher()
-    //   .then((data) => {
-    //     reminderSender(data)
-    //   })
     if(upcomingEvents.length > 0) notificationSender(upcomingEvents);
+    //also check cal with token?
   },
   start: true,
   timeZone: 'America/New_York'
