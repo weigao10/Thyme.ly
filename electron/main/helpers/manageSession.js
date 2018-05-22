@@ -1,6 +1,6 @@
 const electron = require('electron')
 const { app, BrowserWindow, ipcMain, session } = electron;
-const { serverURL } = require('../../config.js');
+const { serverURL } = require('../config.js');
 
 // const url = 'https://test-aws-thymely.com';
 const moment = require('moment')
@@ -21,14 +21,14 @@ const manageCookies = (mainSession, mainWindow) => {
     } else if (event === 'logged in') {
       console.log('user logged in with id', message)
       const cookie = {
-        serverURL,
+        url: serverURL,
         name: 'userId',
         value: message,
-        secure: true,
         expirationDate: moment().add(7, 'days').unix()
       };
+      console.log('cookie is', cookie)
       mainSession.cookies.set(cookie, (err) => {
-        if (err) console.log(err);
+        if (err) console.log('error setting cookies', err);
         else {
           mainSession.cookies.get({name: 'userId', serverURL}, (err, cookies) => {
             console.log('COOKIE SET!', cookies[0]);

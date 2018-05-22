@@ -1,7 +1,7 @@
 import { ADD_ACTIVITY, PATCH_ACTIVITY, CATEGORIZE_ACTIVITY, DELETE_ACTIVITY, SET_ALL_ACTIVITIES, AFFIRM_CATEGORIZATION } from './types'; 
 import moment from 'moment';
 import axios from 'axios';
-import { serverURL } from '../../../config';
+import { serverURL } from '../../config.js';
 
 export const addActivity = (data) => {
   return {

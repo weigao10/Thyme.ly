@@ -1,5 +1,5 @@
 {
-  "name": "thyme.ly-client",
+  "name": "thymely-client",
   "version": "1.0.0",
   "description": "Productivity Manager (Electron Client)",
   "main": "main/index.js",
@@ -69,7 +69,7 @@
     "babel-preset-stage-0": "^6.24.1",
     "devtron": "^1.4.0",
     "electron-forge": "^5.2.2",
-    "electron-prebuilt-compile": "^2.0.0"
+    "electron-prebuilt-compile": "2.0.0"
   },
   "dependencies": {
     "active-win": "^3.0.0",
