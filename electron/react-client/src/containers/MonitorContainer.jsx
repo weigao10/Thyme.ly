@@ -9,7 +9,8 @@ import FlatButton from 'material-ui/FlatButton';
 import Divider from 'material-ui/Divider';
 
 import { addActivity, patchActivity, setAllActivities } from '../actions/activityActions.js';
-import { setUser } from '../actions/userActions.js';
+import { setUser, setToken } from '../actions/userActions.js';
+import { listEvents } from '../index.jsx'
 
 class MonitorContainer extends React.Component {
   constructor(props) {
@@ -48,7 +49,6 @@ class MonitorContainer extends React.Component {
     });
 
     ipcRenderer.on('system', (event, message) => {
-      // console.log('got system message of', message)
       if (message === 'sleep') {
         this.pauseMonitor();
       }
@@ -60,10 +60,17 @@ class MonitorContainer extends React.Component {
     ipcRenderer.send('cookies', 'check');
 
     ipcRenderer.on('cookies', (event, message) => {
-      console.log('monitor container got this user_id via IPC', message.value)
       this.props.setUser(message.value);
       if (message.value) this.connectMonitor(message.value);
     });
+
+    ipcRenderer.send('token', 'check');
+
+    ipcRenderer.once('token', (event, message) => {
+      this.props.setToken(message[0].value);
+      listEvents(message[0].value)
+    });
+    
 
     ipcRenderer.on('add-idle-activity', (event, message) => {
       this.props.activityHandler(message, this.checkState(message, true));
@@ -139,7 +146,8 @@ class MonitorContainer extends React.Component {
 const mapStateToProps = state => ({
   activities: state.activities,
   preferences: state.preferences,
-  user: state.user
+  user: state.user,
+  token: state.token
 });
 
 const mapDispatchToProps = dispatch => {
@@ -149,11 +157,14 @@ const mapDispatchToProps = dispatch => {
       else dispatch(addActivity(data))
     },
     setAllActivities: (data) => {
-      dispatch(setAllActivities(data));
+      dispatch(setAllActivities(data))
     },
     setUser: (user) => {
       dispatch(setUser(user))
-    } 
+    },
+    setToken: (token) => {
+      dispatch(setToken(token))
+    }
   };
 }
 
