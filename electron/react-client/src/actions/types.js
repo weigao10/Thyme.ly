@@ -18,4 +18,6 @@ export const CLEAR_POM = 'CLEAR_POM';
 export const COMPLETE_SPURT = 'COMPLETE_SPURT';
 export const POM_ALERT = 'POM_ALERT';
 
-
+export const TOGGLE_MONITOR = 'TOGGLE_MONITOR';
+export const START_MONITOR = 'START_MONITOR';
+export const PAUSE_MONITOR = 'PAUSE_MONITOR';

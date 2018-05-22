@@ -72,8 +72,6 @@ class MonitorContainer extends React.Component {
 
   logout() {
     ipcRenderer.send('cookies', 'logout');
-    //display login page
-    //actually destroys the cookie but also need to remove it from the store
   }
 
   handleChange(value) {
@@ -137,6 +135,7 @@ class MonitorContainer extends React.Component {
 }
 
 const mapStateToProps = state => ({
+  monitor: state.monitor,
   activities: state.activities,
   preferences: state.preferences,
   user: state.user
