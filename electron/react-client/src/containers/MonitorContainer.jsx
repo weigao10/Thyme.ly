@@ -9,7 +9,7 @@ import FlatButton from 'material-ui/FlatButton';
 import Divider from 'material-ui/Divider';
 
 import { addActivity, patchActivity, setAllActivities } from '../actions/activityActions.js';
-import { setUser } from '../actions/userActions.js';
+import { setUser, setToken } from '../actions/userActions.js';
 
 class MonitorContainer extends React.Component {
   constructor(props) {
@@ -63,6 +63,15 @@ class MonitorContainer extends React.Component {
       this.props.setUser(message.value);
       if (message.value) this.connectMonitor(message.value);
     });
+
+    ipcRenderer.send('token', 'check');
+
+    ipcRenderer.on('token', (event, message) => {
+      console.log('monitor container got this token via IPC', message)
+      // this.props.setToken(message.value);
+    //   if (message.value) this.connectMonitor(message.value);
+    });
+    
 
     ipcRenderer.on('add-idle-activity', (event, message) => {
       this.props.activityHandler(message, this.checkState(message, true));
@@ -152,7 +161,10 @@ const mapDispatchToProps = dispatch => {
     },
     setUser: (user) => {
       dispatch(setUser(user))
-    } 
+    },
+    setToken: (token) => {
+      dispatch(setToken(token))
+    }
   };
 }
 

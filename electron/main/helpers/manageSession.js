@@ -36,13 +36,16 @@ const manageCookies = (mainSession, mainWindow) => {
 }
 
 const manageToken = (mainSession, mainWindow) => {
+  console.log('in manage token')
   ipcMain.on('token', (mainWindow, event, message) => {
     if(event === 'check') {
+      console.log('in manage token event is check')
       mainSession.token.get({name: 'tokenId', serverURL}, (err, token) => {
         if(token) mainWindow.sender.webContents.send('token', token);
         //if token does not exist, don't send back?
       })
     } else if (event === 'logged in'){
+      console.log('in manage token event is logged in')
       const token = {
         url: serverURL,
         name: 'tokenId',
