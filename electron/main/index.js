@@ -1,4 +1,4 @@
-import { logout } from '../react-client/src/actions/userActions.js';
+// import { logout } from '../react-client/src/actions/userActions.js';
 
 const url = require('url');
 const path = require('path');
@@ -10,7 +10,7 @@ const { app, BrowserWindow, Menu, ipcMain, Tray, nativeImage, session } = electr
 
 const { saveStoreToSql, populateStore } = require('./helpers/sqlHelpers.js')
 const { monitor } = require('./helpers/activityData.js');
-const { manageCookies } = require('./helpers/manageSession.js');
+const { manageCookies, manageToken } = require('./helpers/manageSession.js');
 
 let mainWindow, popUpWindow, tray, splash;
 let force_quit = false;
@@ -52,9 +52,7 @@ const createWindow = () => {
         y: winState.y,
         minWidth: 400,
         minHeight: 300,
-        show: false,
-        // frame: false
-        //make non resizable?
+        show: false
   });
 
   popUpWindow = new BrowserWindow({
@@ -77,6 +75,7 @@ const createWindow = () => {
 
   let mainSession = mainWindow.webContents.session;
   manageCookies(mainSession, mainWindow);
+
 
   winState.manage(mainWindow);
 
@@ -109,26 +108,25 @@ const createWindow = () => {
   const mainMenu = Menu.buildFromTemplate(mainMenuTemplate);
   Menu.setApplicationMenu(mainMenu);
   monitor(mainWindow, mainSession)
+
+  manageToken(mainSession, mainWindow);
 }
 
 app.on('ready', () => {
   createWindow();
   createTray();
   mainWindow.webContents.on('did-finish-load', () => {
-    console.log('main window finished loading!')
+    // console.log('main window finished loading!')
   })
 
   let idleStart, idleEnd, duration;
   electron.powerMonitor.on('suspend', () => {
-    console.log('going to sleep at', moment().format('MMMM Do YYYY, h:mm:ss a'))
     idleStart = moment()
     popUpWindow.webContents.send('gone-to-idle', 'sleep')
     mainWindow.webContents.send('system', 'sleep')
   });
 
   electron.powerMonitor.on('resume', () => {
-    console.log('waking up at', moment().format('MMMM Do YYYY, h:mm:ss a'))
-
     if(idleStart){
       idleEnd = moment()
       duration = idleEnd.diff(idleStart, "s")
