@@ -196,10 +196,7 @@ function listEvents(accessToken) {
     clientId, clientSecret, redirectURI);
   oauth.setCredentials({access_token: accessToken});
   let timeMin = moment().format()
-  let timeMax = moment().format().slice(0, 11) + '11:59:59-04:00'
-  let momentTime = moment().format()
-  //2014-05-28T13:00:00-04:00
-  //2018-05-21T00:00:00+04:00
+  let timeMax = moment().format().slice(0, 11) + '23:59:59-04:00'
   console.log('time min is', timeMin)
 
   console.log('current time is', momentTime)
