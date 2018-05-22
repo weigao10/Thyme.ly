@@ -76,7 +76,6 @@ const chunkComplete = (lastActivity, newActivity) => {
 };
 
 const startMonitor = (mainWindow, activities = [], user = "test") => {
-  // console.log('MONITOR WAS STARTED FOR USER', user)
   return setInterval(() => {
     monitorActivity(activities, user)
       .then((data) => {
@@ -96,14 +95,12 @@ let user = '';
 
 exports.monitor = (mainWindow, mainSession) => {
   ipcMain.on('monitor', (mainWindow, event, message) => {
-    // console.log('activity monitor received instruction of', event, message)
     if (event === 'start') {
       user = message;
       activities = [];
       intervalId = startMonitor(mainWindow, activities, message);
     } else if (event === 'pause' && intervalId) {
       clearInterval(intervalId);
-      // console.log('next activity should be last activity before sleep!')
       monitorActivity(activities, user); // ♫ ♬ ONE LAST/MORE TIME ♩ ♬ 
       intervalId = false;
     } else {
