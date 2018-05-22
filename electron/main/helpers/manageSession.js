@@ -9,7 +9,9 @@ const manageCookies = (mainSession, mainWindow) => {
   ipcMain.on('cookies', (mainWindow, event, message) => {
 
     if (event === 'check') {
+      console.log('in manage cookies event is check', mainSession)
       mainSession.cookies.get({name: 'userId', serverURL}, (err, cookies) => {
+        console.log('inside check get cookies')
         if (cookies.length) mainWindow.sender.webContents.send('cookies', cookies[0]);
         //if cookie does not exist, don't send it back
       });
@@ -39,8 +41,9 @@ const manageToken = (mainSession, mainWindow) => {
   console.log('in manage token')
   ipcMain.on('token', (mainWindow, event, message) => {
     if(event === 'check') {
-      console.log('in manage token event is check')
+      console.log('in manage token event is check', mainSession)
       mainSession.token.get({name: 'tokenId', serverURL}, (err, token) => {
+        console.log('inside check get token')
         if(token) mainWindow.sender.webContents.send('token', token);
         //if token does not exist, don't send back?
       })
@@ -49,7 +52,8 @@ const manageToken = (mainSession, mainWindow) => {
       const token = {
         url: serverURL,
         name: 'tokenId',
-        value: message
+        value: message,
+        expirationDate: moment().add(7, 'days').unix()
       }
       mainSession.token.set(token, (err) => {
         if(err) console.log('ERR SETTING TOKEN IN MANAGE SESSION: ', err);

@@ -75,7 +75,7 @@ const createWindow = () => {
 
   let mainSession = mainWindow.webContents.session;
   manageCookies(mainSession, mainWindow);
-  manageToken(mainSession, mainWindow);
+
 
   winState.manage(mainWindow);
 
@@ -108,6 +108,8 @@ const createWindow = () => {
   const mainMenu = Menu.buildFromTemplate(mainMenuTemplate);
   Menu.setApplicationMenu(mainMenu);
   monitor(mainWindow, mainSession)
+
+  manageToken(mainSession, mainWindow);
 }
 
 app.on('ready', () => {
