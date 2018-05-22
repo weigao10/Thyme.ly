@@ -1,7 +1,0 @@
-node_modules
-.DS_Store
-react-client/.DS_Store
-react-client/dist/bundle.js
-package-lock.json
-config.js
-out
