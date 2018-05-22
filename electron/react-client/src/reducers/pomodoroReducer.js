@@ -1,5 +1,6 @@
 import { START_POM, PAUSE_POM, RESUME_POM, CLEAR_POM, COMPLETE_SPURT } from '../actions/types';
 import moment from 'moment';
+import Notification from 'node-mac-notifier';
 
 const timestamp = () => {
   return moment().format('LTS');
@@ -85,7 +86,7 @@ const pomodoro = (state = initialState, action) => {
         if (lastSpurtType === 'shortBreak') elapsedTime = FIVE_SECONDS;
         else elapsedTime = TEN_SECONDS;
       }
-
+      let noti = new Notification('Pomodoro Alert', {body: lastSpurtType + ' over! Time for ' + nextSpurtType});
       const updatedElapsedTime = lastElapsedTime + elapsedTime;
 
       return {
