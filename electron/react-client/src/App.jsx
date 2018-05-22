@@ -26,7 +26,6 @@ class App extends React.Component {
   }
 
   handleTabChange(tabIndex) {
-    console.log('tab was clicked!', tabIndex);
     this.setState({
       tabIndex: tabIndex
     })

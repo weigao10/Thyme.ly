@@ -1,4 +1,4 @@
-import { logout } from '../react-client/src/actions/userActions.js';
+// import { logout } from '../react-client/src/actions/userActions.js';
 
 const url = require('url');
 const path = require('path');
@@ -52,9 +52,7 @@ const createWindow = () => {
         y: winState.y,
         minWidth: 400,
         minHeight: 300,
-        show: false,
-        // frame: false
-        //make non resizable?
+        show: false
   });
 
   popUpWindow = new BrowserWindow({
@@ -120,15 +118,12 @@ app.on('ready', () => {
 
   let idleStart, idleEnd, duration;
   electron.powerMonitor.on('suspend', () => {
-    console.log('going to sleep at', moment().format('MMMM Do YYYY, h:mm:ss a'))
     idleStart = moment()
     popUpWindow.webContents.send('gone-to-idle', 'sleep')
     mainWindow.webContents.send('system', 'sleep')
   });
 
   electron.powerMonitor.on('resume', () => {
-    console.log('waking up at', moment().format('MMMM Do YYYY, h:mm:ss a'))
-
     if(idleStart){
       idleEnd = moment()
       duration = idleEnd.diff(idleStart, "s")
