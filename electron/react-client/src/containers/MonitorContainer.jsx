@@ -15,14 +15,11 @@ import { setUser } from '../actions/userActions.js';
 class MonitorContainer extends React.Component {
   constructor(props) {
     super(props);
-
     this.state = {
       showTimerButton: true,
       slideIndex: 0
     }
 
-    // this.connectMonitor = this.connectMonitor.bind(this);
-    // this.pauseMonitor = this.pauseMonitor.bind(this);
     this.checkState = this.checkState.bind(this);
     // this.toggleTimerButton = this.toggleTimerButton.bind(this);
     this.handleChange = this.handleChange.bind(this);
@@ -49,25 +46,22 @@ class MonitorContainer extends React.Component {
     });
 
     ipcRenderer.on('system', (event, message) => {
-      console.log('got system message of', message)
+      // console.log('got system message of', message)
       if (message === 'sleep') {
-        // this.pauseMonitor();
         this.props.pauseMonitor();
       }
       else if (message === 'resume') {
         this.props.startMonitor(this.props.user.user)
-        // this.connectMonitor(this.props.user.user);
       };
     });
 
     ipcRenderer.send('cookies', 'check');
 
     ipcRenderer.on('cookies', (event, message) => {
-      console.log('monitor container got this user_id via IPC', message.value)
+      // console.log('monitor container got this user_id via IPC', message.value)
       this.props.setUser(message.value);
       if (message.value) {
-        console.log('trying to start monitor with', message.value)
-        // this.connectMonitor(message.value)
+        // console.log('trying to start monitor with', message.value)
         this.props.startMonitor(message.value)
       };
     });
@@ -86,18 +80,6 @@ class MonitorContainer extends React.Component {
       slideIndex: value,
     });
   }
-
-  // connectMonitor(user) {
-  //   if (this.connected) console.log('you tried to connect monitor when it was already connected')
-  //   this.connected = true;
-  //   ipcRenderer.send('monitor', 'start', user);
-  // }
-
-  // pauseMonitor() {
-  //   if (!this.connected) console.log('you tried to pause monitor when it was already paused')
-  //   this.connected = false;
-  //   ipcRenderer.send('monitor', 'pause');
-  // }
 
   // toggleTimerButton() {
   //   let toggle = !this.state.showTimerButton;
@@ -135,10 +117,10 @@ class MonitorContainer extends React.Component {
       // TODO: Make this component render a Pause/Start timer button
       <div>
         <button onClick={this.logout}>Test logout button</button>
-        STATUS OF MONITOR IS {JSON.stringify(this.props.monitor.running)}
+        IS MONITOR RUNNING? {JSON.stringify(this.props.monitor.running)}
         <button onClick={this.props.pauseMonitor}>Test pause button</button>
         <button onClick={() => this.props.startMonitor(this.props.user.user)}>Test start button</button>
-        <pre>'current user is' {JSON.stringify(this.props.user)}</pre>
+        {/* <pre>'current user is' {JSON.stringify(this.props.user)}</pre> */}
       </div>
     )
   }
@@ -164,7 +146,6 @@ const mapDispatchToProps = dispatch => {
       dispatch(setUser(user))
     },
     startMonitor: (user) => {
-      console.log('user inside start monitor is', user)
       dispatch(startMonitor(user))
     },
     pauseMonitor: () => {

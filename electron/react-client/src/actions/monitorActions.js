@@ -2,7 +2,6 @@ import { ipcRenderer } from 'electron';
 import { TOGGLE_MONITOR, START_MONITOR, PAUSE_MONITOR } from './types';
 
 export const startMonitor = (user) => {
-  console.log('user inside start monitor action is', user)
   ipcRenderer.send('monitor', 'start', user);
   return {
     type: START_MONITOR

@@ -4,7 +4,8 @@ import Paper from 'material-ui/Paper';
 import {RadialBarChart, RadialBar, PieChart, Pie, Legend, Cell} from 'recharts';
 import moment from 'moment';
 
-import { startPom, pausePom, resumePom, clearPom, completeSpurt } from '../actions/pomodoroActions';
+import { startPom, pausePom, resumePom, clearPom, completeSpurt } from '../actions/pomodoroActions.js';
+import { startMonitor, pauseMonitor } from '../actions/monitorActions.js'
 
 class PomodoroContainer extends React.Component {
   constructor(props) {
@@ -27,6 +28,8 @@ class PomodoroContainer extends React.Component {
     if (this.state.elapsedTime >= this.props.pomodoro.currentSpurt.length ||
     (this.props.pomodoro.currentSpurt.length - this.state.elapsedTime) < 20) { //must be better way to smooth out
       this.props.completeSpurt();
+      console.log('toggling monitor!')
+      this.props.toggleMonitor(this.props.pomodoro.currentSpurt.type, this.props.user.user)
       this.setState({
         lastCheckedTime: Date.now(),
         elapsedTime: 0
@@ -78,7 +81,7 @@ class PomodoroContainer extends React.Component {
   }
 
   componentDidMount() {
-    
+    // console.log('pom did mount!')
   }
 
   render() {
@@ -125,7 +128,9 @@ class PomodoroContainer extends React.Component {
 }
 
 const mapStateToProps = (state) => ({
-  pomodoro: state.pomodoro
+  monitor: state.monitor,
+  pomodoro: state.pomodoro,
+  user: state.user
 })
 
 const mapDispatchToProps = (dispatch) => {
@@ -144,6 +149,16 @@ const mapDispatchToProps = (dispatch) => {
     },
     completeSpurt: () => {
       dispatch(completeSpurt())
+    },
+    toggleMonitor: (currentSpurtType, user) => {
+      //ONLY CALL WHEN CURRENT SPURT TYPE CHANGES, OTHERWISE WILL SCREW EVERYTHING UP
+      if (currentSpurtType === 'shortBreak' || currentSpurtType === 'longBreak') {
+        console.log('time to pause monitor!')
+        dispatch(pauseMonitor())
+      } else if (currentSpurtType === 'work') {
+        console.log('time to resume monitor')
+        dispatch(startMonitor(user))
+      }
     }
   }
 }
