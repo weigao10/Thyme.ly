@@ -4,3 +4,4 @@ package-lock.json
 .DS_Store
 out
 config.js
+serverConfig.js
