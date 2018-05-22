@@ -11,7 +11,6 @@ export const addActivity = (data) => {
 }
 
 export const deleteActivity = (activity, category, isTracked, user) => {
-  // console.log('deleting this activity card isTracked is:', isTracked);
   let id = activity.id;
 
   const params = {
@@ -30,7 +29,6 @@ export const deleteActivity = (activity, category, isTracked, user) => {
 }
 
 export const patchActivity = ({ activity, category, index }, data) => {
-  //console.log('activity inside patchActivity is', activity)
   return {
     type: PATCH_ACTIVITY,
     payload: {activity, category, index, data}
@@ -38,7 +36,6 @@ export const patchActivity = ({ activity, category, index }, data) => {
 }
 
 export const changeCategory = (activity, oldCatName, newCatName, isTracked, user) => {
-  console.log('isTracked inside changeCat is', isTracked)
   const params = {
     user_name: user,
     app_name: activity.app,
@@ -62,7 +59,6 @@ export const changeCategory = (activity, oldCatName, newCatName, isTracked, user
 }
 
 export const affirmCategorization = (activity, category, isTracked, user) => {
-  console.log('isTracked inside affirmCat is', isTracked)
   const params = {
     user_name: user,
     app_name: activity.app,
