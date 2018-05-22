@@ -10,7 +10,6 @@ import readline from 'readline';
 import { google } from 'googleapis'
 import cron from 'cron';
 import moment from 'moment';
-import Notification from 'node-mac-notifier';
 
 import App from './App.jsx';
 import config from '../config.js'
@@ -209,8 +208,8 @@ function listEvents(accessToken) {
     auth: oauth,
     maxResults: 10,
     singleEvents: true,
-    timeMin: '2018-05-21T00:00:00+04:00',
-    timeMax: '2018-05-23T11:59:59+04:00',
+    timeMin: timeMin,
+    timeMax: timeMax,
     orderBy: 'startTime'
   }, (err, {data}) => {
     if (err) return console.log('The API returned an error: ' + err);
