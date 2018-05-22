@@ -71,13 +71,14 @@ const getSpurts = (cb) => {
 }
 
 const clearDb = () => {
-  db.run(`DELETE FROM activities`);
-  db.run(`DELETE FROM preferences`);
-  db.run(`DELETE FROM spurts`);
+  let querys = [`DELETE FROM activities`, `DELETE FROM preferences`, `DELETE FROM spurts`]
+  return Promise.map(querys, (query) => {
+    return db.run(query)
+  })
 }
 
 const closeDb = () => {
-    db.close();
+  db.close();
 }
 
 exports.createTable = createTable;

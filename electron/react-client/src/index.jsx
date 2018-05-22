@@ -223,7 +223,7 @@ function listEvents(accessToken) {
 
 function notificationSender(upcomingEvents) {
   let event = upcomingEvents[0]
-  let eventTime = event.start.dateTime // this is off by 4??? hours
+  let eventTime = event.start.dateTime
   let currentTime = JSON.stringify(moment().format()).split('T').join(' ').slice(0, 20)
   let difference = moment.duration(moment(eventTime).diff(moment(currentTime))).asSeconds();
   if(difference < 0) upcomingEvents.shift(); //removes events that have already passed

@@ -1,5 +1,3 @@
-// import { logout } from '../react-client/src/actions/userActions.js';
-
 const url = require('url');
 const path = require('path');
 const windowStateKeeper = require('electron-window-state');
@@ -31,9 +29,9 @@ const createWindow = () => {
   })
 
   splash = new BrowserWindow({
-    width: 810, 
-    height: 610, 
-    transparent: true,
+    width: 200, 
+    height: 200, 
+    transparent: false,
     frame: false, 
     alwaysOnTop: true
   });
@@ -100,9 +98,11 @@ const createWindow = () => {
 
   app.once('before-quit', function() {
     saveStoreToSql(mainWindow)
-    force_quit = true;
-    popUpWindow.destroy();
-    app.quit()
+    setTimeout(() => {
+      force_quit = true;
+      popUpWindow.destroy();
+      app.quit()
+    }, 500) //maybe refactor into async await
   });
 
   const mainMenu = Menu.buildFromTemplate(mainMenuTemplate);
@@ -146,12 +146,7 @@ ipcMain.on('got-idle-activity', (event, message) => {
   popUpWindow.hide()
 })
 
-
-function logoutAndQuit (mainSession) {
-  saveStoreToSql(mainWindow)
-  force_quit = true;
-  popUpWindow.destroy();
-  mainSession.clearStorageData();
+function logoutAndQuit () {
   app.quit()
 }
 
