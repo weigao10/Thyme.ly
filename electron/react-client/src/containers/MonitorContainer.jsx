@@ -48,7 +48,6 @@ class MonitorContainer extends React.Component {
     });
 
     ipcRenderer.on('system', (event, message) => {
-      // console.log('got system message of', message)
       if (message === 'sleep') {
         this.pauseMonitor();
       }
