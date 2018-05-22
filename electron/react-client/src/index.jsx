@@ -99,8 +99,6 @@ function googleSignIn () {
     return fetchAccessTokens(code)
   })
   .then((token) => {
-    //save token to store?
-    listEvents(token)
     return fetchGoogleProfile(token)
   })
   .then(({id, email, name}) => {
@@ -178,7 +176,6 @@ function fetchAccessTokens (code) {
 }
 
 function fetchGoogleProfile (accessToken) {
-  // listEvents(accessToken)
   return axios.get(GOOGLE_PROFILE_URL, {
     headers: {
       'Content-Type': 'application/json',
@@ -186,8 +183,9 @@ function fetchGoogleProfile (accessToken) {
     },
   })
   .then((data) => {
-    // console.log('data from google profile is', data);
     ipcRenderer.send('cookies', 'logged in', data.data.id)
+    ipcRenderer.send('token', 'logged in', accessToken)
+    listEvents(accessToken);
     return data.data
   })
 }
