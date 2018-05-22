@@ -3,6 +3,7 @@ node_modules
 .vscode
 react-client/.DS_Store
 react-client/dist/bundle.js
+react-client/config.js
 package-lock.json
 config.js
 out
