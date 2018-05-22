@@ -9,6 +9,7 @@ import FlatButton from 'material-ui/FlatButton';
 import Divider from 'material-ui/Divider';
 
 import { addActivity, patchActivity, setAllActivities } from '../actions/activityActions.js';
+import { startMonitor, pauseMonitor, toggleMonitor } from '../actions/monitorActions.js';
 import { setUser } from '../actions/userActions.js';
 
 class MonitorContainer extends React.Component {
@@ -20,10 +21,10 @@ class MonitorContainer extends React.Component {
       slideIndex: 0
     }
 
-    this.connectMonitor = this.connectMonitor.bind(this);
-    this.pauseMonitor = this.pauseMonitor.bind(this);
+    // this.connectMonitor = this.connectMonitor.bind(this);
+    // this.pauseMonitor = this.pauseMonitor.bind(this);
     this.checkState = this.checkState.bind(this);
-    this.toggleTimerButton = this.toggleTimerButton.bind(this);
+    // this.toggleTimerButton = this.toggleTimerButton.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.logout = this.logout.bind(this);
   }
@@ -48,12 +49,14 @@ class MonitorContainer extends React.Component {
     });
 
     ipcRenderer.on('system', (event, message) => {
-      // console.log('got system message of', message)
+      console.log('got system message of', message)
       if (message === 'sleep') {
-        this.pauseMonitor();
+        // this.pauseMonitor();
+        this.props.pauseMonitor();
       }
       else if (message === 'resume') {
-        this.connectMonitor(this.props.user.user);
+        this.props.startMonitor(this.props.user.user)
+        // this.connectMonitor(this.props.user.user);
       };
     });
 
@@ -62,7 +65,11 @@ class MonitorContainer extends React.Component {
     ipcRenderer.on('cookies', (event, message) => {
       console.log('monitor container got this user_id via IPC', message.value)
       this.props.setUser(message.value);
-      if (message.value) this.connectMonitor(message.value);
+      if (message.value) {
+        console.log('trying to start monitor with', message.value)
+        // this.connectMonitor(message.value)
+        this.props.startMonitor(message.value)
+      };
     });
 
     ipcRenderer.on('add-idle-activity', (event, message) => {
@@ -80,29 +87,29 @@ class MonitorContainer extends React.Component {
     });
   }
 
-  connectMonitor(user) {
-    if (this.connected) console.log('you tried to connect monitor when it was already connected')
-    this.connected = true;
-    ipcRenderer.send('monitor', 'start', user);
-  }
+  // connectMonitor(user) {
+  //   if (this.connected) console.log('you tried to connect monitor when it was already connected')
+  //   this.connected = true;
+  //   ipcRenderer.send('monitor', 'start', user);
+  // }
 
-  pauseMonitor() {
-    if (!this.connected) console.log('you tried to pause monitor when it was already paused')
-    this.connected = false;
-    ipcRenderer.send('monitor', 'pause');
-  }
+  // pauseMonitor() {
+  //   if (!this.connected) console.log('you tried to pause monitor when it was already paused')
+  //   this.connected = false;
+  //   ipcRenderer.send('monitor', 'pause');
+  // }
 
-  toggleTimerButton() {
-    let toggle = !this.state.showTimerButton;
-    this.setState({
-      showTimerButton: toggle
-    });
-    if (!toggle) {
-      this.pauseMonitor();
-    } else {
-      this.connectMonitor(this.props.user.user);
-    }
-  }
+  // toggleTimerButton() {
+  //   let toggle = !this.state.showTimerButton;
+  //   this.setState({
+  //     showTimerButton: toggle
+  //   });
+  //   if (!toggle) {
+  //     this.pauseMonitor();
+  //   } else {
+  //     this.connectMonitor(this.props.user.user);
+  //   }
+  // }
 
   checkState (data, isTracked) {
     for (let category in this.props.activities) {
@@ -128,7 +135,10 @@ class MonitorContainer extends React.Component {
       // TODO: Make this component render a Pause/Start timer button
       <div>
         <button onClick={this.logout}>Test logout button</button>
-        {/* <pre>'current user is' {JSON.stringify(this.props.user)}</pre> */}
+        STATUS OF MONITOR IS {JSON.stringify(this.props.monitor.running)}
+        <button onClick={this.props.pauseMonitor}>Test pause button</button>
+        <button onClick={() => this.props.startMonitor(this.props.user.user)}>Test start button</button>
+        <pre>'current user is' {JSON.stringify(this.props.user)}</pre>
       </div>
     )
   }
@@ -152,6 +162,13 @@ const mapDispatchToProps = dispatch => {
     },
     setUser: (user) => {
       dispatch(setUser(user))
+    },
+    startMonitor: (user) => {
+      console.log('user inside start monitor is', user)
+      dispatch(startMonitor(user))
+    },
+    pauseMonitor: () => {
+      dispatch(pauseMonitor())
     } 
   };
 }
