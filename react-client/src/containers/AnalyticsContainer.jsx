@@ -6,6 +6,9 @@ import {PieChart, Pie, Label} from 'recharts';
 import {RadialBar, RadialBarChart, Legend} from 'recharts';
 import {LineChart, XAxis, CartesianGrid, Line, Tooltip} from 'recharts';
 
+import ChartTopRankings from '../components/ChartTopRankings.jsx';
+import ChartSpurts from '../components/ChartSpurts.jsx';
+
 class AnalyticsContainer extends React.Component {
   constructor(props) {
     super(props);
@@ -13,42 +16,6 @@ class AnalyticsContainer extends React.Component {
   }
 
   render() {
-
-    let { productive } = this.props.activities;
-    productive = productive.sort();
-
-    let productiveData = [];
-
-    // console.log('props.activities in Analytics Container is', productive);
-    
-    if (productive.length > 0) {
-      for (var i = 0; i < productive.length; i++) {
-        productiveData.push({
-          name: productive[i].title,
-          duration: productive[i].duration
-        });
-
-        if (i === 4) break;
-      }
-    }
-
-    let { distracting } = this.props.activities;
-    distracting = distracting.sort();
-
-    let distractingData = [];
-
-    if (distracting.length > 0) {
-      for (var i = 0; i < distracting.length; i++) {
-        distractingData.push({
-          name: distracting[i].title,
-          duration: distracting[i].duration
-        });
-
-        if (i === 4) break;
-      }
-    }
-
-    
 
     const data = [
       {name: 'productive', uv: 31.47, pv: 2400, fill: '#8884d8'},
@@ -66,46 +33,12 @@ class AnalyticsContainer extends React.Component {
     return (
       <Paper style={stylePaper}>
 
-      <Tabs>
-        <Tab label='Pie Chart'>
-
-            <h3>Top 5 Productive Apps</h3>
-            <PieChart width={550} height={300}>
-              <Pie 
-                data={productiveData} 
-                dataKey="duration" 
-                nameKey="name" 
-                cx="50%" 
-                cy="50%" 
-                outerRadius={50} 
-                fill="#8884d8"
-                label={(activity)=> `${activity.name}`}
-              >
-                
-              </Pie>
-          
-            </PieChart>
-
-            <h3>Top 5 Distracting Apps</h3>
-            <PieChart width={550} height={300}>
-              <Pie 
-                data={distractingData} 
-                dataKey="duration" 
-                nameKey="name" 
-                cx="50%" 
-                cy="50%" 
-                outerRadius={50} 
-                fill="#8884d8"
-                label={(activity)=> `${activity.name}`}
-              >
-                
-              </Pie>
-          
-            </PieChart>
-
+      <Tabs inkBarStyle={{background: '#ffcc33'}} style={{height: '55px', width: '350px'}}>
+        <Tab label='Pie Chart' style={styleRoot} buttonStyle={styleButton}>
+          <ChartTopRankings activities={this.props.activities} />
         </Tab>
 
-        <Tab label='chart2'>
+        <Tab label='chart2' style={styleRoot} buttonStyle={styleButton}>
         <h3>Line Chart</h3>
         <LineChart
           width={300}
@@ -121,28 +54,41 @@ class AnalyticsContainer extends React.Component {
         </LineChart>
         </Tab>
 
-        <Tab label="chart3"/>
+        <Tab label="Spurts" style={styleRoot} buttonStyle={styleButton}>
+          <ChartSpurts activities={this.props.activities} />
+        </Tab>
 
       </Tabs>
 
-        
-
-        
       </Paper>
     )
   }
 
 }
 
+const styleRoot = {
+  background: 'white',
+  padding: '0px 3px 0px 3px',
+  height: '25px'
+};
 
+const styleButton = {
+  color: 'black',
+  
+  background: '#1DE9B6', 
+  fontWeight: 'bold', 
+  fontSize: '80%', 
+  borderRadius: '6px 6px 0px 0px',
+  height: '25px'
+};
 
-let stylePaper = {
+const stylePaper = {
   background: 'white',
   padding: '15px',
   minHeight: '550px',
   maxHeight: '550px',
   overflowY: 'scroll'
-}
+};
 
 const mapStateToProps = (state) => {
   return {
