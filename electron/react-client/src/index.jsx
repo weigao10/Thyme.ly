@@ -10,10 +10,8 @@ import readline from 'readline';
 import { google } from 'googleapis'
 
 import App from './App.jsx';
-import config from '../../config.js'
-import { apiKey, bundleId, clientId, redirectURI, discoveryDocs, scopes, clientSecret } from '../../config.js'
-
-const SERVER_URL = 'http://127.0.0.1:3000';
+import config from '../config.js'
+import { apiKey, bundleId, clientId, redirectURI, discoveryDocs, scopes, clientSecret } from '../config.js'
 
 //if logged in already, should render app directly AND add uID to redux store
   //else render this log in screen
