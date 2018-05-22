@@ -37,7 +37,7 @@ ipcRenderer.on('cookies', (event, message) => {
 
 ipcRenderer.send('token', 'check');
 ipcRenderer.on('token', (event, token) => {
-  //listEvents(token)
+  listEvents(token)
 });
 
 
@@ -49,9 +49,7 @@ if (!firebase.apps.length) {
   firebase.initializeApp(config);
 }
 const auth = firebase.auth();
-export const provider = new firebase.auth.GoogleAuthProvider();
-// provider.addScope('https://www.googleapis.com/auth/calendar')
-
+const provider = new firebase.auth.GoogleAuthProvider();
 var registerButton = document.getElementById('register')
 var loginButton = document.getElementById('login')
 var googleButton = document.getElementById('google')
@@ -143,8 +141,6 @@ function signInWithPopup (provider) {
           //move this to google event listener
           ReactDOM.render((<App />), document.getElementById('app'))
           document.getElementById('login-page').innerHTML = ''
-
-          // displayNotification();
         }
       }
     }
