@@ -237,7 +237,6 @@ let timer = new cron.CronJob({
   cronTime: '*/5 * * * * *', //checking every 5 seconds
   onTick: function () {
     if(upcomingEvents.length > 0) notificationSender(upcomingEvents);
-    // console.log('upcoming events: ', upcomingEvents)
   },
   start: true,
   timeZone: 'America/New_York'
