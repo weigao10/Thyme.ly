@@ -1,14 +1,18 @@
 import { connect } from 'react-redux';
 import React from 'react';
 import Paper from 'material-ui/Paper';
-import { PieChart, Pie, Legend, Cell } from 'recharts';
+import { PieChart, Pie, Legend, Cell, Label } from 'recharts';
 import moment from 'moment';
 
 import { startPom, pausePom, resumePom, clearPom, completeSpurt } from '../actions/pomodoroActions.js';
 import { startMonitor, pauseMonitor } from '../actions/monitorActions.js';
 
 const formatMSToHMS = (ms) => {
-  return moment.utc(ms).format('HH:mm:ss')
+  return moment.utc(ms).format('HH:mm:ss');
+}
+
+const formatMSToMS = (ms) => {
+  return moment.utc(ms).format('mm:ss');
 }
 
 class PomodoroContainer extends React.Component {
@@ -86,10 +90,6 @@ class PomodoroContainer extends React.Component {
     this.setState({lastRerender: Date.now()})
   }
 
-  // shouldComponentUpdate() {
-
-  // }
-
   render() {
     const { pomodoro } = this.props;
     const style = {
@@ -111,12 +111,10 @@ class PomodoroContainer extends React.Component {
 
     return (
       <Paper style={stylePaper}>
-        <pre>last time i re-rendered was {this.state.lastRerender}</pre>
-        <pre>pom's status is {pomodoro.status}, total time left: {formatMSToHMS(totalDayData[1].value)}</pre>
-        <pre>current session is {pomodoro.currentSpurt.type}, time left: {formatMSToHMS(currentSpurtData[1].value)}</pre>
+        <div>Total time left: {formatMSToHMS(totalDayData[1].value)}</div>
         <PieChart width={800} height={400}>
           <Pie dataKey="value" data={currentSpurtData} cx={200} cy={200} innerRadius={70} outerRadius={90} fill="#82ca9d">
-            <Label value="YO" position="center" />
+            <Label value={pomodoro.currentSpurt.type + ":  " + formatMSToMS(currentSpurtData[1].value)} position="center" /> 
             <Cell fill={'#00C49F'}/>
             <Cell fill={'#ffffff'}/>
           </Pie>
