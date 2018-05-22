@@ -82,6 +82,21 @@ class PomodoroContainer extends React.Component {
   }
 
   render() {
+
+    const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
+
+    const data02 = [{name: 'A1', value: 100},
+    {name: 'A2', value: 300},
+    {name: 'B1', value: 100},
+    {name: 'B2', value: 80},
+    {name: 'B3', value: 40},
+    {name: 'B4', value: 30},
+    {name: 'B5', value: 50},
+    {name: 'C1', value: 100},
+    {name: 'C2', value: 200},
+    {name: 'D1', value: 150},
+    {name: 'D2', value: 50}]
+    
     const style = {
       top: 0,
       left: 350,
@@ -113,11 +128,11 @@ class PomodoroContainer extends React.Component {
             <Cell fill={'#ffffff'}/>
           </Pie>
         </PieChart>
-        <button onClick={this.startTimer}>start timer</button> */}
-        <button onClick={this.pauseTimer}>pause</button> */}
-        <button onClick={this.resumeTimer}>resume</button> */}
-        <button onClick={this.clearTimer}>clear</button> */}
-        <button onClick={this.skipAhead}>complete spurt</button> */}
+        <button onClick={this.startTimer}>start timer</button> 
+        <button onClick={this.pauseTimer}>pause</button>
+        <button onClick={this.resumeTimer}>resume</button>
+        <button onClick={this.clearTimer}>clear</button>
+        <button onClick={this.skipAhead}>complete spurt</button>
       </Paper>
     )
   }
