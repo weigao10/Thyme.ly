@@ -38,11 +38,16 @@ const ChartSpurts = (props) => {
     {startTime: "May 21st 2018, 7:38:43 pm", endTime: "May 21st 2018, 7:38:44 pm"}
     ];
 
+    //make the spurts data 1 object with keys, and each key represents a bar/spurt
+    const mappedSpurts = [
+      {name: '11am', uv: 280, pv: 450, amt: 360},
+    ];
+
     return (
     <div style={{marginTop: '15px'}}>
       <h3>Your Timeline</h3>
       <BarChart 
-        width={600} 
+        width={700} 
         height={65} 
         data={data} 
         layout="vertical"
