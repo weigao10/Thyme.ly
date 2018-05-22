@@ -1,11 +1,15 @@
 import { connect } from 'react-redux';
 import React from 'react';
 import Paper from 'material-ui/Paper';
-import {RadialBarChart, RadialBar, PieChart, Pie, Legend, Cell} from 'recharts';
+import { PieChart, Pie, Legend, Cell } from 'recharts';
 import moment from 'moment';
 
 import { startPom, pausePom, resumePom, clearPom, completeSpurt } from '../actions/pomodoroActions.js';
-import { startMonitor, pauseMonitor } from '../actions/monitorActions.js'
+import { startMonitor, pauseMonitor } from '../actions/monitorActions.js';
+
+const formatMSToHMS = (ms) => {
+  return moment.utc(ms).format('HH:mm:ss')
+}
 
 class PomodoroContainer extends React.Component {
   constructor(props) {
@@ -13,7 +17,8 @@ class PomodoroContainer extends React.Component {
     this.state = { //local state, everything else is in the store
       timerIntervalId: null,
       lastCheckedTime: null, //used to compare to current time to increment elapsed time
-      elapsedTime: 0
+      elapsedTime: 0,
+      lastRerender: null,
     }
     this.trackTime = this.trackTime.bind(this);
     this.startTimer = this.startTimer.bind(this);
@@ -24,16 +29,14 @@ class PomodoroContainer extends React.Component {
   }
 
   trackTime() {
-    //FIND A WAY TO SMOOTH THIS TIMER OUT BETTER
     if (this.state.elapsedTime >= this.props.pomodoro.currentSpurt.length ||
     (this.props.pomodoro.currentSpurt.length - this.state.elapsedTime) < 20) { //must be better way to smooth out
-      this.props.completeSpurt();
-      console.log('toggling monitor!')
-      this.props.toggleMonitor(this.props.pomodoro.currentSpurt.type, this.props.user.user)
       this.setState({
         lastCheckedTime: Date.now(),
         elapsedTime: 0
-      })
+      });
+      this.props.completeSpurt();
+      this.props.toggleMonitor(this.props.pomodoro.currentSpurt.type, this.props.user.user)
     } else {
       const elapsedMS = Date.now() - this.state.lastCheckedTime;
       this.setState({
@@ -42,8 +45,6 @@ class PomodoroContainer extends React.Component {
       });
     }
   }
-
-  //add error checking to buttons so that nothing happens if you press start if the timer is already started, etc.
 
   startTimer() {
     this.setState({
@@ -54,6 +55,7 @@ class PomodoroContainer extends React.Component {
 
   pauseTimer() {
     clearInterval(this.state.timerIntervalId);
+    this.setState({running: false})
     this.props.pausePom();
   }
 
@@ -81,50 +83,57 @@ class PomodoroContainer extends React.Component {
   }
 
   componentDidMount() {
-    // console.log('pom did mount!')
+    this.setState({lastRerender: Date.now()})
   }
 
+  // shouldComponentUpdate() {
+
+  // }
+
   render() {
+    const { pomodoro } = this.props;
     const style = {
       top: 0,
       left: 350,
       lineHeight: '24px'
     };
 
-    const currentSpurtLength = this.props.pomodoro.currentSpurt.length;
+    const currentSpurtLength = pomodoro.currentSpurt.length;
     const currentSpurtData = [{name: 'elapsed time', value: this.state.elapsedTime},
                               {name: 'time remaining', value: currentSpurtLength - this.state.elapsedTime}];
-    const completedSpurtLength = this.props.pomodoro.elapsedTimeFromCompletedSpurts;
-    const totalGoalLength = this.props.pomodoro.goalLength;
+    const completedSpurtLength = pomodoro.elapsedTimeFromCompletedSpurts;
+    const totalGoalLength = pomodoro.goalLength;
     const totalDayData = [{name: 'total elapsed time', value: this.state.elapsedTime + completedSpurtLength},
                           {name: 'total time remaining', value: totalGoalLength - this.state.elapsedTime - completedSpurtLength}]
-
+    // console.log('total time remaining:', totalGoalLength - this.state.elapsedTime - completedSpurtLength)
+    // console.log('completed spurt length', completedSpurtLength)          
+    // console.log('local state elapsed time', this.state.elapsedTime)
 
     return (
       <Paper style={stylePaper}>
-        <pre>pom's status is {this.props.pomodoro.status}</pre>
-        <pre>current session is {this.props.pomodoro.currentSpurt.type}</pre>
-        <pre>{JSON.stringify(this.props.pomodoro)}</pre>
-        <pre>elapsed time: {this.state.elapsedTime} and remaining time: {this.props.pomodoro.currentSpurt.length - this.state.elapsedTime}</pre>
+        <pre>last time i re-rendered was {this.state.lastRerender}</pre>
+        <pre>pom's status is {pomodoro.status}, total time left: {formatMSToHMS(totalDayData[1].value)}</pre>
+        <pre>current session is {pomodoro.currentSpurt.type}, time left: {formatMSToHMS(currentSpurtData[1].value)}</pre>
         <PieChart width={800} height={400}>
-          <Pie dataKey="value" data={currentSpurtData} cx={200} cy={200} innerRadius={70} outerRadius={90} fill="#82ca9d" label>
+          <Pie dataKey="value" data={currentSpurtData} cx={200} cy={200} innerRadius={70} outerRadius={90} fill="#82ca9d">
+            <Label value="YO" position="center" />
             <Cell fill={'#00C49F'}/>
             <Cell fill={'#ffffff'}/>
           </Pie>
-          <Pie dataKey="value" data={totalDayData} cx={200} cy={200} innerRadius={100} outerRadius={150} fill="#82ca9d" label>
+          <Pie dataKey="value" data={totalDayData} cx={200} cy={200} innerRadius={100} outerRadius={150} fill="#82ca9d">
             <Cell fill={'#0088FE'}/>
             <Cell fill={'#ffffff'}/>
           </Pie>
         </PieChart>
-        <button onClick={this.startTimer}>start timer</button> */}
-        <button onClick={this.pauseTimer}>pause</button> */}
-        <button onClick={this.resumeTimer}>resume</button> */}
-        <button onClick={this.clearTimer}>clear</button> */}
-        <button onClick={this.skipAhead}>complete spurt</button> */}
+        {pomodoro.status === 'not started' ? <button onClick={this.startTimer}>start timer</button> : null}
+        {pomodoro.status === 'running' ? <button onClick={this.pauseTimer}>pause</button> : null}
+        {pomodoro.status === 'paused' ? <button onClick={this.resumeTimer}>resume</button> : null}
+        {pomodoro.status === 'not started' ? null : <button onClick={this.clearTimer}>clear</button>}
+        {/* last button is duplicative of the first logically, but this spaces out the buttons better */}
+        <button onClick={this.skipAhead}>complete spurt</button>
       </Paper>
     )
   }
-
 }
 
 const mapStateToProps = (state) => ({
@@ -151,19 +160,16 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(completeSpurt())
     },
     toggleMonitor: (currentSpurtType, user) => {
-      //ONLY CALL WHEN CURRENT SPURT TYPE CHANGES, OTHERWISE WILL SCREW EVERYTHING UP
       if (currentSpurtType === 'shortBreak' || currentSpurtType === 'longBreak') {
-        console.log('time to pause monitor!')
         dispatch(pauseMonitor())
       } else if (currentSpurtType === 'work') {
-        console.log('time to resume monitor')
         dispatch(startMonitor(user))
       }
     }
   }
 }
 
-let stylePaper = {
+const stylePaper = {
   background: '#EEE',
   padding: '15px',
   minHeight: '425px'

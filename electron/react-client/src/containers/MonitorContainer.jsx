@@ -81,7 +81,7 @@ class MonitorContainer extends React.Component {
     });
   }
 
-  // toggleTimerButton() {
+  // toggleTimerButton() { //call this.props.pauseMonitor or this.props.startMonitor depending on current this.props.monitor.running
   //   let toggle = !this.state.showTimerButton;
   //   this.setState({
   //     showTimerButton: toggle
