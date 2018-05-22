@@ -84,13 +84,13 @@ const deleteProductivityClass = ({user_name, app_name, window_title, prod_class,
 
 const addProductivityClass = ({user_name, app_name, window_title, prod_class}) => {
   const queryStr = app_name === 'Google Chrome' ?
-                               `INSERT INTO public.categories(user_name, app_name, window_title, prod_class)\
+                                `INSERT INTO public.categories(user_name, app_name, window_title, prod_class)\
                                 VALUES ($1, $2, $3, $4)` : 
-                               `INSERT INTO public.categories(user_name, app_name, prod_class)\
+                                `INSERT INTO public.categories(user_name, app_name, prod_class)\
                                 VALUES ($1, $2, $3)`;
   const values = (app_name === 'Google Chrome' ?
-                             [user_name, app_name, window_title, prod_class]:
-                             [user_name, app_name, prod_class]);
+                              [user_name, app_name, window_title, prod_class]:
+                              [user_name, app_name, prod_class]);
   return pool.query(queryStr, values)
     .catch(err => console.error('error in adding prod_class', err)) 
 };
