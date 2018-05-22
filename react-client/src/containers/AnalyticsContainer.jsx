@@ -1,14 +1,17 @@
+import { connect } from 'react-redux';
 import React from 'react';
 import Paper from 'material-ui/Paper';
+import {Tabs, Tab} from 'material-ui/Tabs';
+import {PieChart, Pie, Label} from 'recharts';
 import {RadialBar, RadialBarChart, Legend} from 'recharts';
 import {LineChart, XAxis, CartesianGrid, Line, Tooltip} from 'recharts';
+
+import ChartTopRankings from '../components/ChartTopRankings.jsx';
+import ChartSpurts from '../components/ChartSpurts.jsx';
 
 class AnalyticsContainer extends React.Component {
   constructor(props) {
     super(props);
-  }
-
-  componentDidMount() {
 
   }
 
@@ -26,17 +29,20 @@ class AnalyticsContainer extends React.Component {
       lineHeight: '24px'
     };
 
+    // console.error('productiveData is:', productiveData)
     return (
       <Paper style={stylePaper}>
-        <h3>Radial Bar</h3>
-        <RadialBarChart width={500} height={300} cx={100} cy={100} innerRadius={10} outerRadius={120} barSize={20} data={data}>
-        <RadialBar minAngle={15} label={{ position: 'insideStart', fill: '#fff' }} background clockWise={true} dataKey='uv'/>
-        </RadialBarChart>
 
+      <Tabs inkBarStyle={{background: '#ffcc33'}} style={{height: '55px', width: '350px'}}>
+        <Tab label='Pie Chart' style={styleRoot} buttonStyle={styleButton}>
+          <ChartTopRankings activities={this.props.activities} />
+        </Tab>
+
+        <Tab label='chart2' style={styleRoot} buttonStyle={styleButton}>
         <h3>Line Chart</h3>
         <LineChart
-          width={400}
-          height={400}
+          width={300}
+          height={300}
           data={data}
           margin={{ top: 5, right: 20, left: 10, bottom: 5 }}
         >
@@ -46,17 +52,53 @@ class AnalyticsContainer extends React.Component {
           <Line type="monotone" dataKey="uv" stroke="#ff7300" yAxisId={0} />
           <Line type="monotone" dataKey="pv" stroke="#387908" yAxisId={1} />
         </LineChart>
+        </Tab>
+
+        <Tab label="Spurts" style={styleRoot} buttonStyle={styleButton}>
+          <ChartSpurts activities={this.props.activities} />
+        </Tab>
+
+      </Tabs>
+
       </Paper>
     )
   }
 
 }
 
+const styleRoot = {
+  background: 'white',
+  padding: '0px 3px 0px 3px',
+  height: '25px'
+};
 
+const styleButton = {
+  color: 'black',
+  
+  background: '#1DE9B6', 
+  fontWeight: 'bold', 
+  fontSize: '80%', 
+  borderRadius: '6px 6px 0px 0px',
+  height: '25px'
+};
 
-let stylePaper = {
+const stylePaper = {
   background: 'white',
   padding: '15px',
-  minHeight: '425px'
+  minHeight: '550px',
+  maxHeight: '550px',
+  overflowY: 'scroll'
+};
+
+const mapStateToProps = (state) => {
+  return {
+    activities: state.activities
+  }
 }
-export default AnalyticsContainer;
+
+const mapDispatchToProps = (dispatch) => {
+  return {};
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(AnalyticsContainer);
+
