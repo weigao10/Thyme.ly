@@ -75,7 +75,7 @@ class ProductivityScore extends React.Component {
       distracting += activityCard.duration;
     })
 
-    productivityScore = Math.floor( (productive / (productive + neutral + distracting) * 100 ) );
+    productivityScore = Math.floor( (productive / (productive + distracting) * 100 ) );
 
     // console.error('productivity score is:', productivityScore)
     // console.error('productivity and distracting are:', productive, distracting, neutral)
@@ -86,7 +86,6 @@ class ProductivityScore extends React.Component {
 
   render() {
  
-    console.log('PROD SCORE props.activities are:', this.props.activities)
     // const data = {}
     // data.width = 500;
     // data.height = 750;
@@ -104,7 +103,7 @@ class ProductivityScore extends React.Component {
     // data.arcClass = 'arc';
 
     return (
-        <div style={{ margin: '0px', background: '#E8F5E9', font: 'Garamond', fontSize: "125%", textAlign: "center" }}>
+        <div style={{ margin: '0px', background: 'white', font: 'Garamond', fontSize: "125%", textAlign: "center"}}>
           <h3>Your <br/>Productivity Score</h3>
           {/* <div id="gauge" style={{ lineHeight: "300px" }} /> */}
 
@@ -114,7 +113,7 @@ class ProductivityScore extends React.Component {
             maxValue={100}
             segments={5}
             width={200}
-            height={300}
+            height={350}
             needleColor={'black'}
             ringWidth={35}
             currentValueText={''}
