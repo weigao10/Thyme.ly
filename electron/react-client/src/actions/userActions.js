@@ -1,5 +1,5 @@
 import { ipcRenderer } from 'electron';
-import { SET_USER, GET_USER, LOG_OUT, SET_TOKEN } from './types'; 
+import { SET_USER, GET_USER, LOG_OUT, SET_TOKEN, GET_TOKEN } from './types'; 
 
 export const setUser = (user) => {
   return {
@@ -25,3 +25,8 @@ export const getUser = () => {
   }
 }
 
+export const getToken = () => {
+  return {
+    type: GET_TOKEN
+  }
+}

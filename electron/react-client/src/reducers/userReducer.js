@@ -1,4 +1,4 @@
-import { SET_USER, GET_USER, SET_TOKEN } from '../actions/types';
+import { SET_USER, GET_USER, SET_TOKEN, GET_TOKEN } from '../actions/types';
 
 const initialState = {
   user: '',
@@ -18,6 +18,8 @@ const user = (state = initialState, action) => {
         ...state,
         token: action.payload
       }
+    case GET_TOKEN:
+      return state.token;
     default:
       return state;
   }

@@ -116,7 +116,7 @@ app.on('ready', () => {
   createWindow();
   createTray();
   mainWindow.webContents.on('did-finish-load', () => {
-    console.log('main window finished loading!')
+    // console.log('main window finished loading!')
   })
 
   let idleStart, idleEnd, duration;
