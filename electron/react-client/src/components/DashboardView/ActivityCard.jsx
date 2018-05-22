@@ -72,9 +72,9 @@ const ActivityCard = (props) => {
         {isTracked ? activity.title : ''} <br/>
         <i>{formattedDuration}</i>
         <br/>
-        <button onClick={() => {deleteActivity(activity, category, isTracked, user)}}>delete</button>
+        <button onClick={() => {deleteActivity(activity, category, isTracked, user)}}>🗑️</button>
     {activity.productivity.source === 'ml' ? (
-      <button onClick={() => {affirmCategorization(activity, category, isTracked, user)}}>THANKS ML!
+      <button onClick={() => {affirmCategorization(activity, category, isTracked, user)}}>✔️
     </button>) : null}
       </Paper></div>
     )
