@@ -3,6 +3,8 @@
   "version": "1.0.0",
   "description": "Productivity Manager",
   "scripts": {
+    "start": "electron electron/main/index.js",
+    "electron-forge": "electron-forge start electron/main/index.js"
   },
   "repository": {
     "type": "git",
