@@ -26,14 +26,13 @@ class App extends React.Component {
   }
 
   handleTabChange(tabIndex) {
-    console.log('tab was clicked!', tabIndex);
     this.setState({
       tabIndex: tabIndex
     })
   }
 
   componentDidMount() {
-    
+
     // console.log('app component got this user_id via props', this.props.user);
   }
   
