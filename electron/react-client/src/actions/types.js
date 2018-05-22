@@ -11,7 +11,7 @@ export const SET_USER = 'SET_USER';
 export const GET_USER = 'GET_USER';
 export const LOG_OUT = 'LOG_OUT';
 export const SET_TOKEN = 'SET_TOKEN';
-// export const GET_TOKEN = 'GET_TOKEN';
+export const GET_TOKEN = 'GET_TOKEN';
 
 export const START_POM = 'START_POM'; //TODO: connect to user's pom prefs
 export const PAUSE_POM = 'PAUSE_POM';
