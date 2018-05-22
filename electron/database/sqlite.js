@@ -41,7 +41,7 @@ const insertPreferences = (data, category) => {
 //NEED TO ADD DATE
 const insertSpurts = ({id, productivity, app, title}, {startTime, endTime}) => {
   let query = `INSERT INTO spurts(id, date, productivity, app, title, startTime, endTime) VALUES(?, ?, ?, ?, ?, ?, ?)`;
-  let params = [id, date, productivity, app, title, startTime, endTime];
+  let params = [id, date, productivity.class, app, title, startTime, endTime];
   return new Promise ((resolve, reject) => {
     db.run(query, params, (err, result) => {
       if (err) reject(err)
