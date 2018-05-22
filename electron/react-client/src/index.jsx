@@ -35,6 +35,11 @@ ipcRenderer.on('cookies', (event, message) => {
   document.getElementById('login-page').innerHTML = '';
 });
 
+ipcRenderer.send('token', 'check');
+ipcRenderer.once('token', (event, token) => {
+  // listEvents(token)
+});
+
 
 $('.message a').click(function(){
   $('form').animate({height: "toggle", opacity: "toggle"}, "slow");
@@ -44,9 +49,7 @@ if (!firebase.apps.length) {
   firebase.initializeApp(config);
 }
 const auth = firebase.auth();
-export const provider = new firebase.auth.GoogleAuthProvider();
-// provider.addScope('https://www.googleapis.com/auth/calendar')
-
+const provider = new firebase.auth.GoogleAuthProvider();
 var registerButton = document.getElementById('register')
 var loginButton = document.getElementById('login')
 var googleButton = document.getElementById('google')
@@ -94,8 +97,6 @@ function googleSignIn () {
     return fetchAccessTokens(code)
   })
   .then((token) => {
-    //save token to store?
-    listEvents(token)
     return fetchGoogleProfile(token)
   })
   .then(({id, email, name}) => {
@@ -140,8 +141,6 @@ function signInWithPopup (provider) {
           //move this to google event listener
           ReactDOM.render((<App />), document.getElementById('app'))
           document.getElementById('login-page').innerHTML = ''
-
-          // displayNotification();
         }
       }
     }
@@ -173,7 +172,6 @@ function fetchAccessTokens (code) {
 }
 
 function fetchGoogleProfile (accessToken) {
-  // listEvents(accessToken)
   return axios.get(GOOGLE_PROFILE_URL, {
     headers: {
       'Content-Type': 'application/json',
@@ -181,8 +179,8 @@ function fetchGoogleProfile (accessToken) {
     },
   })
   .then((data) => {
-    // console.log('data from google profile is', data);
     ipcRenderer.send('cookies', 'logged in', data.data.id)
+    ipcRenderer.send('token', 'logged in', accessToken)
     return data.data
   })
 }
@@ -195,11 +193,8 @@ function listEvents(accessToken) {
   let oauth = new google.auth.OAuth2(
     clientId, clientSecret, redirectURI);
   oauth.setCredentials({access_token: accessToken});
-  let timeMin = moment().format()
-  let timeMax = moment().format().slice(0, 11) + '23:59:59-04:00'
-  console.log('time min is', timeMin)
-
-  console.log('current time is', momentTime)
+  let timeMin = moment().format().slice(0, 19) + 'Z'
+  let timeMax = moment().format().slice(0, 11) + '23:59:59Z'
   calendar.events.list({
     calendarId: 'primary',
     auth: oauth,
@@ -208,15 +203,15 @@ function listEvents(accessToken) {
     timeMin: timeMin,
     timeMax: timeMax,
     orderBy: 'startTime'
-  }, (err, {data}) => {
+  }, (err, data) => {
     if (err) return console.log('The API returned an error: ' + err);
-    const events = data.items;
+    const events = data.data.items;
     if (events.length) {
-      console.log('Upcoming 10 events:');
+      // console.log('Upcoming 10 events:');
       events.map((event, i) => {
         upcomingEvents.push(event)
-        const start = event.start.dateTime || event.start.date;
-        console.log(`${start} - ${event.summary}`);
+        // const start = event.start.dateTime || event.start.date;
+        // console.log(`${start} - ${event.summary}`);
       });
     } else {
       console.log('No upcoming events found.');
@@ -227,25 +222,27 @@ function listEvents(accessToken) {
 //cron, moment worker
 
 function notificationSender(upcomingEvents) {
-  let eventTime = upcomingEvents[0].start.dateTime
+  let event = upcomingEvents[0]
+  let eventTime = event.start.dateTime // this is off by 4??? hours
   let currentTime = JSON.stringify(moment().format()).split('T').join(' ').slice(0, 20)
   let difference = moment.duration(moment(eventTime).diff(moment(currentTime))).asSeconds();
-  if (difference < 1) {
-    let noti = new Notification('Hello from OS X', {body: 'in notification sender!'});
+  if(difference < 0) upcomingEvents.shift(); //removes events that have already passed
+  else if (difference < 600) { //10 minutes
+    let noti = new Notification('Upcoming Calendar Event', {body: event.summary});
     upcomingEvents.shift();
   }
 }
 
 let timer = new cron.CronJob({
-  cronTime: '* * * * * *', //checking every second
+  cronTime: '*/5 * * * * *', //checking every 5 seconds
   onTick: function () {
-    // console.log('in scheduler factory')
-    // reminderFetcher()
-    //   .then((data) => {
-    //     reminderSender(data)
-    //   })
     if(upcomingEvents.length > 0) notificationSender(upcomingEvents);
+    // console.log('upcoming events: ', upcomingEvents)
   },
   start: true,
   timeZone: 'America/New_York'
 });
+
+
+
+exports.listEvents = listEvents;
