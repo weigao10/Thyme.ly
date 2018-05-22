@@ -60,7 +60,6 @@ class MonitorContainer extends React.Component {
     ipcRenderer.send('cookies', 'check');
 
     ipcRenderer.on('cookies', (event, message) => {
-      // console.log('monitor container got this user_id via IPC', message.value)
       this.props.setUser(message.value);
       if (message.value) this.connectMonitor(message.value);
     });
@@ -68,7 +67,6 @@ class MonitorContainer extends React.Component {
     ipcRenderer.send('token', 'check');
 
     ipcRenderer.once('token', (event, message) => {
-      // console.log('monitor container got this token via IPC', message)
       this.props.setToken(message[0].value);
       listEvents(message[0].value)
     });
