@@ -37,24 +37,7 @@ app.get('/api/classifications', async (req, res) => {
     console.log('req.query is', req.query)
     res.send('no user attached to this session')
   }
-  // return db.getProductivityClass(app_name, window_title, user_name)
-  //   .then((prod_class) => {
-  //     if (prod_class === null && app_name === 'Google Chrome') { //add other tracked app
-  //       const predictedProdClass = ml.predictProductivityClass(window_title, user_name)
-  //       console.log('predicted prod is', predictedProdClass);
-  //       res.send({
-  //         source: predictedProdClass ? 'ml' : 'user',
-  //         class: ml.predictProductivityClass(window_title, user_name)
-  //       });
-  //     } else {
-  //       res.send({
-  //         source: 'user',
-  //         class: prod_class
-  //       });
-  //     }
-  //   })
-  //   .catch((err) => res.send(err));
-  
+
   try {
     const prod_class = await db.getProductivityClass(app_name, window_title, user_name);
     if (prod_class === null && app_name === 'Google Chrome') { //add other tracked app
@@ -105,7 +88,6 @@ app.delete('/api/classifications', async (req, res) => {
     console.log(chalk.blue('NO USER NAME!'))
     res.send('no user attached to this session')
   }
-
 
   const result = await db.deleteProductivityClass(req.body);
   try {
