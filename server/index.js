@@ -81,21 +81,14 @@ app.post('/api/classifications', async (req, res) => {
     console.log(chalk.blue('NO USER NAME!'))
     res.send('no user attached to this session')
   }
-  // console.log(chalk.blue('req.body.params is', JSON.stringify(req.body.params)));
-  return db.addOrChangeProductivity(req.body.params)
-    .then(message => {
-      res.send(message)
-    })
-    .catch(err => console.log(err))
 
   const result = await db.addOrChangeProductivity(req.body.params);
   try {
-    console.log('result after POST query is', result);
     const { queryResult, window_title, app_name, prod_class } = result;
-    const { learnProductivityClass, unlearnProductivityClass } = require('./learn/naiveBayes.js');
     res.send(queryResult);
+    const { learnProductivityClass, unlearnProductivityClass } = require('./learn/naiveBayes.js');
     if (result.old_prod_class && app_name === 'Google Chrome') { //recategorization
-      unlearnProductivityClass(window_title, old_prod_class);
+      unlearnProductivityClass(window_title, result.old_prod_class);
       learnProductivityClass(window_title, prod_class);
     } else if (app_name === 'Google Chrome') {
       learnProductivityClass(window_title, prod_class)
