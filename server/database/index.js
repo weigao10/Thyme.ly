@@ -1,7 +1,6 @@
 const chalk = require('chalk');
 const { Pool, Client } = require('pg');
-const { user, host, database, password } = require('../config.js');
-const port = require('../config.js').port;
+const { user, host, database, password, port } = require('../config.js');
 
 //Create connection to AWS database
 
@@ -32,7 +31,7 @@ const getActivities = () => {
     .catch((err) => console.log( chalk.red.bgYellow(err)));
 };
 
-const getProductivityClass = (appName, title, userName) => {
+const getProductivityClass = async (appName, title, userName) => {
   const queryStr = (appName === 'Google Chrome' ? //refactor to not hardcode
                    `SELECT prod_class FROM public.categories where\
                    (app_name = $1) AND (user_name = $2) AND (window_title = $3)` :
@@ -41,48 +40,60 @@ const getProductivityClass = (appName, title, userName) => {
   // console.log('user inside getProductivityClass is', userName)
   const values = (appName === 'Google Chrome' ? [appName, userName, title] : [appName, userName]);
   // console.log('values inside get productivity class are', values);
-  return pool.query(queryStr, values)
-    .then((data) => {
-      if (data.rows.length) {
-        return data.rows[0].prod_class
-      } else {
-        // console.log('productivity class not found')
-        return null;
-      }
-    })
-    .catch(err => console.error('error in looking up prod_class', err)) 
+  
+  const queryResult = await pool.query(queryStr, values);
+  try {
+    if (queryResult.rows.length) return queryResult.rows[0].prod_class;
+    else return null;
+  } catch (e) {
+    console.error('error in looking up prod_class', e)
+  }
 };
 
-const addOrChangeProductivity = (query) => {
+const addOrChangeProductivity = async (query) => {
   const { app_name, window_title, user_name, isTracked } = query;
-  return getProductivityClass(app_name, window_title, user_name) //add user here later
-    .then(result => {
-      if (result) {
-        return changeProductivityClass(query)
-      }
-      else {
-        return addProductivityClass(query);
-      }
-    })
-    .catch(err => console.log('error checking for productivity!'))
+  // const oldCategory = query.old_prod_class ? query.old_prod_class : null;
+  // console.log('old category inside db helpers is', oldCategory);
+  // return getProductivityClass(app_name, window_title, user_name) //add user here later
+  //   .then(result => {
+  //     if (result) {
+  //       return changeProductivityClass(query)
+  //     }
+  //     else {
+  //       return addProductivityClass(query);
+  //     }
+  //   })
+  //   .catch(err => console.log('error checking for productivity!'))
+  const savedProdClass = await getProductivityClass(app_name, window_title, user_name);
+  try {
+    if (savedProdClass) {
+      return await changeProductivityClass(query);
+    } else {
+      return await addProductivityClass(query);
+    }
+  } catch(e) {
+    console.error('error checking for productivity!', e)
+  }
 };
 
-const deleteProductivityClass = ({user_name, app_name, window_title, prod_class, isTracked}) => {
+const deleteProductivityClass = async ({user_name, app_name, window_title, prod_class, isTracked}) => {
   let queryStr;
-  // console.log('user name inside db delete helper is', user_name)
+  console.log('prod_class inside db delete helper is', prod_class)
   if (isTracked) {
     queryStr = `DELETE FROM public.categories WHERE user_name='${user_name}' AND app_name='${app_name}' AND window_title='${window_title}'`;
   } else {
     queryStr = `DELETE FROM public.categories WHERE user_name='${user_name}' AND app_name='${app_name}'`;
   }
   const values = [user_name, app_name, window_title, prod_class, isTracked];
-
-  // console.log('values to delete are', values);
-  return pool.query(queryStr)
-    .catch(err => console.error('error in deleting prod-class', err));
+  const queryResult = await pool.query(queryStr);
+  try {
+    return {queryResult, app_name, window_title, prod_class};
+  } catch (e) {
+    console.error('error in deleting prod-class', e)
+  }
 }
 
-const addProductivityClass = ({user_name, app_name, window_title, prod_class}) => {
+const addProductivityClass = async ({user_name, app_name, window_title, prod_class}) => {
   const queryStr = app_name === 'Google Chrome' ?
                                 `INSERT INTO public.categories(user_name, app_name, window_title, prod_class)\
                                 VALUES ($1, $2, $3, $4)` : 
@@ -91,11 +102,17 @@ const addProductivityClass = ({user_name, app_name, window_title, prod_class}) =
   const values = (app_name === 'Google Chrome' ?
                               [user_name, app_name, window_title, prod_class]:
                               [user_name, app_name, prod_class]);
-  return pool.query(queryStr, values)
-    .catch(err => console.error('error in adding prod_class', err)) 
+  const { learnProductivityClass } = require('../learn/naiveBayes.js');
+  if (app_name === 'Google Chrome') learnProductivityClass(window_title, prod_class);
+  const queryResult = await pool.query(queryStr, values);
+  try {
+    return {queryResult, app_name, window_title, prod_class};
+  } catch (e) {
+    console.error('error in adding prod_class', e)
+  }
 };
 
-const changeProductivityClass = ({user_name, app_name, window_title, prod_class}) => {
+const changeProductivityClass = async ({user_name, app_name, window_title, prod_class, old_prod_class}) => {
   const queryStr = app_name === 'Google Chrome' ?
                                `UPDATE public.categories SET prod_class = $1\
                                 WHERE app_name = $2 AND window_title = $3` :
@@ -104,8 +121,13 @@ const changeProductivityClass = ({user_name, app_name, window_title, prod_class}
   const values = (app_name === 'Google Chrome' ?
                               [prod_class, app_name, window_title]:
                               [prod_class, app_name]);
-  return pool.query(queryStr, values)
-    .catch(err => console.error('error in changing prod_class', err)) 
+  console.log('old prod class inside change prod class is', old_prod_class)
+  const queryResult = await pool.query(queryStr, values);
+  try {
+    return {queryResult, app_name, window_title, prod_class, old_prod_class};
+  } catch (e) {
+    console.error('error in changing prod_class', e)
+  }
 };
 
 const getBrowserActivities = () => {
@@ -115,20 +137,6 @@ const getBrowserActivities = () => {
     .then(data => data.rows)
     .catch(err => console.error('error getting all browser titles', err))
 }
-
-//changeProductivityClass
-
-//getActivitiesbyUser
-
-// const insertActivity = () => {
-//   let query = 
-//   `INSERT INTO public.activities
-//     VALUES ('1999-01-08 04:05:06', '1999-01-08 04:05:06', 'chrome', 'reddit', 'abc', 'xyz', 'www.random.com');`;
-
-//     pool.query(query)
-//     .then((data) => console.log( chalk.black.bgGreen(JSON.stringify(data))) )
-//     .catch((err) => console.log( chalk.red.bgGreen(err)));
-// }
 
 const insertActivity = () => {
   let query = 
