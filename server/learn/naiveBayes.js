@@ -1,8 +1,24 @@
 const bayes = require('classificator');
 let classifier = bayes();
+
+const moment = require('moment');
+const { CronJob } = require('cron');
 const { getBrowserActivities } = require('../database/index.js');
 
+const syncClassifierToDb = new CronJob({
+  cronTime: '0 * * * *', //every hour at minute zero
+  onTick: () => {
+    console.log('syncing classifier to DB at', moment().format('MMMM Do YYYY, h:mm:ss a'))
+    initClassifier()
+  },
+  start: true,
+  timeZone: 'America/New_York'
+});
+
 const initClassifier = async () => {
+  //wipe classifier and resync to db
+  classifier = null;
+  classifier = bayes();
   const activities = await getBrowserActivities();
   try {
     bulkLearn(activities);
@@ -46,11 +62,6 @@ const saveClassifier = () => {
 
 const loadClassifier = (classifierJSON) => {
   classifier = bayes.fromJson(classifierJSON)
-};
-
-//cron job to sync from activities db (main source of truth)
-const syncClassifierToDb = () => {
-  //TODO
 };
 
 exports.initClassifier = initClassifier;

@@ -29,7 +29,7 @@ app.use('/api/classifications', (req, res, next) => {
 });
 
 //api
-app.get('/api/classifications', (req, res) => {
+app.get('/api/classifications', async (req, res) => {
   //MAIN FILE NEEDS ACCESS TO 'IS TRACKED'
   const {user_name, app_name, window_title} = req.query;
   if (!user_name) { //refactor to be middleware
@@ -37,37 +37,73 @@ app.get('/api/classifications', (req, res) => {
     console.log('req.query is', req.query)
     res.send('no user attached to this session')
   }
-  return db.getProductivityClass(app_name, window_title, user_name)
-    .then((prod_class) => {
-      if (prod_class === null && app_name === 'Google Chrome') { //add other tracked app
-        const predictedProdClass = ml.predictProductivityClass(window_title, user_name)
-        console.log('predicted prod is', predictedProdClass);
-        res.send({
-          source: predictedProdClass ? 'ml' : 'user',
-          class: ml.predictProductivityClass(window_title, user_name)
-        });
-      } else {
-        res.send({
-          source: 'user',
-          class: prod_class
-        });
-      }
-    })
-    .catch((err) => res.send(err));
+  // return db.getProductivityClass(app_name, window_title, user_name)
+  //   .then((prod_class) => {
+  //     if (prod_class === null && app_name === 'Google Chrome') { //add other tracked app
+  //       const predictedProdClass = ml.predictProductivityClass(window_title, user_name)
+  //       console.log('predicted prod is', predictedProdClass);
+  //       res.send({
+  //         source: predictedProdClass ? 'ml' : 'user',
+  //         class: ml.predictProductivityClass(window_title, user_name)
+  //       });
+  //     } else {
+  //       res.send({
+  //         source: 'user',
+  //         class: prod_class
+  //       });
+  //     }
+  //   })
+  //   .catch((err) => res.send(err));
+  
+  try {
+    const prod_class = await db.getProductivityClass(app_name, window_title, user_name);
+    if (prod_class === null && app_name === 'Google Chrome') { //add other tracked app
+      const predictedProdClass = ml.predictProductivityClass(window_title, user_name)
+      console.log('predicted prod is', predictedProdClass);
+      res.send({
+        source: predictedProdClass ? 'ml' : 'user',
+        class: ml.predictProductivityClass(window_title, user_name)
+      });
+    } else {
+      res.send({
+        source: 'user',
+        class: prod_class
+      });
+    }
+  } catch(e) {
+    res.send(e)
+  }
 });
 
-app.post('/api/classifications', (req, res) => {
+app.post('/api/classifications', async (req, res) => {
   if (!req.body.params.user_name) {
     console.log('req.body.params is', req.body.params)
     console.log(chalk.blue('NO USER NAME!'))
     res.send('no user attached to this session')
   }
-  console.log(chalk.blue('req.body.params is', JSON.stringify(req.body.params)));
+  // console.log(chalk.blue('req.body.params is', JSON.stringify(req.body.params)));
   return db.addOrChangeProductivity(req.body.params)
     .then(message => {
       res.send(message)
     })
     .catch(err => console.log(err))
+
+  const result = await db.addOrChangeProductivity(req.body.params);
+  try {
+    console.log('result after POST query is', result);
+    const { queryResult, window_title, app_name, prod_class } = result;
+    const { learnProductivityClass, unlearnProductivityClass } = require('./learn/naiveBayes.js');
+    res.send(queryResult);
+    if (result.old_prod_class && app_name === 'Google Chrome') { //recategorization
+      unlearnProductivityClass(window_title, old_prod_class);
+      learnProductivityClass(window_title, prod_class);
+    } else if (app_name === 'Google Chrome') {
+      learnProductivityClass(window_title, prod_class)
+    }
+  } catch(e) {
+    console.error(e)
+    res.send('');
+  }
 });
 
 app.delete('/api/classifications', async (req, res) => {
@@ -76,12 +112,19 @@ app.delete('/api/classifications', async (req, res) => {
     console.log(chalk.blue('NO USER NAME!'))
     res.send('no user attached to this session')
   }
-  const message = await db.deleteProductivityClass(req.body);
+
+
+  const result = await db.deleteProductivityClass(req.body);
   try {
-    res.send(message)
-    //if message shows that rows were deleted, unlearn ML
-  } catch (e) {
+    const { queryResult, window_title, app_name, prod_class } = result;
+    res.send(queryResult);
+    if (queryResult.rowCount > 0 && app_name === 'Google Chrome') { 
+      const { unlearnProductivityClass } = require('./learn/naiveBayes.js');
+      unlearnProductivityClass(window_title, prod_class);
+    }
+  } catch(e) {
     console.error(e)
+    res.send('');
   }
 });
 
