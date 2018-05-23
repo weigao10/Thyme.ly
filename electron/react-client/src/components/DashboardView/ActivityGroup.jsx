@@ -103,36 +103,36 @@ const getTotalDuration = activities => {
 
 let styleCategoryP = {
   font: "Open Sans",
-  background: "#43A047",
+  background: "#258039",
   padding: "10px 5px 10px 5px",
   textAlign: "center",
   color: "white",
   fontWeight: "bolder",
-  fontSize: "115%",
+  // fontSize: "115%",
   onMouseOver: "#FFF",
   borderRadius: "15px 15px 0px 0px"
 };
 
 let styleCategoryN = {
   font: "Open Sans",
-  background: "#00BCD4",
+  background: "#F5BE41",
   padding: "10px 5px 10px 5px",
   textAlign: "center",
   color: "white",
   fontWeight: "bolder",
-  fontSize: "115%",
+  // fontSize: "115%",
   onMouseOver: "#FFF",
   borderRadius: "15px 15px 0px 0px"
 };
 
 let styleCategoryD = {
   font: "Open Sans",
-  background: "#FF5722",
+  background: "#CF3721",
   padding: "10px 5px 10px 5px",
   textAlign: "center",
   color: "white",
   fontWeight: "bolder",
-  fontSize: "115%",
+  // fontSize: "115%",
   onMouseOver: "#FFF",
   borderRadius: "15px 15px 0px 0px"
 };
