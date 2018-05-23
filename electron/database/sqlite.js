@@ -51,8 +51,9 @@ const insertSpurts = ({id, productivity, app, title}, {startTime, endTime}) => {
 }
 
 const getActivities = () => {
-  console.log('in get activities')
-  let query = `SELECT id, date, productivity, source, app, title, duration FROM activities`;
+  // console.log('in get activities', date)
+  // let query = `SELECT id, date, productivity, source, app, title, duration FROM activities WHERE date=date(${date})`;
+  let query = `SELECT id, date, productivity, source, app, title, duration FROM activities`
   return new Promise ((resolve, reject) => {
     db.all(query, [], (err, result) => {
       if (err) reject(err)
@@ -64,7 +65,8 @@ const getActivities = () => {
 const getSpurts = (cb) => {
   console.log('in get spurts')
 
-  let query = `SELECT id, date, productivity, app, title, startTime, endTime FROM spurts`;
+  // let query = `SELECT id, date, productivity, app, title, startTime, endTime FROM spurts WHERE date=date(${date})`;
+  let query = `SELECT id, date, productivity, app, title, startTime, endTime FROM spurts`
   return new Promise ((resolve, reject) => {
     db.all(query, [], (err, result) => {
       if (err) reject(err)
@@ -74,8 +76,9 @@ const getSpurts = (cb) => {
 }
 
 const clearDb = () => {
-  console.log('in clear db')
+  console.log('in clear db', date);
 
+  // let querys = [`DELETE FROM activities WHERE date=${date}`, `DELETE FROM preferences`, `DELETE FROM spurts WHERE date=${date}`]
   let querys = [`DELETE FROM activities`, `DELETE FROM preferences`, `DELETE FROM spurts`]
   return Promise.map(querys, (query) => {
     return db.run(query)

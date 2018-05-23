@@ -1,5 +1,4 @@
 import React from "react";
-import clone from "clone";
 import moment from "moment";
 import momentFormat from "moment-duration-format";
 import { DropTarget } from "react-dnd";
@@ -166,4 +165,4 @@ const styleMap = {
   distracting: styleCategoryD
 };
 
- export default DropTarget(ItemTypes.CARD, comparisonTarget, collect)(ActivityGroup);
+export default DropTarget(ItemTypes.CARD, comparisonTarget, collect)(ActivityGroup);
