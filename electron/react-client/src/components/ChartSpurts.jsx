@@ -1,6 +1,7 @@
 import React from 'react';
 import {BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend} from 'recharts';
 import moment from 'moment';
+import clone from 'clone';
 
 const data = [
   {name: '8am', uv: 280, pv: 450, amt: 360},
@@ -14,6 +15,38 @@ const data3 = [
 const data4 = [
   {name: '11am', uv: 280, pv: 450, amt: 360},
 ];
+
+const createBarChartSpurts = (activities) => {
+
+  let barChartSpurts = [];
+
+  //Loop through all nested objects and nested arrays to accumulate all spurts into one array
+  for (var key in activities) { //keys are: productive, neutral, distracting, nextId
+    if (key !== 'nextId') {
+      for (var i = 0; i < activities[key].length; i++) {
+        let currentApp = activities[key][i];
+        let currentAppName = currentApp.app;
+
+        for (var j = 0; j < currentApp.spurts.length; j++) {
+          console.warn('current spurt', currentSpurt)
+          let currentSpurt = currentApp.spurts[j];
+
+          let mappedSpurt = {
+            name: currentAppName,
+            startTime: currentSpurt.startTime,
+            endTime: currentSpurt.endTime
+          }
+
+          barChartSpurts.push(mappedSpurt);
+
+        }
+      }
+    }
+  }
+
+  return barChartSpurts;
+}
+
 const formatXAxis = function(tickItem) {
   if (tickItem === 3600)
     return ''
@@ -21,9 +54,11 @@ const formatXAxis = function(tickItem) {
   return ':' + tickItem / 60;
 }
 
-const ChartSpurts = (props) => {
+const ChartSpurts = ({activities}) => {
 
-    console.log('productive is:', props.activities.productive);
+    let currentActivities = clone(activities);
+    // console.error('barChartSpurts is:\n"', createBarChartSpurts(currentActivities));
+    console.error(JSON.stringify(activities));
 
     let sampleData = [
     {id: 2, app: "Google Chrome", title: "Label in center of PieChart · Issue #191 · recharts/recharts", spurts: Array(32), duration: 37},
@@ -32,11 +67,13 @@ const ChartSpurts = (props) => {
     {id: 9, app: "Slack", title: "Slack - Hack Reactor NYC - Students", spurts: Array(14), duration: 14},
     ];
 
-    let sampleSpurts = [
+    let sampleSpurts1 = [
     {startTime: "May 21st 2018, 7:38:43 pm", endTime: "May 21st 2018, 7:38:44 pm"},
     {startTime: "May 21st 2018, 7:38:43 pm", endTime: "May 21st 2018, 7:38:44 pm"},
     {startTime: "May 21st 2018, 7:38:43 pm", endTime: "May 21st 2018, 7:38:44 pm"}
     ];
+
+
 
     //make the spurts data 1 object with keys, and each key represents a bar/spurt
     const mappedSpurts = [

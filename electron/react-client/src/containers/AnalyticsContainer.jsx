@@ -17,6 +17,7 @@ class AnalyticsContainer extends React.Component {
 
   render() {
 
+
     const data = [
       {name: 'productive', uv: 31.47, pv: 2400, fill: '#8884d8'},
       {name: 'neutral', uv: 26.69, pv: 4567, fill: '#83a6ed'},
@@ -29,7 +30,6 @@ class AnalyticsContainer extends React.Component {
       lineHeight: '24px'
     };
 
-    // console.error('productiveData is:', productiveData)
     return (
       <Paper style={stylePaper}>
 
