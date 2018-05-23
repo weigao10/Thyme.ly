@@ -21,9 +21,34 @@ const formatXAxis = function(tickItem) {
   return ':' + tickItem / 60;
 }
 
+const timestampToUnix = (timeStamp) => {
+  return moment(timeStamp, 'MMMM Do YYYY, h:mm:ss a').valueOf();
+}
+
+const getSpurts = (activities, category) => {
+  const extractedSpurts = activities[category].map((activity) => {
+    return activity.spurts.map(spurt => {
+      return {
+        app: activity.app,
+        title: activity.title,
+        startTime: spurt.startTime,
+        endTime: spurt.endTime,
+        productivity_class: activity.productivity.class,
+        productivity_source: activity.productivity.source, // in case necessary
+      }
+    })
+  });
+  return extractedSpurts.length ? extractedSpurts.reduce((a, b) => a.concat(b)) : [];
+}
+
+const getAllSpurts = (activities) => {
+  const flattenedSpurts = [...getSpurts(activities, 'productive'), ...getSpurts(activities, 'neutral'), ...getSpurts(activities, 'distracting')]
+  return flattenedSpurts.sort((a, b) => timestampToUnix(a.startTime) - timestampToUnix(b.startTime))
+}
+
 const ChartSpurts = (props) => {
 
-    // console.error('productive is:', props.activities.productive);
+  console.log(JSON.stringify(getAllSpurts(props.activities)))
 
     let sampleData = [
     {id: 2, app: "Google Chrome", title: "Label in center of PieChart · Issue #191 · recharts/recharts", spurts: Array(32), duration: 37},
