@@ -29,6 +29,7 @@ class MonitorContainer extends React.Component {
 
   componentDidMount() {
     ipcRenderer.on('sqlActivities', (event, message) => {
+      console.log('are we getting here?', message) //WE ARE NOT GETTING HERE
       this.props.setAllActivities(message)
     });
 
@@ -65,9 +66,8 @@ class MonitorContainer extends React.Component {
 
     ipcRenderer.send('token', 'check');
 
-    ipcRenderer.once('token', (event, message) => {
-      console.log('token event is', event)
-      console.log('token message is', message)
+    ipcRenderer.on('token', (event, message) => {
+      console.log('in on token monitor container', message[0].value)
       this.props.setToken(message[0].value);
       listEvents(message[0].value)
     });
@@ -80,6 +80,8 @@ class MonitorContainer extends React.Component {
 
   logout() {
     ipcRenderer.send('cookies', 'logout');
+    //display login page
+    //actually destroys the cookie but also need to remove it from the store
   }
 
   handleChange(value) {

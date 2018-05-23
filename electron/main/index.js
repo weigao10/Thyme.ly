@@ -1,4 +1,4 @@
-import { logout } from '../react-client/src/actions/userActions.js';
+// import { logout } from '../react-client/src/actions/userActions.js';
 
 const url = require('url');
 const path = require('path');
@@ -31,8 +31,8 @@ const createWindow = () => {
   })
 
   splash = new BrowserWindow({
-    width: 810, 
-    height: 610, 
+    width: 400, 
+    height: 400, 
     transparent: true,
     frame: false, 
     alwaysOnTop: true
@@ -99,9 +99,13 @@ const createWindow = () => {
 
   app.once('before-quit', function() {
     saveStoreToSql(mainWindow)
-    force_quit = true;
-    popUpWindow.destroy();
-    app.quit()
+    
+    setTimeout(() => {
+      
+      force_quit = true;
+      popUpWindow.destroy();
+      app.quit()
+    }, 600) //maybe refactor into async await
   });
 
   const mainMenu = Menu.buildFromTemplate(mainMenuTemplate);
@@ -120,15 +124,12 @@ app.on('ready', () => {
 
   let idleStart, idleEnd, duration;
   electron.powerMonitor.on('suspend', () => {
-    console.log('going to sleep at', moment().format('MMMM Do YYYY, h:mm:ss a'))
     idleStart = moment()
     popUpWindow.webContents.send('gone-to-idle', 'sleep')
     mainWindow.webContents.send('system', 'sleep')
   });
 
   electron.powerMonitor.on('resume', () => {
-    console.log('waking up at', moment().format('MMMM Do YYYY, h:mm:ss a'))
-
     if(idleStart){
       idleEnd = moment()
       duration = idleEnd.diff(idleStart, "s")
@@ -148,13 +149,10 @@ ipcMain.on('got-idle-activity', (event, message) => {
   popUpWindow.hide()
 })
 
-
+//change save store to sql function to promises
 function logoutAndQuit (mainSession) {
-  saveStoreToSql(mainWindow)
-  force_quit = true;
-  popUpWindow.destroy();
   mainSession.clearStorageData();
-  app.quit()
+  app.quit();
 }
 
 const mainMenuTemplate = [
