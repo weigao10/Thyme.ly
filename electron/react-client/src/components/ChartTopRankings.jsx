@@ -1,9 +1,8 @@
 import React from 'react';
-import {PieChart, Pie} from 'recharts';
+import { PieChart, Pie } from 'recharts';
 
-var prettifier = (text) => {
+const prettifier = (text) => {
   //truncates really long App names and adds an ellipsis if too long
-
   if (text.length >= 25) {
     return text.slice(0, 22) + '...';
   } else {
@@ -11,45 +10,38 @@ var prettifier = (text) => {
   }
 }
 
+const mapAndSortActivitiesByDuration = (activities, category) => {
+  const mappedActivities = activities[category].map((activity) => {
+    return {
+      app: activity.app,
+      duration: activity.duration,
+      source: activity.productivity.source, //in case we want to distinguish based on user or ML-categorized activities
+      title: activity.title
+    }
+  });
+  return mappedActivities.sort((a, b) => {
+    return b.duration - a.duration
+  });
+}
+
 const ChartTopRankings = (props) => {
-
-  let productive = props.activities.productive.sort();
-  let productiveData = [];
-
-  for (let i = 0; i < productive.length; i++) {
-    productiveData.push({
-      name: productive[i].title,
-      duration: productive[i].duration
-    });
-
-    if (i === 4) break; //only do the first five entries for the pie chart
-  }
-
-  let distracting = props.activities.distracting.sort();
-  let distractingData = [];
-
-  for (let i = 0; i < distracting.length; i++) {
-    distractingData.push({
-      name: distracting[i].title,
-      duration: distracting[i].duration
-    });
-
-    if (i === 4) break; //only do the first five entries for the pie chart
-  }
+  const { activities } = props;
+  const topFiveProductive = mapAndSortActivitiesByDuration(activities, 'productive').slice(0, 5);
+  const topFiveDistracting = mapAndSortActivitiesByDuration(activities, 'distracting').slice(0, 5);
 
   return (
     <div>
       <h3>Top 5 Productive Apps</h3>
             <PieChart width={550} height={300}>
               <Pie 
-                data={productiveData} 
+                data={topFiveProductive} 
                 dataKey="duration" 
-                nameKey="name" 
+                nameKey="title" 
                 cx="50%" 
                 cy="50%" 
                 outerRadius={50} 
                 fill="#8884d8"
-                label={(activity) => prettifier(activity.name)}
+                label={(activity) => prettifier(activity.title)}
               >
                 
               </Pie>
@@ -59,14 +51,14 @@ const ChartTopRankings = (props) => {
             <h3>Top 5 Distracting Apps</h3>
             <PieChart width={550} height={300}>
               <Pie 
-                data={distractingData} 
+                data={topFiveDistracting} 
                 dataKey="duration" 
-                nameKey="name" 
+                nameKey="title" 
                 cx="50%" 
                 cy="50%" 
                 outerRadius={50} 
                 fill="#8884d8"
-                label={(activity) => prettifier(activity.name)}
+                label={(activity) => prettifier(activity.title)}
               >
                 
               </Pie>
