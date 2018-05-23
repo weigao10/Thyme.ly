@@ -149,11 +149,10 @@ ipcMain.on('got-idle-activity', (event, message) => {
 })
 
 
-function logoutAndQuit (mainSession) {
+function logoutAndQuit () {
   saveStoreToSql(mainWindow)
   force_quit = true;
   popUpWindow.destroy();
-  mainSession.clearStorageData();
   app.quit()
 }
 

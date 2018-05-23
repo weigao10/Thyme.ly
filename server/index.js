@@ -11,6 +11,8 @@ const db = require('./database/index.js');
 const scrapeDb = require('./database/scraper.js');
 const ml = require('./learn/naiveBayes.js');
 
+ml.initClassifier();
+
 app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, './splash-client/dist')));
 //middleware
@@ -43,7 +45,7 @@ app.get('/api/classifications', (req, res) => {
         res.send({
           source: predictedProdClass ? 'ml' : 'user',
           class: ml.predictProductivityClass(window_title, user_name)
-        })
+        });
       } else {
         res.send({
           source: 'user',

@@ -1,7 +1,6 @@
 const chalk = require('chalk');
 const { Pool, Client } = require('pg');
-const { user, host, database, password } = require('../config.js');
-const port = require('../config.js').port;
+const { user, host, database, password, port } = require('../config.js');
 
 //Create connection to AWS database
 
@@ -72,6 +71,8 @@ const deleteProductivityClass = ({user_name, app_name, window_title, prod_class,
   // console.log('user name inside db delete helper is', user_name)
   if (isTracked) {
     queryStr = `DELETE FROM public.categories WHERE user_name='${user_name}' AND app_name='${app_name}' AND window_title='${window_title}'`;
+    // const { unlearnProductivityClass } = require('../learn/naiveBayes.js');
+    // unlearnProductivityClass(window_title, prod_class);
   } else {
     queryStr = `DELETE FROM public.categories WHERE user_name='${user_name}' AND app_name='${app_name}'`;
   }
@@ -91,6 +92,8 @@ const addProductivityClass = ({user_name, app_name, window_title, prod_class}) =
   const values = (app_name === 'Google Chrome' ?
                               [user_name, app_name, window_title, prod_class]:
                               [user_name, app_name, prod_class]);
+  const { learnProductivityClass } = require('../learn/naiveBayes.js');
+  if (app_name === 'Google Chrome') learnProductivityClass(window_title, prod_class); //revise so this happens AFTER sending back the predicted class
   return pool.query(queryStr, values)
     .catch(err => console.error('error in adding prod_class', err)) 
 };
