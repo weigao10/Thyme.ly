@@ -31,7 +31,7 @@ const createWindow = () => {
   splash = new BrowserWindow({
     width: 200, 
     height: 200, 
-    transparent: false,
+    transparent: true,
     frame: false, 
     alwaysOnTop: true
   });
