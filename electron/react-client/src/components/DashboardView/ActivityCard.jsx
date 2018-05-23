@@ -2,7 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import moment from 'moment';
 import momentFormat from 'moment-duration-format';
-import clone from 'clone';
 import { DragSource } from 'react-dnd';
 
 import { ItemTypes } from '../../constants.js';
