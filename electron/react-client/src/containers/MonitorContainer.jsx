@@ -66,6 +66,8 @@ class MonitorContainer extends React.Component {
     ipcRenderer.send('token', 'check');
 
     ipcRenderer.once('token', (event, message) => {
+      console.log('token event is', event)
+      console.log('token message is', message)
       this.props.setToken(message[0].value);
       listEvents(message[0].value)
     });
