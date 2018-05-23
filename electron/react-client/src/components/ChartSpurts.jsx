@@ -23,7 +23,7 @@ const formatXAxis = function(tickItem) {
 
 const ChartSpurts = (props) => {
 
-    console.log('productive is:', props.activities.productive);
+    // console.log('productive is:', props.activities.productive);
 
     let sampleData = [
     {id: 2, app: "Google Chrome", title: "Label in center of PieChart · Issue #191 · recharts/recharts", spurts: Array(32), duration: 37},

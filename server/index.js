@@ -70,15 +70,19 @@ app.post('/api/classifications', (req, res) => {
     .catch(err => console.log(err))
 });
 
-app.delete('/api/classifications', (req, res) => {
+app.delete('/api/classifications', async (req, res) => {
   console.log(chalk.blue('getting a delete request for', JSON.stringify(req.body)));
   if (!req.body.user_name) {
     console.log(chalk.blue('NO USER NAME!'))
     res.send('no user attached to this session')
   }
-  return db.deleteProductivityClass(req.body)
-    .then(message => res.send(message))
-    .catch(err => console.log(err));
+  const message = await db.deleteProductivityClass(req.body);
+  try {
+    res.send(message)
+    //if message shows that rows were deleted, unlearn ML
+  } catch (e) {
+    console.error(e)
+  }
 });
 
 app.get('/learn/scrape', (req, res) => {

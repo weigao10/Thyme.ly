@@ -66,21 +66,28 @@ const addOrChangeProductivity = (query) => {
     .catch(err => console.log('error checking for productivity!'))
 };
 
-const deleteProductivityClass = ({user_name, app_name, window_title, prod_class, isTracked}) => {
+const deleteProductivityClass = async ({user_name, app_name, window_title, prod_class, isTracked}) => {
   let queryStr;
   // console.log('user name inside db delete helper is', user_name)
   if (isTracked) {
     queryStr = `DELETE FROM public.categories WHERE user_name='${user_name}' AND app_name='${app_name}' AND window_title='${window_title}'`;
-    // const { unlearnProductivityClass } = require('../learn/naiveBayes.js');
-    // unlearnProductivityClass(window_title, prod_class);
   } else {
     queryStr = `DELETE FROM public.categories WHERE user_name='${user_name}' AND app_name='${app_name}'`;
   }
   const values = [user_name, app_name, window_title, prod_class, isTracked];
 
   // console.log('values to delete are', values);
-  return pool.query(queryStr)
-    .catch(err => console.error('error in deleting prod-class', err));
+  const deleteResult = await pool.query(queryStr);
+  // console.log('delete result from await is', deleteResult);
+  try {
+    if (deleteResult.rowCount > 0) { // only unlearn if it was previously in the db/classifier to begin with / ADD THIS LOGIC TO AFTER CLIENT REQUEST
+      const { unlearnProductivityClass } = require('../learn/naiveBayes.js');
+      unlearnProductivityClass(window_title, prod_class);
+    }
+    return deleteResult;
+  } catch (e) {
+    console.error('error in deleting prod-class', e)
+  }
 }
 
 const addProductivityClass = ({user_name, app_name, window_title, prod_class}) => {
