@@ -1,15 +1,18 @@
 import React from 'react';
 import {Tab, Tabs} from 'material-ui/Tabs';
+import AlarmIcon from '@material-ui/icons/Alarm';
 
 const ViewSelector = (props) => {
 
   return (
-    //Render Tabs
-    <Tabs contentContainerStyle={{margin: '2px', background: '#22AA22'}} value={props.tabIndex} onChange={props.handleTabChange}
-      // onChange={this.props.handleTabChange}
-      // value={this.props.tabIndex}
+    <Tabs 
+      zDepth={3}
+      value={props.tabIndex} 
+      onChange={props.handleTabChange}
     >
-      <Tab buttonStyle={buttonStyle} label="Activity" value={0} />
+      <Tab buttonStyle={buttonStyle} label="Activity" value={0}>
+        <AlarmIcon/>
+      </Tab>
       <Tab buttonStyle={buttonStyle} label="Analytics" value={1} />
       <Tab buttonStyle={buttonStyle} label="Pomodoro Timer" value={2} />
       <Tab buttonStyle={buttonStyle} label="Settings" value={3} />
@@ -18,9 +21,10 @@ const ViewSelector = (props) => {
 }
 
 const buttonStyle = {
-  background: '#03A9F4',
+  background: '#2196F3',
   color: 'white',
-  font: 'garamond',
+  font: 'Tahoma',
+  fontSize: '115%',
   fontWeight: 'bold',
 }
 
