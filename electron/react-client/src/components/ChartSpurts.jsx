@@ -48,7 +48,7 @@ const getAllSpurts = (activities) => {
 
 const ChartSpurts = (props) => {
 
-  console.log(JSON.stringify(getAllSpurts(props.activities)))
+  // console.log(JSON.stringify(getAllSpurts(props.activities)))
 
     let sampleData = [
     {id: 2, app: "Google Chrome", title: "Label in center of PieChart · Issue #191 · recharts/recharts", spurts: Array(32), duration: 37},
