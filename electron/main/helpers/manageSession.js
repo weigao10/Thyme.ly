@@ -29,7 +29,8 @@ const manageCookies = (mainSession, mainWindow) => {
         }
       });
     } else if (event === 'logout') {
-      index.logoutAndQuit();
+      // mainSession.clearStorageData();
+      index.logoutAndQuit(mainSession);
       
     }
   })
