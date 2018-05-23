@@ -32,6 +32,13 @@ const initialState = {
     longBreak: 0
   },
   elapsedTimeFromCompletedSpurts: 0, //i.e. not from current spurt, which only React knows about
+  prefs : {
+    workLength: 1000 * 60 * 25,
+    shortBreakLength: 1000 * 60 * 5,
+    longBreakLength: 1000 * 60 * 25,
+    spurtsBeforeLongBreak: 4,
+    pomSessionsPerDay: 4
+  },
   goalLength: TOTAL_PLANNED_WORKDAY
 };
 
@@ -44,7 +51,7 @@ const pomodoro = (state = initialState, action) => {
         pomStartTime: timestamp(),
         currentSpurt: {
           type: 'work',
-          length: WORK_LENGTH
+          length: state.prefs.workLength
         }
       }
     }
@@ -76,18 +83,23 @@ const pomodoro = (state = initialState, action) => {
       const lastSpurtType = state.currentSpurt.type;
       const updatedLastSpurtCount = state.completedSpurtCount[lastSpurtType] + 1;
       const { work, shortBreak, longBreak } = state.completedSpurtCount;
+      const INTERVAL_MAP = {
+        'work': state.prefs.workLength,
+        'shortBreak': state.prefs.shortBreakLength,
+        'longBreak': state.prefs.longBreakLength
+      };
       
       let nextSpurtType, elapsedTime;
-      if (lastSpurtType === 'work' && updatedLastSpurtCount % 4 === 0) { //expand logic to depend on user prefs
+      if (lastSpurtType === 'work' && updatedLastSpurtCount % state.prefs.spurtsBeforeLongBreak === 0) { //expand logic to depend on user prefs
         nextSpurtType = 'longBreak';
-        elapsedTime = WORK_LENGTH;
+        elapsedTime = state.prefs.workLength;
       } else if (lastSpurtType === 'work') {
         nextSpurtType = 'shortBreak';
-        elapsedTime = WORK_LENGTH;
+        elapsedTime = state.prefs.workLength;
       } else {
         nextSpurtType = 'work'
-        if (lastSpurtType === 'shortBreak') elapsedTime = SHORT_BREAK_LENGTH;
-        else elapsedTime = LONG_BREAK_LENGTH;
+        if (lastSpurtType === 'shortBreak') elapsedTime = state.prefs.shortBreakLength;
+        else elapsedTime = state.prefs.longBreakLength;
       }
       let noti = new Notification('Pomodoro Alert', {body: lastSpurtType + ' over! Time for ' + nextSpurtType});
       const updatedElapsedTime = lastElapsedTime + elapsedTime;
