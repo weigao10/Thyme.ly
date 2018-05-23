@@ -49,10 +49,12 @@ const timestamp = () => {
 };
 
 const assembleActivity = (activeWinObj) => {
-  const title = stripEmoji(activeWinObj.title); // filter out the sound playing emoji
+  const app = activeWinObj.owner.name
+  let title = stripEmoji(activeWinObj.title); // filter out the sound playing emoji
+  title = (app === "Google Chrome") ? sanitizeTitle(title) : title
   return {
     id: activeWinObj.id,
-    app: activeWinObj.owner.name,
+    app,
     title, 
     startTime: timestamp()
   };
@@ -64,6 +66,16 @@ const stripEmoji = (title) => {
     const noEmoji = title.replace('🔊', '');
     return noEmoji.substring(0, noEmoji.length - 1);
   } else return title;
+}
+
+const sanitizeTitle = (title) => {
+  if(title === 'New Tab' || title === 'Home') return '';
+  
+  let name = title.split('-').reverse()[0].trim()
+  if(name === 'Google Search') return '';
+  if(name === 'Gmail') return 'Gmail';
+
+  return title;
 }
 
 const needToInitializeChunk = (lastActivity) => {
