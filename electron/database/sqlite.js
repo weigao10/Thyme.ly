@@ -74,6 +74,8 @@ const getSpurts = (cb) => {
 }
 
 const clearDb = () => {
+  console.log('in clear db')
+
   let querys = [`DELETE FROM activities`, `DELETE FROM preferences`, `DELETE FROM spurts`]
   return Promise.map(querys, (query) => {
     return db.run(query)
