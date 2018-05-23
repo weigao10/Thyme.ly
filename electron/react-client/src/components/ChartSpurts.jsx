@@ -57,8 +57,9 @@ const formatXAxis = function(tickItem) {
 const ChartSpurts = ({activities}) => {
 
     let currentActivities = clone(activities);
+
     // console.error('barChartSpurts is:\n"', createBarChartSpurts(currentActivities));
-    console.error(JSON.stringify(activities));
+    // console.error(JSON.stringify(activities));
 
     let sampleData = [
     {id: 2, app: "Google Chrome", title: "Label in center of PieChart · Issue #191 · recharts/recharts", spurts: Array(32), duration: 37},
