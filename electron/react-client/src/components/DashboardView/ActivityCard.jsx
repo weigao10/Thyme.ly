@@ -10,7 +10,11 @@ import { ItemTypes } from '../../constants.js';
 import Paper from 'material-ui/Paper';
 import Divider from 'material-ui/Divider';
 import RaisedButton from 'material-ui/RaisedButton';
-// import DeleteIcon from ''
+import TrendingIcon from 'material-ui/svg-icons/action/trending-up';
+import FontIcon from 'material-ui/FontIcon';
+import ActionAndroid from 'material-ui/svg-icons/action/android';
+import DeleteIcon from 'material-ui/svg-icons/action/delete';
+import CheckMarkIcon from 'material-ui/svg-icons/action/done';
 
 const cardSource = {
   beginDrag(props) {
@@ -32,8 +36,8 @@ const collect = (connect, monitor) => {
 const prettifier = (text) => {
   let results = text;
 
-  if (results.length >= 30) {
-    results = results.slice(0, 27) + '...';
+  if (results.length >= 35) {
+    results = results.slice(0, 32) + '...';
   }
   
   return results;
@@ -45,9 +49,9 @@ const ActivityCard = (props) => {
   let formattedDuration = moment.duration(activity.duration, "seconds").format("h[h] m[m] s[s]");
 
   let coreStyle = {
-    font: 'Arial', 
-    padding: '10px 5px 10px 5px',
-    margin: '0px 5px 0px 5px',
+    font: 'Roboto', 
+    padding: '10px 15px 15px 5px',
+    margin: '0px 8x 0px 8px',
     textAlign: 'left',
     background: 'white',
     color: 'black',
@@ -81,25 +85,46 @@ const ActivityCard = (props) => {
         <Paper
           key={activity.title + index}
           style={coreStyle}
-          zDepth={2}
+          zDepth={1}
         >
-          <div>
+          <div style={{fontSize: '105%'}}>
             <b>{activity.app}</b>
             <i style={{float: 'right'}}>{formattedDuration}</i> 
           </div>
 
-          <div style={{margin: '5px 0px 5px 0px'}}>
-            <Divider style={{float: 'right', width: '100%', background: '#757575'}}/>
+          <div style={{margin: '5px 0px 10px 0px'}}>
+            <Divider style={{float: 'right', width: '100%', background: '#A5A5A5'}}/>
           </div>
 
-          {activity.productivity.source === 'ml' ? <div>SUGGESTED BY THYME.LY<br/></div> : null}
-          {isTracked ? 'Title: ' + prettifier(activity.title) : 'Application'} <br/>
-         
-          <br/>
-          <button onClick={() => {deleteActivity(activity, category, isTracked, user)}}>🗑️</button>
-            {activity.productivity.source === 'ml' ? (
+          <div style={{fontSize: '115%'}}>
+            {isTracked ? prettifier(activity.title) : 'Application'} <br/>
+          </div>
+
+          <div style={{float: 'right', margin: '5px 0px 5px 0px'}}>
+            <DeleteIcon 
+              style={{color: '#777', top: '-15', position: 'relative'}}
+              onClick={() => {deleteActivity(activity, category, isTracked, user)}} 
+            />
+          </div>
+
+          <div style={{marginTop: '5px'}}>
+            {activity.productivity.source === 'ml' 
+            ? <div>
+                <i>Suggested By Thyme.ly</i>&nbsp;
+                {/* <button onClick={() => {affirmCategorization(activity, category, isTracked, user)}}>✔️
+                </button> */}
+                <CheckMarkIcon style={{position: 'relative', top: '5'}} onClick={() => {affirmCategorization(activity, category, isTracked, user)}}/>
+              </div> 
+            : <div>&nbsp;<br/></div>}
+            {/* {activity.productivity.source === 'ml' ? (
           <button onClick={() => {affirmCategorization(activity, category, isTracked, user)}}>✔️
-          </button>) : null}
+          </button>) : null} */}
+          </div>
+          
+          
+
+          {/* <button onClick={() => {deleteActivity(activity, category, isTracked, user)}}>🗑️</button> */}
+            
         </Paper>
       </div>
     )
