@@ -641,3 +641,139 @@ header {
         margin-top: 2rem;
     }
 }
+
+
+
+/* ---------- TEAM SECTION ---------- */
+section.team {
+    position: relative;
+    width: 100%;
+    min-height: auto;
+    overflow-y: hidden;
+    color: white;
+    padding: 60px 0;
+  }
+  section.team .team-content {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  section.team .team-content h2 {
+    margin-top: 0;
+    margin-bottom: 25px;
+    color: white;
+    max-width: 450px;
+    font-size: 40px;
+  }
+  @media (min-width: 768px) {
+    section.team .team-content h2 {
+      font-size: 50px;
+    }
+  }
+  .team-member {
+    text-align: center;
+    margin-bottom: 30px;
+  }
+  .team-member img {
+    margin: 0 auto;
+    border: 5px solid white;
+
+  }
+  .team-member .gif-img {
+    position: absolute;
+    background-size: 20%;
+    z-index: 1;
+  }
+  .team-member .gif-text {
+    position: absolute;
+    top: 97px;
+    left: 7px;
+    width: 225px;
+    height: 225px;
+    z-index: 2;
+    font-size: 14px;
+  }
+  .team-member h4 {
+    margin-top: 25px;
+    margin-bottom: 0;
+    text-transform: none;
+  }
+  .team-member p {
+    margin-top: 0;
+  }
+  p.team-role {
+    color: #fdcc52;
+  }
+  ul.social-buttons {
+    margin-bottom: 0;
+  }
+  ul.social-buttons li a {
+    display: block;
+    background-color: #222222;
+    height: 40px;
+    width: 40px;
+    border-radius: 100%;
+    font-size: 20px;
+    line-height: 40px;
+    color: white;
+    outline: none;
+    -webkit-transition: all 0.3s;
+    -moz-transition: all 0.3s;
+    transition: all 0.3s;
+  }
+  ul.social-buttons li a:hover,
+  ul.social-buttons li a:focus,
+  ul.social-buttons li a:active {
+    background-color: #fdcc52;
+  }
+  .btn:focus,
+  .btn:active,
+  .btn.active,
+  .btn:active:focus {
+    outline: none;
+  }
+
+
+/* entire container, keeps perspective */
+.flip-container {
+    perspective: 1000px;
+  }
+  
+  /* flip the pane when hovered */
+  .flip-container:hover .flipper, .flip-container.hover .flipper {
+    transform: rotateY(180deg);
+  }
+  
+  .flip-container, .front, .back {
+    width: 235px;
+    height: 235px;
+  }
+  
+  /* flip speed goes here */
+  .flipper {
+    transition: 0.6s;
+    transform-style: preserve-3d;
+    position: relative;
+  }
+  
+  /* hide back of pane during swap */
+  .front, .back {
+    backface-visibility: hidden;
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+  
+  /* front pane, placed above back */
+  .front {
+    z-index: 2;
+    /* for firefox 31 */
+    transform: rotateY(0deg);
+  }
+  
+  /* back, initially hidden pane */
+  .back {
+    transform: rotateY(180deg);
+  }

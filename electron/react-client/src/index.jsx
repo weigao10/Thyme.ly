@@ -188,13 +188,15 @@ function fetchGoogleProfile (accessToken) {
 //------------------------------------------------------------------------- GOOGLE CALENDAR
 
 let upcomingEvents = [];
+let token;
 function listEvents(accessToken) {
+  token = accessToken;
   const calendar = google.calendar({version: 'v3', auth});
   let oauth = new google.auth.OAuth2(
     clientId, clientSecret, redirectURI);
   oauth.setCredentials({access_token: accessToken});
   let timeMin = moment().format().slice(0, 19) + 'Z'
-  let timeMax = moment().format().slice(0, 11) + '23:59:59Z'
+  let timeMax = moment().format().slice(0, 11) + '23:59:59-04:00'
   calendar.events.list({
     calendarId: 'primary',
     auth: oauth,
@@ -228,7 +230,8 @@ function notificationSender(upcomingEvents) {
   let difference = moment.duration(moment(eventTime).diff(moment(currentTime))).asSeconds();
   if(difference < 0) upcomingEvents.shift(); //removes events that have already passed
   else if (difference < 600) { //10 minutes
-    let noti = new Notification('Upcoming Calendar Event', {body: event.summary});
+    let noti = new Notification('Upcoming Calendar Event', {body: event.summary,  soundName: 'default'});
+    noti.addEventListener('click', () => noti.close());    
     upcomingEvents.shift();
   }
 }
@@ -242,6 +245,6 @@ let timer = new cron.CronJob({
   timeZone: 'America/New_York'
 });
 
-
+// look into push notifications
 
 exports.listEvents = listEvents;

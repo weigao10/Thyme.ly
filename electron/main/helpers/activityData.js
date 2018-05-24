@@ -69,11 +69,13 @@ const stripEmoji = (title) => {
 }
 
 const sanitizeTitle = (title) => {
-  if(title === 'New Tab' || title === 'Home') return '';
+  if(title === 'New Tab' || title === 'Home' || title === 'Forwarding...' || title === 'Untitled') return '';
   
   let name = title.split('-').reverse()[0].trim()
-  if(name === 'Google Search') return '';
+  if(name === '' || name === 'Google Accounts') return '';
   if(name === 'Gmail') return 'Gmail';
+  if(name === 'Stack Overflow') return 'Stack Overflow';
+  if(name === 'Google Search') return 'Google Search';
 
   return title;
 }
