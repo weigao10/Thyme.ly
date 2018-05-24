@@ -69,14 +69,25 @@ const stripEmoji = (title) => {
 }
 
 const sanitizeTitle = (title) => {
-  if(title === 'New Tab' || title === 'Home' || title === 'Forwarding...' || title === 'Untitled') return '';
-  
-  let name = title.split('-').reverse()[0].trim()
-  if(name === '' || name === 'Google Accounts') return '';
-  if(name === 'Gmail') return 'Gmail';
-  if(name === 'Stack Overflow') return 'Stack Overflow';
-  if(name === 'Google Search') return 'Google Search';
 
+  let titlesObj = {
+    '': ' ',
+    'New Tab': ' ',
+    'Home': ' ',
+    'Forwarding...': ' ',
+    'Untitled': ' ',
+    'Member privileges': ' ',
+    'Notification settings': ' ',
+    'Google Accounts': ' ',
+    'Google Search': ' ',
+    'Gmail': 'Gmail',
+    'Stack Overflow': 'Stack Overflow',
+    'JSFiddle': 'JSFiddle'
+  }
+  if(titlesObj[title]) return titlesObj[title];
+
+  let name = title.split('-').reverse()[0].trim()
+  if(titlesObj[name]) return titlesObj[name];
   return title;
 }
 
