@@ -31,7 +31,7 @@ const ChartTopRankings = (props) => {
 
   return (
     <div>
-      <h3>Top 5 Productive Apps</h3>
+      <h3>Top 5 Productive Apps/Websites</h3>
             <PieChart width={550} height={300}>
               <Pie 
                 data={topFiveProductive} 
@@ -48,7 +48,7 @@ const ChartTopRankings = (props) => {
           
             </PieChart>
 
-            <h3>Top 5 Distracting Apps</h3>
+            <h3>Top 5 Distracting Apps/Websites</h3>
             <PieChart width={550} height={300}>
               <Pie 
                 data={topFiveDistracting} 

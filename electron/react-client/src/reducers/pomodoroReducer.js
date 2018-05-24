@@ -61,6 +61,9 @@ const pomodoro = (state = initialState, action) => {
         },
         completedSpurtCount: {
           ...initialState.completedSpurtCount
+        },
+        prefs: {
+          ...state.prefs
         }
       }
     }
