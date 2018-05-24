@@ -89,7 +89,7 @@ const pomodoro = (state = initialState, action) => {
         if (lastSpurtType === 'shortBreak') elapsedTime = SHORT_BREAK_LENGTH;
         else elapsedTime = LONG_BREAK_LENGTH;
       }
-      let noti = new Notification('Pomodoro Alert', {body: lastSpurtType + ' over! Time for ' + nextSpurtType , soundName: 'default'});
+      let noti = new Notification('Pomodoro Alert', {body: lastSpurtType + ' over! Time for ' + nextSpurtType, soundName: 'default'});
       noti.addEventListener('click', () => noti.close());
       const updatedElapsedTime = lastElapsedTime + elapsedTime;
 

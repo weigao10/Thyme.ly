@@ -107,6 +107,28 @@ app.get('/learn/scrape', (req, res) => {
   scrapeDb.addScrapingResults()
 });
 
+// app.post('/owner/video', (req, res) => {
+//   let video = req.body.video;
+//   let userId = req.body.userId;
+//   let url = `https://www.googleapis.com/youtube/v3/videos?id=${video.id.videoId}&part=contentDetails&key=${api}`;
+//   axios.get(url)
+//   .then((data) => {
+//     console.log(data.data.items[0].contentDetails.duration)
+//     let duration = moment.duration(data.data.items[0].contentDetails.duration, moment.ISO_8601).asSeconds();
+//     console.log(duration)
+//     setVideo(video, userId, duration, () => {
+//       res.send('Saved to db');
+//     })
+//   })
+// })
+
+app.post('/pushNoti', (req, res) => {
+  let url = 'https://www.googleapis.com/calendar/v3/calendars/my_calendar@gmail.com/events/watch'
+  // let authorization = req.body.token
+  axios.post(url)
+
+})
+
 let server = app.listen(port, () => {
   console.log(`listening on port ${port}`);
 });
