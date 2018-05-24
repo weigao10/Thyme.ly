@@ -40,7 +40,7 @@ class App extends React.Component {
   render() {
     return(
     <MuiThemeProvider>
-      <Paper style={{background: 'yellow'}}>  
+      <Paper style={{background: 'white'}}>  
 
         <Provider store={store}>
           <MonitorContainer />
