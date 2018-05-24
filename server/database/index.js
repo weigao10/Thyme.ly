@@ -52,18 +52,6 @@ const getProductivityClass = async (appName, title, userName) => {
 
 const addOrChangeProductivity = async (query) => {
   const { app_name, window_title, user_name, isTracked } = query;
-  // const oldCategory = query.old_prod_class ? query.old_prod_class : null;
-  // console.log('old category inside db helpers is', oldCategory);
-  // return getProductivityClass(app_name, window_title, user_name) //add user here later
-  //   .then(result => {
-  //     if (result) {
-  //       return changeProductivityClass(query)
-  //     }
-  //     else {
-  //       return addProductivityClass(query);
-  //     }
-  //   })
-  //   .catch(err => console.log('error checking for productivity!'))
   const savedProdClass = await getProductivityClass(app_name, window_title, user_name);
   try {
     if (savedProdClass) {
