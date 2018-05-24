@@ -6,8 +6,9 @@ import {PieChart, Pie, Label} from 'recharts';
 import {RadialBar, RadialBarChart, Legend} from 'recharts';
 import {LineChart, XAxis, CartesianGrid, Line, Tooltip} from 'recharts';
 
-import ChartTopRankings from '../components/ChartTopRankings.jsx';
-import ChartSpurts from '../components/ChartSpurts.jsx';
+import ChartTopRankings from '../components/AnalyticsView/ChartTopRankings.jsx';
+import ActivityRadarChart from '../components/AnalyticsView/ActivityRadarChart.jsx';
+import ActivityTreeMap from '../components/AnalyticsView/ActivityTreeMap.jsx';
 
 class AnalyticsContainer extends React.Component {
   constructor(props) {
@@ -38,24 +39,12 @@ class AnalyticsContainer extends React.Component {
           <ChartTopRankings activities={this.props.activities} />
         </Tab>
 
-        <Tab label='chart2' style={styleRoot} buttonStyle={styleButton}>
-        <h3>Line Chart</h3>
-        <LineChart
-          width={300}
-          height={300}
-          data={data}
-          margin={{ top: 5, right: 20, left: 10, bottom: 5 }}
-        >
-          <XAxis dataKey="name" />
-          <Tooltip />
-          <CartesianGrid stroke="#f5f5f5" />
-          <Line type="monotone" dataKey="uv" stroke="#ff7300" yAxisId={0} />
-          <Line type="monotone" dataKey="pv" stroke="#387908" yAxisId={1} />
-        </LineChart>
+        <Tab label='Radar Chart' style={styleRoot} buttonStyle={styleButton}>
+          <ActivityRadarChart activities={this.props.activities} />
         </Tab>
 
-        <Tab label="Spurts" style={styleRoot} buttonStyle={styleButton}>
-          <ChartSpurts activities={this.props.activities} />
+        <Tab label="Tree Map" style={styleRoot} buttonStyle={styleButton}>
+          <ActivityTreeMap activities={this.props.activities} />
         </Tab>
 
       </Tabs>
