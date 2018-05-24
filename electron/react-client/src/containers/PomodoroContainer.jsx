@@ -102,7 +102,7 @@ class PomodoroContainer extends React.Component {
     const currentSpurtData = [{name: 'elapsed time', value: this.state.elapsedTime},
                               {name: 'time remaining', value: currentSpurtLength - this.state.elapsedTime}];
     const completedSpurtLength = pomodoro.elapsedTimeFromCompletedSpurts;
-    const totalGoalLength = pomodoro.goalLength;
+    const totalGoalLength = calculateTotalGoalLength(pomodoro.prefs); 
     const totalDayData = [{name: 'total elapsed time', value: this.state.elapsedTime + completedSpurtLength},
                           {name: 'total time remaining', value: totalGoalLength - this.state.elapsedTime - completedSpurtLength}]
     // console.log('total time remaining:', totalGoalLength - this.state.elapsedTime - completedSpurtLength)
@@ -132,6 +132,12 @@ class PomodoroContainer extends React.Component {
       </Paper>
     )
   }
+}
+
+const calculateTotalGoalLength = ({ workLength, shortBreakLength, longBreakLength, spurtsBeforeLongBreak, pomSessionsPerDay }) => {
+  return workLength * spurtsBeforeLongBreak * pomSessionsPerDay + 
+         shortBreakLength * (spurtsBeforeLongBreak - 1) * pomSessionsPerDay +
+         longBreakLength * (pomSessionsPerDay - 1);
 }
 
 const mapStateToProps = (state) => ({

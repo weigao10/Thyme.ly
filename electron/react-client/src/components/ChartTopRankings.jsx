@@ -20,7 +20,7 @@ const mapAndSortActivitiesByDuration = (activities, category) => {
     }
   });
   return mappedActivities.sort((a, b) => {
-    return b.duration - a.duration
+    return b.duration - a.duration;
   });
 }
 

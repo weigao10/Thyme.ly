@@ -1,23 +1,10 @@
-import { START_POM, PAUSE_POM, RESUME_POM, CLEAR_POM, COMPLETE_SPURT } from '../actions/types';
+import { START_POM, PAUSE_POM, RESUME_POM, CLEAR_POM, COMPLETE_SPURT, SET_POM_PREFS } from '../actions/types';
 import moment from 'moment';
 import Notification from 'node-mac-notifier';
 
 const timestamp = () => {
   return moment().format('LTS');
 }
-
-//intervals for testing...should eventually hook up to user pomodoro's prefs
-const WORK_LENGTH = 1000 * 60 * 25;
-const LONG_BREAK_LENGTH = 1000 * 60 * 25;
-const SHORT_BREAK_LENGTH = 1000 * 60 * 5;
-const TOTAL_PLANNED_WORKDAY =  (WORK_LENGTH * 4 * 4)
-                               + SHORT_BREAK_LENGTH * 4 * 3
-                               + LONG_BREAK_LENGTH * 3;
-const INTERVAL_MAP = {
-  'work': WORK_LENGTH,
-  'shortBreak': SHORT_BREAK_LENGTH,
-  'longBreak': LONG_BREAK_LENGTH
-};
 
 const initialState = {
   pomStartTime: null, // consider actual usefulness of this
@@ -32,7 +19,13 @@ const initialState = {
     longBreak: 0
   },
   elapsedTimeFromCompletedSpurts: 0, //i.e. not from current spurt, which only React knows about
-  goalLength: TOTAL_PLANNED_WORKDAY
+  prefs : {
+    workLength: 1000 * 60 * 25,
+    shortBreakLength: 1000 * 60 * 5,
+    longBreakLength: 1000 * 60 * 25,
+    spurtsBeforeLongBreak: 4,
+    pomSessionsPerDay: 4
+  }
 };
 
 const pomodoro = (state = initialState, action) => {
@@ -44,7 +37,7 @@ const pomodoro = (state = initialState, action) => {
         pomStartTime: timestamp(),
         currentSpurt: {
           type: 'work',
-          length: WORK_LENGTH
+          length: state.prefs.workLength
         }
       }
     }
@@ -71,23 +64,34 @@ const pomodoro = (state = initialState, action) => {
         }
       }
     }
+    case SET_POM_PREFS: {
+      return {
+        ...initialState,
+        prefs: action.payload
+      }
+    }
     case COMPLETE_SPURT: {
       const lastElapsedTime = state.elapsedTimeFromCompletedSpurts;
       const lastSpurtType = state.currentSpurt.type;
       const updatedLastSpurtCount = state.completedSpurtCount[lastSpurtType] + 1;
       const { work, shortBreak, longBreak } = state.completedSpurtCount;
+      const INTERVAL_MAP = {
+        'work': state.prefs.workLength,
+        'shortBreak': state.prefs.shortBreakLength,
+        'longBreak': state.prefs.longBreakLength
+      };
       
       let nextSpurtType, elapsedTime;
-      if (lastSpurtType === 'work' && updatedLastSpurtCount % 4 === 0) { //expand logic to depend on user prefs
+      if (lastSpurtType === 'work' && updatedLastSpurtCount % state.prefs.spurtsBeforeLongBreak === 0) { //expand logic to depend on user prefs
         nextSpurtType = 'longBreak';
-        elapsedTime = WORK_LENGTH;
+        elapsedTime = state.prefs.workLength;
       } else if (lastSpurtType === 'work') {
         nextSpurtType = 'shortBreak';
-        elapsedTime = WORK_LENGTH;
+        elapsedTime = state.prefs.workLength;
       } else {
         nextSpurtType = 'work'
-        if (lastSpurtType === 'shortBreak') elapsedTime = SHORT_BREAK_LENGTH;
-        else elapsedTime = LONG_BREAK_LENGTH;
+        if (lastSpurtType === 'shortBreak') elapsedTime = state.prefs.shortBreakLength;
+        else elapsedTime = state.prefs.longBreakLength;
       }
       let noti = new Notification('Pomodoro Alert', {body: lastSpurtType + ' over! Time for ' + nextSpurtType});
       const updatedElapsedTime = lastElapsedTime + elapsedTime;

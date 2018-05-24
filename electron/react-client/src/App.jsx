@@ -12,6 +12,7 @@ import DashboardContainer from './containers/DashboardContainer.jsx';
 import AnalyticsContainer from './containers/AnalyticsContainer.jsx';
 import PomodoroContainer from './containers/PomodoroContainer.jsx';
 import ViewSelector from './components/ViewSelector.jsx';
+import SettingsContainer from './containers/SettingsContainer';
 
 class App extends React.Component {
 
@@ -68,8 +69,7 @@ class App extends React.Component {
             <PomodoroContainer />
           </div>
           <div>
-            {/* <UserSettingsContainer /> */}
-          <strong>This is the User Settings Page and will be filled out soon</strong>
+            <SettingsContainer />
           </div>
         </SwipeableViews>
       </Provider>
