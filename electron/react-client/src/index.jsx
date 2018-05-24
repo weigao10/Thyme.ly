@@ -195,7 +195,7 @@ function listEvents(accessToken) {
   let oauth = new google.auth.OAuth2(
     clientId, clientSecret, redirectURI);
   oauth.setCredentials({access_token: accessToken});
-  let timeMin = moment().format().slice(0, 19) + 'Z'
+  let timeMin = moment().format().slice(0, 19) + '-04:00'
   let timeMax = moment().format().slice(0, 11) + '23:59:59-04:00'
   calendar.events.list({
     calendarId: 'primary',
@@ -211,7 +211,9 @@ function listEvents(accessToken) {
     if (events.length) {
       console.log('Upcoming 10 events:');
       events.map((event, i) => {
+        console.log('event is ', event)
         upcomingEvents.push(event)
+        compareEvents(event)
         const start = event.start.dateTime || event.start.date;
         console.log(`${start} - ${event.summary}`);
       });
@@ -220,8 +222,6 @@ function listEvents(accessToken) {
     }
   });
 }
-
-//cron, moment worker
 
 function notificationSender(upcomingEvents) {
   let event = upcomingEvents[0]
@@ -236,6 +236,15 @@ function notificationSender(upcomingEvents) {
   }
 }
 
+function compareEvents (newEvent) {
+  upcomingEvents = upcomingEvents.map((oldEvent) => {
+      if(oldEvent.etag === newEvent.etag){
+        return (oldEvent.start.dateTime === oldEvent.start.dateTime) ? oldEvent : newEvent
+      }
+  })
+  console.log('new upcoming events', upcomingEvents);
+}
+
 let timer = new cron.CronJob({
   cronTime: '*/5 * * * * *', //checking every 5 seconds
   onTick: function () {
@@ -244,7 +253,5 @@ let timer = new cron.CronJob({
   start: true,
   timeZone: 'America/New_York'
 });
-
-// look into push notifications
 
 exports.listEvents = listEvents;

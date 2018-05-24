@@ -1305,7 +1305,7 @@
 }
 
 .ti-facebook:before {
-    content: "\e741";
+    /* content: "\e741"; */
 }
 
 .ti-dropbox:before {
