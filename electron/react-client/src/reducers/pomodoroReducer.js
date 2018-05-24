@@ -1,23 +1,10 @@
-import { START_POM, PAUSE_POM, RESUME_POM, CLEAR_POM, COMPLETE_SPURT } from '../actions/types';
+import { START_POM, PAUSE_POM, RESUME_POM, CLEAR_POM, COMPLETE_SPURT, SET_POM_PREFS } from '../actions/types';
 import moment from 'moment';
 import Notification from 'node-mac-notifier';
 
 const timestamp = () => {
   return moment().format('LTS');
 }
-
-//intervals for testing...should eventually hook up to user pomodoro's prefs
-const WORK_LENGTH = 1000 * 60 * 25;
-const LONG_BREAK_LENGTH = 1000 * 60 * 25;
-const SHORT_BREAK_LENGTH = 1000 * 60 * 5;
-const TOTAL_PLANNED_WORKDAY =  (WORK_LENGTH * 4 * 4)
-                               + SHORT_BREAK_LENGTH * 4 * 3
-                               + LONG_BREAK_LENGTH * 3;
-const INTERVAL_MAP = {
-  'work': WORK_LENGTH,
-  'shortBreak': SHORT_BREAK_LENGTH,
-  'longBreak': LONG_BREAK_LENGTH
-};
 
 const initialState = {
   pomStartTime: null, // consider actual usefulness of this
@@ -38,8 +25,7 @@ const initialState = {
     longBreakLength: 1000 * 60 * 25,
     spurtsBeforeLongBreak: 4,
     pomSessionsPerDay: 4
-  },
-  goalLength: TOTAL_PLANNED_WORKDAY
+  }
 };
 
 const pomodoro = (state = initialState, action) => {
@@ -76,6 +62,12 @@ const pomodoro = (state = initialState, action) => {
         completedSpurtCount: {
           ...initialState.completedSpurtCount
         }
+      }
+    }
+    case SET_POM_PREFS: {
+      return {
+        ...initialState,
+        prefs: action.payload
       }
     }
     case COMPLETE_SPURT: {
