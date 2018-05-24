@@ -40,6 +40,7 @@ class SettingsContainer extends React.Component {
       spurtsBeforeLongBreak: this.state.spurtsBeforeLongBreak,
       pomSessionsPerDay: this.state.pomSessionsPerDay
     });
+    alert('Your pomodoro timer preferences have been updated.')
   }
 
   handleChange(e) {
