@@ -7,6 +7,7 @@ import Paper from 'material-ui/Paper';
 import AppBar from 'material-ui/AppBar';
 import FlatButton from 'material-ui/FlatButton';
 import Divider from 'material-ui/Divider';
+import RaisedButton from 'material-ui/RaisedButton';
 
 import { addActivity, patchActivity, setAllActivities } from '../actions/activityActions.js';
 import { setUser, setToken } from '../actions/userActions.js';
@@ -122,15 +123,22 @@ class MonitorContainer extends React.Component {
   render() {
     return (
       // TODO: Make this component render a Pause/Start timer button
-      <div>
+      <Paper zDepth={2} style={bottomBarStyle}>
+        <RaisedButton label="testing" buttonStyle={{verticalAlign: 'middle', background: '#ffcc33'}}/>
         <button onClick={this.logout}>Test logout button</button>
         IS MONITOR RUNNING? {JSON.stringify(this.props.monitor.running)}
         <button onClick={this.props.pauseMonitor}>Test pause button</button>
         <button onClick={() => this.props.startMonitor(this.props.user.user)}>Test start button</button>
         {/* <pre>'current user is' {JSON.stringify(this.props.user)}</pre> */}
-      </div>
+      </Paper>
     )
   }
+}
+
+const bottomBarStyle = {
+  background: '#2196F3',
+  height: '50px',
+  marginTop: '10px',
 }
 
 const mapStateToProps = state => ({

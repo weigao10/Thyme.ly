@@ -39,36 +39,36 @@ class App extends React.Component {
   render() {
     return(
     <MuiThemeProvider>
-      <Paper style={{background: 'yellow'}}>  
-
-        <Provider store={store}>
-          <MonitorContainer />
-        </Provider>
+      <Paper style={{background: 'white'}}>  
       
         <Provider store={store}>
           <ViewSelector tabIndex={this.state.tabIndex} handleTabChange={this.handleTabChange} />
         </Provider>
       
-      <Provider store={store}>
-        <SwipeableViews index={this.state.tabIndex}>
-          <div>
-            <DashboardContainer />
-          </div>
-        
-          <div>
-            <AnalyticsContainer />
-          </div>
+        <Provider store={store}>
+          <SwipeableViews index={this.state.tabIndex}>
+            <div>
+              <DashboardContainer />
+            </div>
           
-          <div>
-            <PomodoroContainer />
-          </div>
+            <div>
+              <AnalyticsContainer />
+            </div>
+            
+            <div>
+              <PomodoroContainer />
+            </div>
 
-          <div>
-            {/* <UserSettingsContainer /> */}
-            <strong>This is the User Settings Page and will be filled out soon</strong>
-          </div>
-        </SwipeableViews>
-      </Provider>
+            <div>
+              {/* <UserSettingsContainer /> */}
+              <strong>This is the User Settings Page and will be filled out soon</strong>
+            </div>
+          </SwipeableViews>
+        </Provider>
+
+        <Provider store={store}>
+          <MonitorContainer />
+        </Provider>
       
       </Paper>
     </MuiThemeProvider>

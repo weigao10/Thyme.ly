@@ -85,9 +85,9 @@ const styleButton = {
 const stylePaper = {
   background: 'white',
   padding: '15px',
-  minHeight: '550px',
-  maxHeight: '550px',
-  overflowY: 'scroll'
+  // minHeight: '575px',
+  // maxHeight: '575px',
+  // overflowY: 'scroll'
 };
 
 const mapStateToProps = (state) => {
