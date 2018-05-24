@@ -10,6 +10,7 @@ import { ItemTypes } from '../../constants.js';
 import Paper from 'material-ui/Paper';
 import Divider from 'material-ui/Divider';
 import RaisedButton from 'material-ui/RaisedButton';
+// import DeleteIcon from ''
 
 const cardSource = {
   beginDrag(props) {
@@ -27,32 +28,44 @@ const collect = (connect, monitor) => {
   }
 }
 
+//make long pieces of text shorter and end with '...' 
+const prettifier = (text) => {
+  let results = text;
+
+  if (results.length >= 30) {
+    results = results.slice(0, 27) + '...';
+  }
+  
+  return results;
+}
+
 const ActivityCard = (props) => {
   const { activity, category, deleteActivity, index, preferences, user, affirmCategorization } = props;
   
-  let formattedDuration = moment.duration(activity.duration, "seconds").format("h[h], m[m] s[s]");
+  let formattedDuration = moment.duration(activity.duration, "seconds").format("h[h] m[m] s[s]");
 
-  let styleTick = {
+  let coreStyle = {
     font: 'Arial', 
-    //background: '#E8F5E9', 
-    background: '#DDD',
     padding: '10px 5px 10px 5px',
-    margin: '10px 0px 10px 5px',
+    margin: '0px 5px 0px 5px',
     textAlign: 'left',
+    background: 'white',
     color: 'black',
     fontSize: '80%',
   };
 
-  let styleTock = {
-    font: 'Arial', 
-    // background: '#C8E6C9', 
-    background: '#BBB',
-    padding: '10px 5px 10px 5px',
-    margin: '10px 0px 10px 5px',
-    textAlign: 'left',
-    color: 'black',
-    fontSize: '80%',
-  };
+  let colorMap = {
+    'productive': {tick: '#DCEDC8', tock: '#AED581' },
+    'neutral': {tick: '#FFF9C4', tock: '#FFF176' },
+    'distracting': {tick: '#FFCCBC', tock: '#FF8A65'}
+  }
+
+  if (index % 2 === 0) {
+    coreStyle.background = colorMap[category]['tick'];
+  } else {
+    coreStyle.background = colorMap[category]['tock'];
+  }
+
   const { connectDragSource, isDragging } = props;
 
   let isTracked;
@@ -63,20 +76,32 @@ const ActivityCard = (props) => {
   }
 
     return connectDragSource(
-      <div><Paper
-        key={activity.title + index}
-        style={index % 2 === 0 ? styleTick : styleTock}
-      >
-        <b>{activity.app}</b> <br/>
-        {activity.productivity.source === 'ml' ? <span>SUGGESTED BY ML<br/></span> : null}
-        {isTracked ? activity.title : ''} <br/>
-        <i>{formattedDuration}</i>
-        <br/>
-        <button onClick={() => {deleteActivity(activity, category, isTracked, user)}}>🗑️</button>
-    {activity.productivity.source === 'ml' ? (
-      <button onClick={() => {affirmCategorization(activity, category, isTracked, user)}}>✔️
-    </button>) : null}
-      </Paper></div>
+      //React DnD requires components to be wrapped in a <div> and not <Paper>
+      <div> 
+        <Paper
+          key={activity.title + index}
+          style={coreStyle}
+          zDepth={2}
+        >
+          <div>
+            <b>{activity.app}</b>
+            <i style={{float: 'right'}}>{formattedDuration}</i> 
+          </div>
+
+          <div style={{margin: '5px 0px 5px 0px'}}>
+            <Divider style={{float: 'right', width: '100%', background: '#757575'}}/>
+          </div>
+
+          {activity.productivity.source === 'ml' ? <div>SUGGESTED BY THYME.LY<br/></div> : null}
+          {isTracked ? 'Title: ' + prettifier(activity.title) : 'Application'} <br/>
+         
+          <br/>
+          <button onClick={() => {deleteActivity(activity, category, isTracked, user)}}>🗑️</button>
+            {activity.productivity.source === 'ml' ? (
+          <button onClick={() => {affirmCategorization(activity, category, isTracked, user)}}>✔️
+          </button>) : null}
+        </Paper>
+      </div>
     )
 }
 
