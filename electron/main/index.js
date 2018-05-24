@@ -144,6 +144,10 @@ app.on('ready', () => {
   });
 });
 
+app.on('activate', () => { 
+  mainWindow.isVisible() ? mainWindow.hide() : mainWindow.show();
+});
+
 ipcMain.on('got-idle-activity', (event, message) => {
   mainWindow.webContents.send('add-idle-activity', message)
   popUpWindow.hide()
@@ -161,13 +165,11 @@ const mainMenuTemplate = [
     label: 'File', 
     submenu: [ 
       {
-        label: 'Add Item', 
+        label: 'Hide/Show', 
+        accelerator: process.platform === 'darwin' ? 'Command+W' : 'Ctrl+W',
         click(){
-          createAddWindow();
+          mainWindow.isVisible() ? mainWindow.hide() : mainWindow.show();
         }
-      }, 
-      {
-        label: 'Clear Items'
       },
       {
         label: 'Quit',
