@@ -112,16 +112,14 @@ class CustomizedContent extends React.Component {
   }
 };
 
-class ChartSpurts extends React.Component {
+class ActivityTreeMap extends React.Component {
   constructor(props) {
     super(props)
   }
   componentDidMount() {
   }
   render() {
-    console.log('activities are', this.props.activities)
     const data = treeMapActivities(this.props.activities)
-    console.log('data is', data)
 
     return (
       <Treemap
@@ -141,4 +139,4 @@ class ChartSpurts extends React.Component {
   }
 } 
 
-export default ChartSpurts;
+export default ActivityTreeMap;
