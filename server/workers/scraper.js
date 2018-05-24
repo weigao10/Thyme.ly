@@ -36,10 +36,12 @@ const scrapeYoutubeTitles = async (url, prod_class, headless) => {
 
   await browser.close();
   console.log(result)
+  db.addScrapingResults(result, prod_class);
   // const db = require('./database/index.js');
-  fs.writeFileSync('./titles.txt', result.join('\n') + '\n') //TODO: Save to db, not to file
+  // fs.writeFileSync('./titles.txt', result.join('\n') + '\n') //TODO: Save to db, not to file
 }
 
-const url = 'https://www.youtube.com/user/TechGuyWeb/videos?view=0&sort=dd&shelf_id=1'
-scrapeYoutubeTitles(url, false);
+const url = 'https://www.youtube.com/channel/UCOf7UPMHBjAavgD0Qw5q5ww/videos';
+const prod_class = 'productive';
+scrapeYoutubeTitles(url, prod_class, true);
 // scrapeYoutubeTitles('https://www.youtube.com/user/TechGuyWeb/videos?view=0&sort=dd&shelf_id=1')
