@@ -1,4 +1,4 @@
-import { START_POM, PAUSE_POM, RESUME_POM, CLEAR_POM, COMPLETE_SPURT } from './types'; 
+import { START_POM, PAUSE_POM, RESUME_POM, CLEAR_POM, COMPLETE_SPURT, SET_POM_PREFS } from './types'; 
 
 export const startPom = () => {
   return {
@@ -28,4 +28,11 @@ export const completeSpurt = () => {
   return {
     type: COMPLETE_SPURT
   }
-}
+};
+
+export const setPomPrefs = (pomPrefs) => {
+  return {
+    type: SET_POM_PREFS,
+    payload: pomPrefs
+  }
+};

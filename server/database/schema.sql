@@ -35,7 +35,9 @@ CREATE TABLE scrape_categories(
   activity_id serial NOT NULL PRIMARY KEY,
   scrape_session integer NOT NULL,
   window_title VARCHAR UNIQUE,
-  prod_class VARCHAR NOT NULL CHECK (prod_class = 'productive' or prod_class = 'distracting')
+  prod_class VARCHAR NOT NULL CHECK (prod_class = 'productive' or prod_class = 'distracting'),
+  app_name VARCHAR NOT NULL,
+  user_name VARCHAR NOT NULL
 );
 
 CREATE TABLE user_metrics(
