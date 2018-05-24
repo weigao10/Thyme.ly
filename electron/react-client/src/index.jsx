@@ -188,13 +188,15 @@ function fetchGoogleProfile (accessToken) {
 //------------------------------------------------------------------------- GOOGLE CALENDAR
 
 let upcomingEvents = [];
+let token;
 function listEvents(accessToken) {
+  token = accessToken;
   const calendar = google.calendar({version: 'v3', auth});
   let oauth = new google.auth.OAuth2(
     clientId, clientSecret, redirectURI);
   oauth.setCredentials({access_token: accessToken});
   let timeMin = moment().format().slice(0, 19) + 'Z'
-  let timeMax = moment().format().slice(0, 11) + '23:59:59Z'
+  let timeMax = moment().format().slice(0, 11) + '23:59:59-04:00'
   calendar.events.list({
     calendarId: 'primary',
     auth: oauth,
@@ -209,9 +211,14 @@ function listEvents(accessToken) {
     if (events.length) {
       console.log('Upcoming 10 events:');
       events.map((event, i) => {
-        upcomingEvents.push(event)
-        const start = event.start.dateTime || event.start.date;
-        console.log(`${start} - ${event.summary}`);
+        let eventTime = event.start.dateTime
+        let currentTime = JSON.stringify(moment().format()).split('T').join(' ').slice(0, 20)
+        let difference = moment.duration(moment(eventTime).diff(moment(currentTime))).asSeconds();
+        if(difference > 540) {
+          upcomingEvents.push(event)
+          const start = event.start.dateTime || event.start.date;
+          console.log(`${start} - ${event.summary}`);
+        }
       });
     } else {
       console.log('No upcoming events found.');
@@ -226,9 +233,11 @@ function notificationSender(upcomingEvents) {
   let eventTime = event.start.dateTime
   let currentTime = JSON.stringify(moment().format()).split('T').join(' ').slice(0, 20)
   let difference = moment.duration(moment(eventTime).diff(moment(currentTime))).asSeconds();
+  console.log('difference', difference)
   if(difference < 0) upcomingEvents.shift(); //removes events that have already passed
   else if (difference < 600) { //10 minutes
-    let noti = new Notification('Upcoming Calendar Event', {body: event.summary});
+    let noti = new Notification('Upcoming Calendar Event', {body: event.summary,  soundName: 'default'});
+    noti.addEventListener('click', () => noti.close());    
     upcomingEvents.shift();
   }
 }
@@ -242,6 +251,18 @@ let timer = new cron.CronJob({
   timeZone: 'America/New_York'
 });
 
+// let timer2 = new cron.CronJob({
+//   cronTime: '* * * * *',
+//   onTick: function () {
+//     if(token) listEvents(token);
+//   },
+//   start: true,
+//   timeZone: 'America/New_York'
+// });
 
+
+
+// look into push notifications
+// if(token) listEvents(token);
 
 exports.listEvents = listEvents;
