@@ -67,9 +67,9 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    changeCategory: (activity, oldCat, newCat, isTracked, user) => {
+    changeCategory: (activity, oldCat, newCat, isTracked, user, wasML) => {
       if (oldCat !== newCat) {
-        dispatch(changeCategory(activity, oldCat, newCat, isTracked, user))
+        dispatch(changeCategory(activity, oldCat, newCat, isTracked, user, wasML))
       };
     },
     deleteActivity: (activity, category, isTracked, user) => {

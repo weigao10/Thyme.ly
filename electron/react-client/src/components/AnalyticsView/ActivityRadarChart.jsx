@@ -9,7 +9,6 @@ const sumDuration = (activityArr) => {
 }
 
 const ActivityRadarChart = ({ activities }) => {
-  console.log('Activities inside ActivityRadarChart are', activities);
   const data = [
     {
       category: 'distracting',
