@@ -1,27 +1,58 @@
 import React from 'react';
 import {Tab, Tabs} from 'material-ui/Tabs';
+import Paper from 'material-ui/Paper';
+import ActionHome from 'material-ui/svg-icons/action/home';
+import BalanceIcon from 'material-ui/svg-icons/action/account-balance';
+import ComputerIcon from 'material-ui/svg-icons/hardware/computer';
+import HourGlassIcon from 'material-ui/svg-icons/action/hourglass-empty';
+import TrendingIcon from 'material-ui/svg-icons/action/trending-up';
 
 const ViewSelector = (props) => {
 
   return (
-    //Render Tabs
-    <Tabs contentContainerStyle={{margin: '2px', background: '#22AA22'}} value={props.tabIndex} onChange={props.handleTabChange}
-      // onChange={this.props.handleTabChange}
-      // value={this.props.tabIndex}
+    <Paper 
+      zDepth={2}
+      style={{marginBottom: '10px'}}
     >
-      <Tab buttonStyle={buttonStyle} label="Activity" value={0} />
-      <Tab buttonStyle={buttonStyle} label="Analytics" value={1} />
-      <Tab buttonStyle={buttonStyle} label="Pomodoro Timer" value={2} />
-      <Tab buttonStyle={buttonStyle} label="Settings" value={3} />
-    </Tabs>
+      <Tabs 
+        value={props.tabIndex} 
+        onChange={props.handleTabChange}
+      >
+        <Tab 
+          buttonStyle={buttonStyle} 
+          label="Activity" 
+          value={0} 
+          icon={<ActionHome/>}
+        />
+        <Tab 
+          buttonStyle={buttonStyle} 
+          label="Analytics" 
+          value={1} 
+          icon={<TrendingIcon/>}
+        />
+        <Tab 
+          buttonStyle={buttonStyle} 
+          label="Pomodoro" 
+          value={2} 
+          icon={<HourGlassIcon/>}
+        />
+        <Tab 
+          buttonStyle={buttonStyle} 
+          label="Settings" 
+          value={3} 
+          icon={<ComputerIcon/>}
+          />
+      </Tabs>
+    </Paper>
   )
 }
 
 const buttonStyle = {
-  background: '#03A9F4',
+  background: '#2196F3',
   color: 'white',
-  font: 'garamond',
-  fontWeight: 'bold',
+  font: 'Tahoma',
+  fontSize: '110%',
+  fontWeight: '900',
 }
 
 export default ViewSelector;

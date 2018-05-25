@@ -67,8 +67,9 @@ const ActivityGroup = props => {
           >
             {getTotalDuration(activities)}
           </span>
-        </Paper>
-        <Paper zDepth={0} style={{overflowY: 'scroll', minHeight: '475px', maxHeight: '475px'}}>
+        </Paper>  
+                                
+        <Paper zDepth={1} style={pickBetweenThreeStyles(category)}>
           {sortedActivities.map((activity, index) => {
             return (
               <ActivityCard
@@ -85,10 +86,42 @@ const ActivityGroup = props => {
             );
           })}
         </Paper>
+
+        <Paper zDepth={1} style={
+          function inlineStyle() {
+            let style = {
+              font: "Open Sans",
+              background: "black",
+              padding: "10px 5px 10px 5px",
+              textAlign: "center",
+              color: "white",
+              fontWeight: "bolder",
+              // fontSize: "115%",
+              onMouseOver: "#FFF",
+              borderRadius: "0px 0px 15px 15px"
+            }
+
+            style.background = colorBgMap[category];
+            return style;
+          }()
+        }>
+        </Paper>
       </Paper>
     </div>
   );
 };
+
+const colorBgMap = {
+  productive: '#258039',
+  neutral: '#F5BE41',
+  distracting: '#CF3721'
+}
+
+const colorMap = {
+  productive: '#DCEDC8',
+  neutral: '#FFF9C4',
+  distracting: '#FFCCBC'
+}
 
 const getTotalDuration = activities => {
   let duration = 0;
@@ -101,38 +134,48 @@ const getTotalDuration = activities => {
   return formatDuration;
 };
 
+const pickBetweenThreeStyles = (category) => {
+  let cssStyle = {
+    overflowY: 'scroll', minHeight: '475px', maxHeight: '475px'
+  }
+
+  cssStyle.background = colorMap[category];
+
+  return cssStyle;
+}
+
 let styleCategoryP = {
   font: "Open Sans",
-  background: "#43A047",
+  background: "#258039",
   padding: "10px 5px 10px 5px",
   textAlign: "center",
   color: "white",
   fontWeight: "bolder",
-  fontSize: "115%",
+  // fontSize: "115%",
   onMouseOver: "#FFF",
   borderRadius: "15px 15px 0px 0px"
 };
 
 let styleCategoryN = {
   font: "Open Sans",
-  background: "#00BCD4",
+  background: "#F5BE41",
   padding: "10px 5px 10px 5px",
   textAlign: "center",
   color: "white",
   fontWeight: "bolder",
-  fontSize: "115%",
+  // fontSize: "115%",
   onMouseOver: "#FFF",
   borderRadius: "15px 15px 0px 0px"
 };
 
 let styleCategoryD = {
   font: "Open Sans",
-  background: "#FF5722",
+  background: "#CF3721",
   padding: "10px 5px 10px 5px",
   textAlign: "center",
   color: "white",
   fontWeight: "bolder",
-  fontSize: "115%",
+  // fontSize: "115%",
   onMouseOver: "#FFF",
   borderRadius: "15px 15px 0px 0px"
 };

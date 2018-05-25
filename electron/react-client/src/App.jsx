@@ -4,6 +4,7 @@ import store from './store';
 import { DragDropContext } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+import Paper from 'material-ui/Paper';
 import SwipeableViews from 'react-swipeable-views';
 import { ipcRenderer } from 'electron';
 
@@ -20,7 +21,7 @@ class App extends React.Component {
     super(props);
 
     this.state = {
-      tabIndex: 0
+      tabIndex: 1
     }
 
     this.handleTabChange = this.handleTabChange.bind(this);
@@ -38,26 +39,19 @@ class App extends React.Component {
   
   render() {
     return(
-      <div>  
-      <MuiThemeProvider>
-      <Provider store={store}>
-        <MonitorContainer />
-      </Provider>
-      </MuiThemeProvider>
+    <MuiThemeProvider>
+      <Paper style={{background: 'white'}}>  
 
-      <MuiThemeProvider>
+        <Provider store={store}>
+          <MonitorContainer />
+        </Provider>
+      
+        <Provider store={store}>
+          <ViewSelector tabIndex={this.state.tabIndex} handleTabChange={this.handleTabChange} />
+        </Provider>
+      
       <Provider store={store}>
-        <ViewSelector tabIndex={this.state.tabIndex} handleTabChange={this.handleTabChange} />
-      </Provider>
-      </MuiThemeProvider>
-
-
-      <MuiThemeProvider>
-      <Provider store={store}>
-        <SwipeableViews
-          index={this.state.tabIndex}
-          // onChangeIndex={this.handleChange}
-        >
+        <SwipeableViews index={this.state.tabIndex}>
           <div>
             <DashboardContainer />
           </div>
@@ -65,16 +59,19 @@ class App extends React.Component {
           <div>
             <AnalyticsContainer />
           </div>
+          
           <div>
             <PomodoroContainer />
           </div>
+
           <div>
             <SettingsContainer />
           </div>
         </SwipeableViews>
       </Provider>
-      </MuiThemeProvider>
-      </div>
+      
+      </Paper>
+    </MuiThemeProvider>
     )
   }
 }
