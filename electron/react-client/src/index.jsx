@@ -5,7 +5,6 @@ import { parse } from 'url'
 import { remote, ipcRenderer } from 'electron'
 import axios from 'axios'
 import qs from 'qs'
-import Notification from 'node-mac-notifier';
 import readline from 'readline';
 import { google } from 'googleapis'
 import cron from 'cron';
@@ -36,9 +35,9 @@ ipcRenderer.on('cookies', (event, message) => {
 });
 
 ipcRenderer.send('token', 'check');
-ipcRenderer.once('token', (event, token) => {
-  // listEvents(token)
-});
+// ipcRenderer.once('token', (event, token) => {
+//   // listEvents(token)
+// });
 
 
 $('.message a').click(function(){
@@ -85,9 +84,10 @@ loginButton.addEventListener('click', () => {
     
   })
   .catch((err) => {
-    console.error(err);
-    // alert('Username/password combination do not match.')
-    //clear form
+    // console.error(err);
+    alert('Username/password combination do not match.')
+    document.getElementById('email').value = ''
+    document.getElementById('password').value = ''
   })
 })
 
@@ -190,13 +190,14 @@ function fetchGoogleProfile (accessToken) {
 let prevEventsIds = {};
 let upcomingEvents = [];
 let token;
+
 function listEvents(accessToken) {
   token = accessToken;
   const calendar = google.calendar({version: 'v3', auth});
   let oauth = new google.auth.OAuth2(
     clientId, clientSecret, redirectURI);
   oauth.setCredentials({access_token: accessToken});
-  let timeMin = moment().format().slice(0, 19) + '-04:00'
+  let timeMin = moment().format().slice(0, 19) + '-04:00' //EST
   let timeMax = moment().format().slice(0, 11) + '23:59:59-04:00'
   calendar.events.list({
     calendarId: 'primary',
@@ -221,19 +222,17 @@ function listEvents(accessToken) {
 }
 
 function notificationSender(upcomingEvents) {
-  //have to check all upcomingevents
   upcomingEvents.map((event, idx) => {
     let eventTime = event.start.dateTime
     let currentTime = JSON.stringify(moment().format()).split('T').join(' ').slice(0, 20)
     let difference = moment.duration(moment(eventTime).diff(moment(currentTime))).asSeconds();
-    if(difference < 0) {
-      upcomingEvents.splice(idx, 1);
-      prevEventsIds[event.id] = true;
-    } //removes events that have already passed
-    else if (difference < 600) { // event is within 10 minutes
-      let noti = new Notification('Upcoming Calendar Event', {body: event.summary, soundName: 'default'});
-      noti.addEventListener('click', () => noti.close());    
-      upcomingEvents.splice(idx, 1);
+
+    if(difference < 600) { 
+      if (difference > 0) { // send notification if event is within 10 minutes
+        let noti = new Notification('Upcoming Calendar Event', {body: event.summary, soundName: 'default'});
+        noti.addEventListener('click', () => noti.close());    
+      }
+      upcomingEvents.splice(idx, 1); //simply remove if event has already passed
       prevEventsIds[event.id] = true;
     }
   })
@@ -252,7 +251,7 @@ function updateEventIfMatch (newEvent) {
 }
 
 let timer = new cron.CronJob({
-  cronTime: '*/15 * * * * *', //checking every 5 seconds
+  cronTime: '*/5 * * * * *', //checking every 5 seconds
   onTick: function () {
     if(upcomingEvents.length > 0) notificationSender(upcomingEvents);
     if(token) listEvents(token);
