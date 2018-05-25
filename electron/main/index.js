@@ -18,7 +18,7 @@ let force_quit = false;
 const createTray = () => {
   let image = nativeImage.createFromPath(path.join(__dirname, '../leaf.png'))
   tray = new Tray(image);
-  tray.setToolTip('Thyme');
+  tray.setToolTip('Thyme.ly');
   tray.on('click', () => {
     mainWindow.isVisible() ? mainWindow.hide() : mainWindow.show();
   })

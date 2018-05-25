@@ -96,17 +96,23 @@ const sanitizeTitle = (title) => {
     'Google Search': ' ',
     'Untitled': ' ',
     'Gmail': 'Gmail',
+    'Google Calendar': 'Google Calendar',
     'Stack Overflow': 'Stack Overflow',
     'JSFiddle': 'JSFiddle'
   }
   if(titlesObj[title]) return titlesObj[title];
 
-  let name = title.split('-').reverse()[0].trim()
-  if (titlesObj[name]) return titlesObj[name];
   if (title.startsWith('http') || title.startsWith('www.')) {
     console.log(`turning ${title} into ${getDomainName(title)}`)
     return getDomainName(title);
   }
+
+  let name = title.split('-').reverse()[0].trim()
+  if (titlesObj[name]) return titlesObj[name];
+
+  name = title.split('-')[0].trim();
+  if (titlesObj[name]) return titlesObj[name];
+
   return title;
 }
 

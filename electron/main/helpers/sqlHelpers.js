@@ -39,7 +39,6 @@ const populateStore = (mainWindow) => {
           }
         }
       })
-      console.log('about to send sql activities', mainWindow)
       mainWindow.send('sqlActivities', newActivities) //IT IS BREAKING HERE WHY!
     })
 
