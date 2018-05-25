@@ -5,6 +5,7 @@ import Paper from 'material-ui/Paper';
 import TextField from 'material-ui/TextField';
 import Slider from 'material-ui/Slider';
 import RaisedButton from 'material-ui/RaisedButton';
+import SendIcon from 'material-ui/svg-icons/content/send';
 
 import { setPomPrefs } from '../actions/pomodoroActions.js';
 
@@ -57,8 +58,9 @@ class SettingsContainer extends React.Component {
   render() {
     return (
       <div>
-      <pre>{JSON.stringify(this.state)}</pre>
       <Paper style={{width: '350px', padding: '15px', fontWeight: 'bold'}}>
+        <h2><b>Your Pomodoro Settings</b></h2>
+        <br/>
         Work Spurt Length (Minutes): &nbsp;{this.state.workLength}
         <Slider name="workLength" defaultValue={this.state.workLength} value={this.state.workLength} step={1}
                 onChange={(e, val) => this.handleChange('workLength', val)} min={1} max={60}/>
@@ -67,19 +69,20 @@ class SettingsContainer extends React.Component {
         <Slider name="shortBreakLength" defaultValue={this.state.shortBreakLength} value={this.state.shortBreakLength} step={1}
                 onChange={(e, val) => this.handleChange('shortBreakLength', val)} min={1} max={30}/>
         <br/>
-        Spurts Before Long Break: &nbsp;{this.state.spurtsBeforeLongBreak}
-        <Slider name="spurtsBeforeLongBreak" defaultValue={this.state.spurtsBeforeLongBreak} value={this.state.spurtsBeforeLongBreak} step={1}
-                onChange={(e, val) => this.handleChange('spurtsBeforeLongBreak', val)} min={1} max={20}/>
-        <br/>
         Long Break Length (Minutes): &nbsp;{this.state.longBreakLength}
         <Slider name="longBreakLength" defaultValue={this.state.longBreakLength} value={this.state.longBreakLength} step={1}
                 onChange={(e, val) => this.handleChange('longBreakLength', val)} min={1} max={60}/>
+        <br/>
+        Spurts Before Long Break: &nbsp;{this.state.spurtsBeforeLongBreak}
+        <Slider name="spurtsBeforeLongBreak" defaultValue={this.state.spurtsBeforeLongBreak} value={this.state.spurtsBeforeLongBreak} step={1}
+                onChange={(e, val) => this.handleChange('spurtsBeforeLongBreak', val)} min={1} max={20}/>
         <br/>
         Pomodoro Sessions Per Day: &nbsp;{this.state.pomSessionsPerDay}
         <Slider name="pomSessionsPerDay" defaultValue={this.state.pomSessionsPerDay} value={this.state.pomSessionsPerDay} step={1}
                 onChange={(e, val) => this.handleChange('pomSessionsPerDay', val)} min={1} max={10}/><br />
       </Paper>
-      <RaisedButton label="Submit" onClick={this.handleSubmit}/>
+      <br/>
+      <RaisedButton label="Submit" icon={<SendIcon/>} onClick={this.handleSubmit}/>
       </div>
     );
   }
