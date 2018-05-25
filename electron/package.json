@@ -38,7 +38,8 @@
       },
       "electronPackagerConfig": {
         "packageManager": "npm",
-        "icon": "../react-client/dist/leaf-icon.png.icns"
+        "name": "Thyme.ly",
+        "icon": "./leaf-icon.png.icns"
       },
       "electronWinstallerConfig": {
         "name": "test"
