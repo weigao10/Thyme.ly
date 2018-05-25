@@ -31,12 +31,32 @@ const collect = (connect, monitor) => {
   }
 }
 
+//stylizing the "suggested by thyme.ly" line
+const insertColorIntoStyle = (category) => {
+  let color = {
+    'productive': '#43A047',
+    'neutral': '#FFB300',
+    'distracting': '#F4511E'
+  }
+
+  let style = {
+    color: color[category],
+    fontWeight: 'bolder'
+  }
+
+  return style;
+}
+
 //make long pieces of text shorter and end with '...' 
 const prettifier = (text) => {
   let results = text;
 
-  if (results.length >= 35) {
-    results = results.slice(0, 32) + '...';
+  if (results.length >= 55) {
+    results = results.slice(0, 52) + '...';
+  }
+
+  if (text === ' ') {
+    return 'miscellaneous';
   }
   
   return results;
@@ -58,9 +78,9 @@ const ActivityCard = (props) => {
   };
 
   let colorMap = {
-    'productive': {tick: '#DCEDC8', tock: '#AED581' },
-    'neutral': {tick: '#FFF9C4', tock: '#FFF176' },
-    'distracting': {tick: '#FFCCBC', tock: '#FF8A65'}
+    'productive': {tick: '#DCEDC8', tock: '#C5E1A5' },
+    'neutral': {tick: '#FFF9C4', tock: '#FFF59D' },
+    'distracting': {tick: '#FFCCBC', tock: '#FFAB91'}
   }
 
   if (index % 2 === 0) {
@@ -101,7 +121,7 @@ const ActivityCard = (props) => {
 
           <div style={{float: 'right', margin: '5px 0px 5px 0px'}}>
             <DeleteIcon 
-              style={{color: '#777', top: '-15', position: 'relative'}}
+              style={{color: '#777', top: '-8', position: 'relative'}}
               onClick={() => {deleteActivity(activity, category, isTracked, user)}} 
             />
           </div>
@@ -109,7 +129,7 @@ const ActivityCard = (props) => {
           <div style={{marginTop: '5px'}}>
             {activity.productivity.source === 'ml' 
             ? <div>
-                <i>Suggested By Thyme.ly</i>&nbsp;
+                <i style={insertColorIntoStyle(category)}>Suggested By Thyme.ly</i>&nbsp;
                 {/* <button onClick={() => {affirmCategorization(activity, category, isTracked, user)}}>✔️
                 </button> */}
                 <CheckMarkIcon style={{position: 'relative', top: '5'}} onClick={() => {affirmCategorization(activity, category, isTracked, user)}}/>
