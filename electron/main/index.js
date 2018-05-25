@@ -46,14 +46,13 @@ const createWindow = () => {
 
   // let appSession = session.fromPartition('partition1');
   mainWindow = new BrowserWindow({
-        width: winState.width,
-        height: winState.height,
-        x: winState.x,
-        y: winState.y,
-        minWidth: 400,
-        minHeight: 300,
-        show: false,
-        // icon: path.join(__dirname, '../react-client/dist/leaf-icon')
+      width: winState.width,
+      height: winState.height,
+      x: winState.x,
+      y: winState.y,
+      minWidth: 400,
+      minHeight: 300,
+      show: false
   });
 
   popUpWindow = new BrowserWindow({
@@ -148,6 +147,14 @@ app.on('ready', () => {
 app.on('activate', () => { 
   mainWindow.isVisible() ? mainWindow.hide() : mainWindow.show();
 });
+
+// const iconUrl = url.format({
+//   pathname: path.join(__dirname, 'react-client/dist/dock-leaf.png'),
+//   protocol: 'file:',
+//   slashes: true
+// })
+// alert('icon url', iconUrl)
+// app.dock.setIcon(iconUrl)
 
 ipcMain.on('got-idle-activity', (event, message) => {
   mainWindow.webContents.send('add-idle-activity', message)
