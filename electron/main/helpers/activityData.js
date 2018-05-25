@@ -6,6 +6,7 @@ const { ipcMain, session } = electron;
 const axios = require('axios');
 const chalk = require('chalk');
 const path = require('path');
+const url = require('url');
 
 const { serverURL } = require(path.join(__dirname, '../config.js'));
 
@@ -68,6 +69,19 @@ const stripEmoji = (title) => {
   } else return title;
 }
 
+const getDomainName = (url) => {
+  const match = url.match(/^(?:https?:\/\/)?(?:[^@\n]+@)?(?:www\.)?([^:\/\n\?\=]+)/im)
+  if (match) {
+    const result = match[1]
+    const secondMatch = result.match(/^[^\.]+\.(.+\..+)$/)
+    if (secondMatch) {
+        return secondMatch[1]
+    }
+    return result
+  }
+  return url
+}
+
 const sanitizeTitle = (title) => {
 
   let titlesObj = {
@@ -87,7 +101,11 @@ const sanitizeTitle = (title) => {
   if(titlesObj[title]) return titlesObj[title];
 
   let name = title.split('-').reverse()[0].trim()
-  if(titlesObj[name]) return titlesObj[name];
+  if (titlesObj[name]) return titlesObj[name];
+  if (title.startsWith('http') || title.startsWith('www.')) {
+    console.log(`turning ${title} into ${getDomainName(title)}`)
+    return getDomainName(title);
+  }
   return title;
 }
 
