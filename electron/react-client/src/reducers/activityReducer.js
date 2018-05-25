@@ -75,7 +75,7 @@ const activities = (state = initialState, action) => {
           class: newCatName
         }
       };
-      console.log('updated moving activity is', updatedActivity)
+      // console.log('updated moving activity is', updatedActivity)
       const updatedOldCategoryActivities = state[oldCatName].filter((el) => el.id !== id);
       const updatedNewCategoryActivities = [...state[newCatName] , updatedActivity];
       return {

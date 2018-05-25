@@ -78,8 +78,10 @@ app.post('/api/classifications', async (req, res) => {
     }
     if (req.body.params.ml === 'affirm') {
       console.log('log this as a ml win!');
+      db.updateMachineLearningLog('affirm');
     } else if (req.body.params.wasML) {
       console.log('bad ml!');
+      db.updateMachineLearningLog('reject');
     }
   } catch(e) {
     console.error(e)

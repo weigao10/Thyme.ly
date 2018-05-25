@@ -1,5 +1,6 @@
 const chalk = require('chalk');
 const { Pool, Client } = require('pg');
+const moment = require('moment');
 const { user, host, database, password, port } = require('../config.js');
 
 //Create connection to AWS database
@@ -124,7 +125,17 @@ const getBrowserActivities = () => {
   return pool.query(queryStr)
     .then(data => data.rows)
     .catch(err => console.error('error getting all browser titles', err))
-}
+};
+
+const updateMachineLearningLog = async (action) => {
+  const queryStr = `insert into public.machine_learning_log(timestamp, action) values($1, $2)`;
+  const value = [moment().format(), action];
+  try {
+    const queryResult = await pool.query(queryStr, value);
+  } catch(e) {
+    console.log('error trying to update ML log', e);
+  }
+};
 
 const insertActivity = () => {
   let query = 
@@ -248,6 +259,7 @@ exports.deleteProductivityClass = deleteProductivityClass;
 exports.addOrChangeProductivity = addOrChangeProductivity;
 exports.getBrowserActivities = getBrowserActivities;
 exports.pool = pool;
+exports.updateMachineLearningLog = updateMachineLearningLog
 // insertActivity();
 // getActivities();
 
