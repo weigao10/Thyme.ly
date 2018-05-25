@@ -4,6 +4,7 @@ import React from 'react';
 import Paper from 'material-ui/Paper';
 import TextField from 'material-ui/TextField';
 import Slider from 'material-ui/Slider';
+import RaisedButton from 'material-ui/RaisedButton';
 
 import { setPomPrefs } from '../actions/pomodoroActions.js';
 
@@ -31,8 +32,7 @@ class SettingsContainer extends React.Component {
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
-  handleSubmit(e) {
-    e.preventDefault();
+  handleSubmit() {
     if (this.props.pomodoro.status !== 'not started') {
       alert('Please clear pomodoro timer before changing pomodoro sessions!');
       return;
@@ -47,47 +47,39 @@ class SettingsContainer extends React.Component {
     alert('Your pomodoro timer preferences have been updated.')
   }
 
-  handleChange(e, value) {
+  handleChange(attr, value) {
+    console.log('slider event target is', attr, value)
     this.setState({
-      [e.target.name]: value
+      [attr]: value
     });
   }
 
   render() {
     return (
       <div>
-      <form onSubmit={this.handleSubmit}>
-        <label>
-          Work Spurt Length (Minutes): <textarea name="workLength" value={this.state.workLength} onChange={this.handleChange}/>
-        </label><br/>
-        <label>
-          Short Break Length (Minutes): <textarea name="shortBreakLength" value={this.state.shortBreakLength} onChange={this.handleChange} />
-        </label><br/>
-        <label>
-          Spurts Before Long Break: <textarea name="spurtsBeforeLongBreak" value={this.state.spurtsBeforeLongBreak} onChange={this.handleChange} />
-        </label><br/>
-        <label>
-          Long Break Length (Minutes): <textarea name="longBreakLength" value={this.state.longBreakLength} onChange={this.handleChange} />
-        </label><br/>
-        <label>
-          Pomodoro Sessions: <textarea name="pomSessionsPerDay" value={this.state.pomSessionsPerDay} onChange={this.handleChange} />
-        </label><br/>
-        <input type="submit" value="Submit" />
-      </form>
-
+      <pre>{JSON.stringify(this.state)}</pre>
       <Paper style={{width: '350px', padding: '15px', fontWeight: 'bold'}}>
-        Work Spurt Length: &nbsp;{this.state.workLength}
-        <Slider name="workLength" defaultValue={this.state.workLength} value={this.state.workLength} onChange={this.handleChange} min={0} max={100}/><br/>
-        Short Break Length: &nbsp;{this.state.shortBreakLength}
-        <Slider name="shortBreakLength" defaultValue={this.state.shortBreakLength} value={this.state.shortBreakLength} onChange={this.handleChange} min={0} max={100}/><br/>
+        Work Spurt Length (Minutes): &nbsp;{this.state.workLength}
+        <Slider name="workLength" defaultValue={this.state.workLength} value={this.state.workLength} step={1}
+                onChange={(e, val) => this.handleChange('workLength', val)} min={1} max={60}/>
+        <br/>
+        Short Break Length (Minutes): &nbsp;{this.state.shortBreakLength}
+        <Slider name="shortBreakLength" defaultValue={this.state.shortBreakLength} value={this.state.shortBreakLength} step={1}
+                onChange={(e, val) => this.handleChange('shortBreakLength', val)} min={1} max={30}/>
+        <br/>
         Spurts Before Long Break: &nbsp;{this.state.spurtsBeforeLongBreak}
-        <Slider name="spurtsBeforeLongBreak" defaultValue={this.state.spurtsBeforeLongBreak} value={this.state.spurtsBeforeLongBreak} onChange={this.handleChange} min={0} max={100}/><br/>
-        Long Break Length: &nbsp;{this.state.longBreakLength}
-        <Slider name="longBreakLength" defaultValue={this.state.longBreakLength} value={this.state.longBreakLength} onChange={this.handleChange} min={0} max={100}/><br/>
-        Pomodoro Sessions: &nbsp;{this.state.pomSessionsPerDay}
-        <Slider name="pomSessionsPerDay" defaultValue={this.state.pomSessionsPerDay} value={this.state.pomSessionsPerDay} onChange={this.handleChange} min={0} max={100}/><br />
-      
+        <Slider name="spurtsBeforeLongBreak" defaultValue={this.state.spurtsBeforeLongBreak} value={this.state.spurtsBeforeLongBreak} step={1}
+                onChange={(e, val) => this.handleChange('spurtsBeforeLongBreak', val)} min={1} max={20}/>
+        <br/>
+        Long Break Length (Minutes): &nbsp;{this.state.longBreakLength}
+        <Slider name="longBreakLength" defaultValue={this.state.longBreakLength} value={this.state.longBreakLength} step={1}
+                onChange={(e, val) => this.handleChange('longBreakLength', val)} min={1} max={60}/>
+        <br/>
+        Pomodoro Sessions Per Day: &nbsp;{this.state.pomSessionsPerDay}
+        <Slider name="pomSessionsPerDay" defaultValue={this.state.pomSessionsPerDay} value={this.state.pomSessionsPerDay} step={1}
+                onChange={(e, val) => this.handleChange('pomSessionsPerDay', val)} min={1} max={10}/><br />
       </Paper>
+      <RaisedButton label="Submit" onClick={this.handleSubmit}/>
       </div>
     );
   }
