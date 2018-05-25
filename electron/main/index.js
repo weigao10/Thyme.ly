@@ -52,7 +52,8 @@ const createWindow = () => {
         y: winState.y,
         minWidth: 400,
         minHeight: 300,
-        show: false
+        show: false,
+        // icon: path.join(__dirname, '../react-client/dist/leaf-icon')
   });
 
   popUpWindow = new BrowserWindow({
