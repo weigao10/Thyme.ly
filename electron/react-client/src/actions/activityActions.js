@@ -35,14 +35,15 @@ export const patchActivity = ({ activity, category, index }, data) => {
   }
 }
 
-export const changeCategory = (activity, oldCatName, newCatName, isTracked, user) => {
+export const changeCategory = (activity, oldCatName, newCatName, isTracked, user, wasML) => {
   const changeParams = {
     user_name: user,
     app_name: activity.app,
     window_title: activity.title,
     old_prod_class: oldCatName,
     prod_class: newCatName,
-    isTracked: isTracked
+    isTracked: isTracked,
+    wasML
   };
 
   const deleteParams = {
@@ -73,7 +74,8 @@ export const affirmCategorization = (activity, category, isTracked, user) => {
     app_name: activity.app,
     window_title: activity.title,
     prod_class: category,
-    isTracked: isTracked
+    isTracked: isTracked,
+    ml: 'affirm'
   };
   const request = axios.post(serverURL + '/api/classifications', {params: params});
   return {
