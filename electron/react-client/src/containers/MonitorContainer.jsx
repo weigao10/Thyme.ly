@@ -8,6 +8,11 @@ import AppBar from 'material-ui/AppBar';
 import FlatButton from 'material-ui/FlatButton';
 import Divider from 'material-ui/Divider';
 import RaisedButton from 'material-ui/RaisedButton';
+import FloatingActionButton from 'material-ui/FloatingActionButton';
+import ContentAdd from 'material-ui/svg-icons/content/add';
+import PlayButton from 'material-ui/svg-icons/av/play-arrow';
+import PauseButton from 'material-ui/svg-icons/av/pause';
+import Snackbar from 'material-ui/Snackbar';
 
 import { addActivity, patchActivity, setAllActivities } from '../actions/activityActions.js';
 import { setUser, setToken } from '../actions/userActions.js';
@@ -18,13 +23,14 @@ class MonitorContainer extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      showTimerButton: true,
+      showPlayButton: true,
       slideIndex: 0
     }
 
     this.checkState = this.checkState.bind(this);
     // this.toggleTimerButton = this.toggleTimerButton.bind(this);
     this.handleChange = this.handleChange.bind(this);
+    this.handlePlayButtonChange = this.handlePlayButtonChange.bind(this);
     this.logout = this.logout.bind(this);
   }
 
@@ -89,6 +95,15 @@ class MonitorContainer extends React.Component {
     });
   }
 
+  handlePlayButtonChange() {
+    console.error('clicked!');
+    if (this.props.monitor.running) {
+      this.props.pauseMonitor();
+    } else {
+      this.props.startMonitor();
+    }
+  }
+
   // toggleTimerButton() { //call this.props.pauseMonitor or this.props.startMonitor depending on current this.props.monitor.running
   //   let toggle = !this.state.showTimerButton;
   //   this.setState({
@@ -124,12 +139,34 @@ class MonitorContainer extends React.Component {
     return (
       // TODO: Make this component render a Pause/Start timer button
       <Paper zDepth={2} style={bottomBarStyle}>
-        <RaisedButton label="testing" buttonStyle={{verticalAlign: 'middle', background: '#ffcc33'}}/>
-        <button onClick={this.logout}>Test logout button</button>
-        IS MONITOR RUNNING? {JSON.stringify(this.props.monitor.running)}
+        {/* <button onClick={this.logout}>Test logout button</button> */}
+        <FlatButton 
+          label="Logout & Quit" 
+          hoverColor="#64B5F6"
+          onClick={this.logout} 
+          style={{position: 'relative', top: '8px', marginLeft: '10px'}}
+          labelStyle={{font: 'Tahoma', color: 'white', fontWeight: 'bold'}}
+        />
+        {/* IS MONITOR RUNNING? {JSON.stringify(this.props.monitor.running)}
         <button onClick={this.props.pauseMonitor}>Test pause button</button>
-        <button onClick={() => this.props.startMonitor(this.props.user.user)}>Test start button</button>
+        <button onClick={() => this.props.startMonitor(this.props.user.user)}>Test start button</button> */}
         {/* <pre>'current user is' {JSON.stringify(this.props.user)}</pre> */}
+        
+        <RaisedButton 
+          icon={this.props.monitor.running ? <PauseButton iconStyle={{fill: 'white'}}/> : <PlayButton/>} 
+          style={{float: 'right', position: 'relative', top: '8px', marginRight: '10px', background: '#2196F3'}}
+          buttonStyle={{borderRadius: '8px', background: '#64B5F6'}}
+          onClick={this.handlePlayButtonChange} 
+        />
+        <div style={{float: 'right', marginRight: '10px', position: 'relative', top: '15px', 
+                      color: 'white', font: 'Tahoma', fontWeight: 'bold'}}>
+          {
+            this.props.monitor.running 
+            ? <b>Tracker Is Running</b>
+            : <b>Tracker is Paused</b>
+          }
+        </div>
+       
       </Paper>
     )
   }
@@ -169,6 +206,9 @@ const mapDispatchToProps = dispatch => {
     },
     pauseMonitor: () => {
       dispatch(pauseMonitor())
+    }, 
+    toggleMonitor: () => {
+      dispatch(toggleMonitor());
     } 
   };
 }

@@ -41,10 +41,6 @@ class App extends React.Component {
     return(
     <MuiThemeProvider>
       <Paper style={{background: 'white'}}>  
-
-        <Provider store={store}>
-          <MonitorContainer />
-        </Provider>
       
         <Provider store={store}>
           <ViewSelector tabIndex={this.state.tabIndex} handleTabChange={this.handleTabChange} />
@@ -68,6 +64,10 @@ class App extends React.Component {
             <SettingsContainer />
           </div>
         </SwipeableViews>
+      </Provider>
+
+      <Provider store={store}>
+        <MonitorContainer />
       </Provider>
       
       </Paper>

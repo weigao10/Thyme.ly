@@ -57,14 +57,13 @@ const ActivityGroup = props => {
     >
       <Paper style={{background: 'white', margin: '0px 0px 5px 0px'}}>
         <Paper zDepth={2} style={styleMap[category]}>
-          {category[0].toUpperCase() + category.slice(1, category.length)}{" "}
-          &nbsp;
+          {category[0].toUpperCase() + category.slice(1, category.length)}
           <span
             style={{
-              fontSize: "75%",
               fontStyle: "italic"
             }}
           >
+            <br/>
             {getTotalDuration(activities)}
           </span>
         </Paper>  
@@ -118,9 +117,9 @@ const colorBgMap = {
 }
 
 const colorMap = {
-  productive: '#DCEDC8',
-  neutral: '#FFF9C4',
-  distracting: '#FFCCBC'
+  productive: '#F1F8E9',
+  neutral: '#FFFDE7',
+  distracting: '#FBE9E7'
 }
 
 const getTotalDuration = activities => {
@@ -151,7 +150,7 @@ let styleCategoryP = {
   textAlign: "center",
   color: "white",
   fontWeight: "bolder",
-  // fontSize: "115%",
+  fontSize: "110%",
   onMouseOver: "#FFF",
   borderRadius: "15px 15px 0px 0px"
 };
@@ -163,7 +162,7 @@ let styleCategoryN = {
   textAlign: "center",
   color: "white",
   fontWeight: "bolder",
-  // fontSize: "115%",
+  fontSize: "110%",
   onMouseOver: "#FFF",
   borderRadius: "15px 15px 0px 0px"
 };
@@ -175,7 +174,7 @@ let styleCategoryD = {
   textAlign: "center",
   color: "white",
   fontWeight: "bolder",
-  // fontSize: "115%",
+  fontSize: "110%",
   onMouseOver: "#FFF",
   borderRadius: "15px 15px 0px 0px"
 };
