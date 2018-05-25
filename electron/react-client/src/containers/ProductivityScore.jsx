@@ -104,7 +104,7 @@ class ProductivityScore extends React.Component {
 
     return (
         <div style={{ margin: '0px', background: 'white', font: 'Garamond', fontSize: "125%", textAlign: "center"}}>
-          <h3>Your <br/>Productivity Score</h3>
+          <h3>Your <br/>Productivity Score</h3><br/>
           {/* <div id="gauge" style={{ lineHeight: "300px" }} /> */}
 
           <ReactSpeedometer 

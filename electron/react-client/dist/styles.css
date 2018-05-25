@@ -5,6 +5,7 @@
   height: 100%;
   padding: 8% 0 0;
   margin: auto;
+  /* background-color: 'green'; */
 }
 .form {
   position: relative;
@@ -91,7 +92,8 @@
   color: #EF3B3A;
 }
 body {
-  background: #DCEDC8; /* fallback for old browsers */
+  background: 'red';
+  padding: '0px';
   font-family: "Roboto", sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;      

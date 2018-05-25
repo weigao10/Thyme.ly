@@ -1,6 +1,9 @@
 import { connect } from 'react-redux';
 import React from 'react';
 import Paper from 'material-ui/Paper';
+import RaisedButton from 'material-ui/RaisedButton';
+import PauseButton from 'material-ui/svg-icons/av/pause';
+import PlayButton from 'material-ui/svg-icons/av/play-arrow';
 import { PieChart, Pie, Legend, Cell, Label } from 'recharts';
 import moment from 'moment';
 
@@ -24,6 +27,7 @@ class PomodoroContainer extends React.Component {
       elapsedTime: 0,
       lastRerender: null,
     }
+
     this.trackTime = this.trackTime.bind(this);
     this.startTimer = this.startTimer.bind(this);
     this.pauseTimer = this.pauseTimer.bind(this);
@@ -110,26 +114,48 @@ class PomodoroContainer extends React.Component {
     // console.log('local state elapsed time', this.state.elapsedTime)
 
     return (
-      <Paper style={stylePaper}>
-        <div>Total time left: {formatMSToHMS(totalDayData[1].value)}</div>
-        <PieChart width={800} height={400}>
-          <Pie dataKey="value" data={currentSpurtData} cx={200} cy={200} innerRadius={70} outerRadius={90} fill="#82ca9d">
-            <Label value={pomodoro.currentSpurt.type + ":  " + formatMSToMS(currentSpurtData[1].value)} position="center" /> 
-            <Cell fill={'#00C49F'}/>
-            <Cell fill={'#ffffff'}/>
-          </Pie>
-          <Pie dataKey="value" data={totalDayData} cx={200} cy={200} innerRadius={100} outerRadius={150} fill="#82ca9d">
-            <Cell fill={'#0088FE'}/>
-            <Cell fill={'#ffffff'}/>
-          </Pie>
-        </PieChart>
-        {pomodoro.status === 'not started' ? <button onClick={this.startTimer}>start timer</button> : null}
-        {pomodoro.status === 'running' ? <button onClick={this.pauseTimer}>pause</button> : null}
-        {pomodoro.status === 'paused' ? <button onClick={this.resumeTimer}>resume</button> : null}
-        {pomodoro.status === 'not started' ? null : <button onClick={this.clearTimer}>clear</button>}
-        {/* last button is duplicative of the first logically, but this spaces out the buttons better */}
-        <button onClick={this.skipAhead}>complete spurt</button>
-      </Paper>
+      <div style={{textAlign: 'center'}}>
+        <Paper style={stylePaper}>
+          
+          <PieChart width={400} height={500}>
+            <Pie dataKey="value" data={currentSpurtData} cx={200} cy={200} innerRadius={70} outerRadius={90} fill="#82ca9d">
+              <Label 
+                value={pomodoro.currentSpurt.type + ":  " + formatMSToMS(currentSpurtData[1].value)} 
+                position="center" /> 
+              <Cell fill={'#00C49F'}/>
+              <Cell fill={'#FFFDE7'}/>
+            </Pie>
+            <Pie dataKey="value" data={totalDayData} cx={200} cy={200} innerRadius={100} outerRadius={135} fill="#blue">
+              <Cell fill={'#0088FE'}/>
+              <Cell fill={'#FFFDE7'}/>
+            </Pie>
+          </PieChart>
+        </Paper>
+        <Paper style={stylePaper}>
+        <div style={{padding: '36% 25% 40% 25%', marginBottom: '10px', fontWeight: 'bold', font: 'Roboto', fontSize: '165%'}}>
+        
+          Total Time Left: <br/>
+          <span style={{fontSize: '150%'}}>
+            {formatMSToHMS(totalDayData[1].value)}
+          </span>
+
+           {pomodoro.status === 'not started' 
+              ? <RaisedButton labelPosition="after" style={containerStyle} icon={<PlayButton/>} buttonStyle={buttonStyle} onClick={this.startTimer}>Start</RaisedButton> 
+              : null}
+            {pomodoro.status === 'running' 
+              ? <RaisedButton style={containerStyle} icon={<PauseButton/>} buttonStyle={buttonStyle} onClick={this.pauseTimer}>Pause</RaisedButton> 
+              : null}
+            {pomodoro.status === 'paused' 
+              ? <RaisedButton style={containerStyle} icon={<PlayButton/>} buttonStyle={buttonStyle} onClick={this.resumeTimer}>Resume</RaisedButton> 
+              : null}
+            {pomodoro.status === 'not started' 
+              ? null 
+              : <RaisedButton style={containerStyle} buttonStyle={buttonStyle} onClick={this.clearTimer}>Clear</RaisedButton>}
+            {/* last button is duplicative of the first logically, but this spaces out the buttons better */}
+            <RaisedButton style={containerStyle} buttonStyle={buttonStyle} onClick={this.skipAhead}>Complete</RaisedButton>
+        </div>
+        </Paper>
+      </div>
     )
   }
 }
@@ -174,9 +200,26 @@ const mapDispatchToProps = (dispatch) => {
 }
 
 const stylePaper = {
-  background: '#EEE',
-  padding: '15px',
-  minHeight: '425px'
+  display: 'inline-block',
+  align: 'top',
+  background: '#FFE082',
+  padding: '10px',
+  height: '475px',
+  width: '420px',
+  margin: '25px',
+  verticalAlign: 'top'
 };
+
+const containerStyle = {
+  margin: '5px',
+  fontWeight: 'bold',
+  fontSize: '50%',
+  width: '50px'
+}
+
+const buttonStyle = {
+  // padding: '8px',
+  background: '#90A4AE'
+}
 
 export default connect(mapStateToProps, mapDispatchToProps)(PomodoroContainer);

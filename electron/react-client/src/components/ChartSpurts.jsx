@@ -2,6 +2,7 @@ import React from 'react';
 import {BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend} from 'recharts';
 import moment from 'moment';
 import clone from 'clone';
+import Paper from 'material-ui/Paper';
 
 const data = [
   {name: '8am', uv: 280, pv: 450, amt: 360},
