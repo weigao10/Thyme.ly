@@ -49,7 +49,7 @@ class DashboardContainer extends React.Component {
             affirmCategorization={affirmCategorization}
           />
         </Paper>
-        <Paper zDepth={1} style={{borderRadius: '15 15 15 15', display: 'inline-block', background: 'white', margin: '0', padding: '120px 0px 0px 0px', width: '25%', minHeight: '425px', maxHeight: '700px', verticalAlign: 'top'}}>
+        <Paper zDepth={1} style={{borderRadius: '15 15 15 15', display: 'inline-block', background: 'white', margin: '0', padding: '90px 0px 0px 0px', width: '25%', height: '450px', verticalAlign: 'top'}}>
           <ProductivityScore 
             activities={activities}
           />

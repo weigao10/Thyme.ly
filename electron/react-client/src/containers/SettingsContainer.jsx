@@ -57,8 +57,8 @@ class SettingsContainer extends React.Component {
 
   render() {
     return (
-      <div>
-      <Paper style={{width: '350px', padding: '15px', fontWeight: 'bold'}}>
+      <div style={{padding: '15px'}}>
+      <Paper style={{width: '350px', padding: '15px', fontWeight: 'bold', maxHeight: '450px', overflowY: 'scroll'}}>
         <h2><b>Your Pomodoro Settings</b></h2>
         <br/>
         Work Spurt Length (Minutes): &nbsp;{this.state.workLength}

@@ -34,7 +34,6 @@ const ChartTopRankings = (props) => {
 
   return (
     <div>
-      <Paper style={stylePaper}>
         <h3 style={{textAlign: 'center', fontWeight: 'bold'}}>Top 5 Productive</h3>
         <PieChart width={600} height={300}>
           <Pie 
@@ -51,9 +50,9 @@ const ChartTopRankings = (props) => {
           </Pie>
       
         </PieChart>
-      </Paper>
 
-      <Paper style={stylePaper}>
+
+
         <h3 style={{textAlign: 'center', fontWeight: 'bold'}}>Top 5 Distracting</h3>
         <PieChart width={600} height={300}>
           <Pie 
@@ -70,7 +69,7 @@ const ChartTopRankings = (props) => {
           </Pie>
       
         </PieChart>
-      </Paper>
+
     </div>
   );
 }
