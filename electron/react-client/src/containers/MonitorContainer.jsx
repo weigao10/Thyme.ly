@@ -12,6 +12,7 @@ import FloatingActionButton from 'material-ui/FloatingActionButton';
 import ContentAdd from 'material-ui/svg-icons/content/add';
 import PlayButton from 'material-ui/svg-icons/av/play-arrow';
 import PauseButton from 'material-ui/svg-icons/av/pause';
+import SendIcon from 'material-ui/svg-icons/content/send';
 import Snackbar from 'material-ui/Snackbar';
 
 import { addActivity, patchActivity, setAllActivities } from '../actions/activityActions.js';
@@ -153,6 +154,8 @@ class MonitorContainer extends React.Component {
         {/* <pre>'current user is' {JSON.stringify(this.props.user)}</pre> */}
         
         <RaisedButton 
+          label={this.props.monitor.running ? "Pause" : "Play"}
+          labelStyle={{fontWeight: 'bold', font: 'Garamond'}}
           icon={this.props.monitor.running ? <PauseButton /> : <PlayButton />} 
           style={{float: 'right', position: 'relative', top: '8px', marginRight: '10px', background: '#2196F3'}}
           buttonStyle={{borderRadius: '8px', background: '#64B5F6'}}

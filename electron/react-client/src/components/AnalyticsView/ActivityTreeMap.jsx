@@ -1,6 +1,8 @@
 import React from 'react';
 import { Treemap, Tooltip } from 'recharts';
 import moment from 'moment';
+import stylePaper from '../../constants.js';
+import Paper from 'material-ui/Paper';
 
 const timestampToUnix = (timeStamp) => {
   return moment(timeStamp, 'MMMM Do YYYY, h:mm:ss a').valueOf();
@@ -122,19 +124,21 @@ class ActivityTreeMap extends React.Component {
     const data = treeMapActivities(this.props.activities)
 
     return (
-      <Treemap
-      width={400}
-      height={200}
-      data={data}
-      dataKey="size"
-      ratio={4/3}
-      stroke="#fff"
-      fill="#8884d8"
-      content={<CustomizedContent colors={COLORS}/>}
-      isAnimationActive={true}
-    >
-     <Tooltip></Tooltip>
-    </Treemap>
+      <Paper style={{margin: '15px'}}>
+        <Treemap
+        width={400}
+        height={200}
+        data={data}
+        dataKey="size"
+        ratio={4/3}
+        stroke="#fff"
+        fill="#8884d8"
+        content={<CustomizedContent colors={COLORS}/>}
+        isAnimationActive={true}
+      >
+      <Tooltip></Tooltip>
+      </Treemap>
+    </Paper>
     );
   }
 } 
