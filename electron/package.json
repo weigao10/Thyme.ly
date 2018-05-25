@@ -37,7 +37,8 @@
         ]
       },
       "electronPackagerConfig": {
-        "packageManager": "npm"
+        "packageManager": "npm",
+        "icon": "../react-client/dist/leaf-icon.png.icns"
       },
       "electronWinstallerConfig": {
         "name": "test"
