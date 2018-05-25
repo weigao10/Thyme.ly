@@ -187,6 +187,7 @@ function fetchGoogleProfile (accessToken) {
 
 //------------------------------------------------------------------------- GOOGLE CALENDAR
 
+let prevEventsIds = {};
 let upcomingEvents = [];
 let token;
 function listEvents(accessToken) {
@@ -209,13 +210,9 @@ function listEvents(accessToken) {
     if (err) return console.log('The API returned an error: ' + err);
     const events = data.data.items;
     if (events.length) {
-      console.log('Upcoming 10 events:');
       events.map((event, i) => {
-        console.log('event is ', event)
-        upcomingEvents.push(event)
-        compareEvents(event)
-        const start = event.start.dateTime || event.start.date;
-        console.log(`${start} - ${event.summary}`);
+        if(upcomingEvents.length === 0) upcomingEvents.push(event);
+        else updateEventIfMatch(event)
       });
     } else {
       console.log('No upcoming events found.');
@@ -224,31 +221,41 @@ function listEvents(accessToken) {
 }
 
 function notificationSender(upcomingEvents) {
-  let event = upcomingEvents[0]
-  let eventTime = event.start.dateTime
-  let currentTime = JSON.stringify(moment().format()).split('T').join(' ').slice(0, 20)
-  let difference = moment.duration(moment(eventTime).diff(moment(currentTime))).asSeconds();
-  if(difference < 0) upcomingEvents.shift(); //removes events that have already passed
-  else if (difference < 600) { //10 minutes
-    let noti = new Notification('Upcoming Calendar Event', {body: event.summary,  soundName: 'default'});
-    noti.addEventListener('click', () => noti.close());    
-    upcomingEvents.shift();
-  }
+  //have to check all upcomingevents
+  upcomingEvents.map((event, idx) => {
+    let eventTime = event.start.dateTime
+    let currentTime = JSON.stringify(moment().format()).split('T').join(' ').slice(0, 20)
+    let difference = moment.duration(moment(eventTime).diff(moment(currentTime))).asSeconds();
+    if(difference < 0) {
+      upcomingEvents.splice(idx, 1);
+      prevEventsIds[event.id] = true;
+    } //removes events that have already passed
+    else if (difference < 600) { // event is within 10 minutes
+      let noti = new Notification('Upcoming Calendar Event', {body: event.summary, soundName: 'default'});
+      noti.addEventListener('click', () => noti.close());    
+      upcomingEvents.splice(idx, 1);
+      prevEventsIds[event.id] = true;
+    }
+  })
 }
 
-function compareEvents (newEvent) {
-  upcomingEvents = upcomingEvents.map((oldEvent) => {
-      if(oldEvent.etag === newEvent.etag){
-        return (oldEvent.start.dateTime === oldEvent.start.dateTime) ? oldEvent : newEvent
-      }
+function updateEventIfMatch (newEvent) {
+  let noMatch = true;
+  upcomingEvents.map((oldEvent, idx) => {
+    if(oldEvent.id === newEvent.id){
+      noMatch = false;
+      if(oldEvent.start.dateTime !== newEvent.start.dateTime) upcomingEvents.splice(idx, 1, newEvent)
+      return;
+    }
   })
-  console.log('new upcoming events', upcomingEvents);
+  if(noMatch && !prevEventsIds[newEvent.id]) upcomingEvents.push(newEvent);
 }
 
 let timer = new cron.CronJob({
-  cronTime: '*/5 * * * * *', //checking every 5 seconds
+  cronTime: '*/15 * * * * *', //checking every 5 seconds
   onTick: function () {
     if(upcomingEvents.length > 0) notificationSender(upcomingEvents);
+    if(token) listEvents(token);
   },
   start: true,
   timeZone: 'America/New_York'
