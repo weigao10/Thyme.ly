@@ -54,7 +54,10 @@ app.get('/api/classifications', async (req, res) => {
       });
     }
   } catch(e) {
-    res.send(e)
+    res.send({
+      source: 'user',
+      class: null
+    })
   }
 });
 
