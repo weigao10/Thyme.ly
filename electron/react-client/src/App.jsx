@@ -21,7 +21,7 @@ class App extends React.Component {
     super(props);
 
     this.state = {
-      tabIndex: 1
+      tabIndex: 3
     }
 
     this.handleTabChange = this.handleTabChange.bind(this);

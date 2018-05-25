@@ -153,7 +153,7 @@ class MonitorContainer extends React.Component {
         {/* <pre>'current user is' {JSON.stringify(this.props.user)}</pre> */}
         
         <RaisedButton 
-          icon={this.props.monitor.running ? <PauseButton iconStyle={{fill: 'white'}}/> : <PlayButton/>} 
+          icon={this.props.monitor.running ? <PauseButton /> : <PlayButton />} 
           style={{float: 'right', position: 'relative', top: '8px', marginRight: '10px', background: '#2196F3'}}
           buttonStyle={{borderRadius: '8px', background: '#64B5F6'}}
           onClick={this.handlePlayButtonChange} 

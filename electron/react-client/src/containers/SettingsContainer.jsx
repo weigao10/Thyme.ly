@@ -1,6 +1,10 @@
 import { connect } from 'react-redux';
 import React from 'react';
 
+import Paper from 'material-ui/Paper';
+import TextField from 'material-ui/TextField';
+import Slider from 'material-ui/Slider';
+
 import { setPomPrefs } from '../actions/pomodoroActions.js';
 
 const msToMinutes = (ms) => {
@@ -43,14 +47,15 @@ class SettingsContainer extends React.Component {
     alert('Your pomodoro timer preferences have been updated.')
   }
 
-  handleChange(e) {
+  handleChange(e, value) {
     this.setState({
-      [e.target.name]: e.target.value
+      [e.target.name]: value
     });
   }
 
   render() {
     return (
+      <div>
       <form onSubmit={this.handleSubmit}>
         <label>
           Work Spurt Length (Minutes): <textarea name="workLength" value={this.state.workLength} onChange={this.handleChange}/>
@@ -69,6 +74,21 @@ class SettingsContainer extends React.Component {
         </label><br/>
         <input type="submit" value="Submit" />
       </form>
+
+      <Paper style={{width: '350px', padding: '15px', fontWeight: 'bold'}}>
+        Work Spurt Length: &nbsp;{this.state.workLength}
+        <Slider name="workLength" defaultValue={this.state.workLength} value={this.state.workLength} onChange={this.handleChange} min={0} max={100}/><br/>
+        Short Break Length: &nbsp;{this.state.shortBreakLength}
+        <Slider name="shortBreakLength" defaultValue={this.state.shortBreakLength} value={this.state.shortBreakLength} onChange={this.handleChange} min={0} max={100}/><br/>
+        Spurts Before Long Break: &nbsp;{this.state.spurtsBeforeLongBreak}
+        <Slider name="spurtsBeforeLongBreak" defaultValue={this.state.spurtsBeforeLongBreak} value={this.state.spurtsBeforeLongBreak} onChange={this.handleChange} min={0} max={100}/><br/>
+        Long Break Length: &nbsp;{this.state.longBreakLength}
+        <Slider name="longBreakLength" defaultValue={this.state.longBreakLength} value={this.state.longBreakLength} onChange={this.handleChange} min={0} max={100}/><br/>
+        Pomodoro Sessions: &nbsp;{this.state.pomSessionsPerDay}
+        <Slider name="pomSessionsPerDay" defaultValue={this.state.pomSessionsPerDay} value={this.state.pomSessionsPerDay} onChange={this.handleChange} min={0} max={100}/><br />
+      
+      </Paper>
+      </div>
     );
   }
 }
