@@ -5,7 +5,7 @@ const sumDuration = (activityArr) => {
   if (!activityArr.length) return 0;
   return activityArr.reduce((a, b) => {
     return a + b.duration;
-  }, 0);
+  }, 0) / 60;
 }
 
 const ActivityRadarChart = ({ activities }) => {
@@ -29,7 +29,7 @@ const ActivityRadarChart = ({ activities }) => {
         <PolarGrid />
         <PolarAngleAxis dataKey="category" />
         <PolarRadiusAxis/>
-        <Radar name="Mike" dataKey="duration" stroke="#8884d8" fill="#8884d8" fillOpacity={0.6}/>
+        <Radar dataKey="duration" stroke="#8884d8" fill="#8884d8" fillOpacity={0.6}/>
       </RadarChart>
   );
 }
