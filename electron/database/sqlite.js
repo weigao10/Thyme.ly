@@ -63,7 +63,6 @@ const getActivities = () => {
 }
 
 const getSpurts = (cb) => {
-  console.log('in get spurts')
 
   // let query = `SELECT id, date, productivity, app, title, startTime, endTime FROM spurts WHERE date=date(${date})`;
   let query = `SELECT id, date, productivity, app, title, startTime, endTime FROM spurts`
@@ -76,7 +75,6 @@ const getSpurts = (cb) => {
 }
 
 const clearDb = () => {
-  console.log('in clear db', date);
 
   // let querys = [`DELETE FROM activities WHERE date=${date}`, `DELETE FROM preferences`, `DELETE FROM spurts WHERE date=${date}`]
   let querys = [`DELETE FROM activities`, `DELETE FROM preferences`, `DELETE FROM spurts`]

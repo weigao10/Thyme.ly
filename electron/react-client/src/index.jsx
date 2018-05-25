@@ -32,6 +32,7 @@ ipcRenderer.send('cookies', 'check');
 ipcRenderer.on('cookies', (event, message) => {
   ReactDOM.render((<App user={message.value}/>), document.getElementById('app'))
   document.getElementById('login-page').innerHTML = '';
+  document.body.style.backgroundColor = 'white'
 });
 
 ipcRenderer.send('token', 'check');
