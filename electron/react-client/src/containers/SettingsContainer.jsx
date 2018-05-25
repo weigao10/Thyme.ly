@@ -55,8 +55,8 @@ class SettingsContainer extends React.Component {
 
   render() {
     return (
-      <div>
-      <form onSubmit={this.handleSubmit}>
+      <div style={{width: '100%'}}>
+      <form style={{display: 'inline-block', width: '200px'}} onSubmit={this.handleSubmit}>
         <label>
           Work Spurt Length (Minutes): <textarea name="workLength" value={this.state.workLength} onChange={this.handleChange}/>
         </label><br/>
@@ -75,7 +75,7 @@ class SettingsContainer extends React.Component {
         <input type="submit" value="Submit" />
       </form>
 
-      <Paper style={{width: '350px', padding: '15px', fontWeight: 'bold'}}>
+      <Paper style={{width: '350px', maxHeight: '475px', overflowY: 'scroll', paddingRight: '30px', fontWeight: 'bold', float: 'right', display: 'inline-block'}}>
         Work Spurt Length: &nbsp;{this.state.workLength}
         <Slider name="workLength" defaultValue={this.state.workLength} value={this.state.workLength} onChange={this.handleChange} min={0} max={100}/><br/>
         Short Break Length: &nbsp;{this.state.shortBreakLength}

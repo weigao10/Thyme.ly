@@ -32,9 +32,9 @@ class AnalyticsContainer extends React.Component {
     };
 
     return (
-      <Paper style={stylePaper}>
+      <div style={{padding: '15px', marginBottom: '15px'}}>
 
-      <Tabs inkBarStyle={{background: '#ffcc33'}} style={{height: '55px', width: '350px'}}>
+      <Tabs inkBarStyle={{background: '#2196F3'}} style={{height: '55px', width: '350px'}}>
         <Tab label='Pie Chart' style={styleRoot} buttonStyle={styleButton}>
           <ChartTopRankings activities={this.props.activities} />
         </Tab>
@@ -49,7 +49,7 @@ class AnalyticsContainer extends React.Component {
 
       </Tabs>
 
-      </Paper>
+      </div>
     )
   }
 
@@ -62,12 +62,12 @@ const styleRoot = {
 };
 
 const styleButton = {
-  color: 'black',
+  color: 'white',
   
-  background: '#1DE9B6', 
+  background: '#333', 
   fontWeight: 'bold', 
   fontSize: '80%', 
-  borderRadius: '6px 6px 0px 0px',
+  // borderRadius: '6px 6px 0px 0px',
   height: '25px'
 };
 
