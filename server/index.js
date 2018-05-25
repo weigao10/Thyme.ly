@@ -76,6 +76,13 @@ app.post('/api/classifications', async (req, res) => {
     } else if (app_name === 'Google Chrome') {
       learnProductivityClass(window_title, prod_class)
     }
+    if (req.body.params.ml === 'affirm') {
+      console.log('log this as a ml win!');
+      db.updateMachineLearningLog('affirm');
+    } else if (req.body.params.wasML) {
+      console.log('bad ml!');
+      db.updateMachineLearningLog('reject');
+    }
   } catch(e) {
     console.error(e)
     res.send('');

@@ -15,9 +15,10 @@ const comparisonTarget = {
     const { activity, oldCategory } = monitor.getItem();
     const isTracked = props.preferences.trackedApps.includes(activity.app);
     const newCategory = props.category;
+    const wasML = activity.productivity.source === 'ml';
     const user = props.user
-    // console.log(`isTracked in drop zone is ${isTracked} and user is ${user}`)
-    props.changeCategory(activity, oldCategory, newCategory, isTracked, user);
+    // console.log('activity being moved is', activity);
+    props.changeCategory(activity, oldCategory, newCategory, isTracked, user, wasML);
   }
 };
 

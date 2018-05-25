@@ -40,6 +40,12 @@ CREATE TABLE scrape_categories(
   user_name VARCHAR NOT NULL
 );
 
+CREATE TABLE machine_learning_log(
+  log_id serial NOT NULL PRIMARY KEY,
+  timestamp timestamp,
+  action VARCHAR NOT NULL CHECK (action = 'affirm' or action = 'reject')
+)
+
 CREATE TABLE user_metrics(
   date TIMESTAMP not null,
   prod_number integer,

@@ -31,39 +31,41 @@ const ChartTopRankings = (props) => {
 
   return (
     <div>
-      <h3>Top 5 Productive Apps/Websites</h3>
-            <PieChart width={550} height={300}>
-              <Pie 
-                data={topFiveProductive} 
-                dataKey="duration" 
-                nameKey="title" 
-                cx="50%" 
-                cy="50%" 
-                outerRadius={50} 
-                fill="#8884d8"
-                label={(activity) => prettifier(activity.title)}
-              >
-                
-              </Pie>
-          
-            </PieChart>
-
-            <h3>Top 5 Distracting Apps/Websites</h3>
-            <PieChart width={550} height={300}>
-              <Pie 
-                data={topFiveDistracting} 
-                dataKey="duration" 
-                nameKey="title" 
-                cx="50%" 
-                cy="50%" 
-                outerRadius={50} 
-                fill="#8884d8"
-                label={(activity) => prettifier(activity.title)}
-              >
-                
-              </Pie>
-          
-            </PieChart>
+      <div>
+        <h3>Top 5 Productive Apps/Websites</h3>
+        <PieChart width={550} height={300}>
+          <Pie 
+            data={topFiveProductive} 
+            dataKey="duration" 
+            nameKey="title" 
+            cx="50%" 
+            cy="50%" 
+            outerRadius={50} 
+            fill="#8884d8"
+            label={(activity) => prettifier(activity.title)}
+          >
+            
+          </Pie>
+      
+        </PieChart>
+      </div>
+      
+      <div>
+        <h3>Top 5 Distracting Apps/Websites</h3>
+        <PieChart width={550} height={300}>
+          <Pie 
+            data={topFiveDistracting} 
+            dataKey="duration" 
+            nameKey="title" 
+            cx="50%" 
+            cy="50%" 
+            outerRadius={50} 
+            fill="#8884d8"
+            label={(activity) => prettifier(activity.title)}
+          >
+          </Pie>
+        </PieChart>
+      </div>
     </div>
   );
 }
