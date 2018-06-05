@@ -15,9 +15,10 @@ const comparisonTarget = {
     const { activity, oldCategory } = monitor.getItem();
     const isTracked = props.preferences.trackedApps.includes(activity.app);
     const newCategory = props.category;
+    const wasML = activity.productivity.source === 'ml';
     const user = props.user
-    // console.log(`isTracked in drop zone is ${isTracked} and user is ${user}`)
-    props.changeCategory(activity, oldCategory, newCategory, isTracked, user);
+    // console.log('activity being moved is', activity);
+    props.changeCategory(activity, oldCategory, newCategory, isTracked, user, wasML);
   }
 };
 
@@ -57,18 +58,18 @@ const ActivityGroup = props => {
     >
       <Paper style={{background: 'white', margin: '0px 0px 5px 0px'}}>
         <Paper zDepth={2} style={styleMap[category]}>
-          {category[0].toUpperCase() + category.slice(1, category.length)}{" "}
-          &nbsp;
+          {category[0].toUpperCase() + category.slice(1, category.length)}
           <span
             style={{
-              fontSize: "75%",
               fontStyle: "italic"
             }}
           >
+            <br/>
             {getTotalDuration(activities)}
           </span>
-        </Paper>
-        <Paper zDepth={0} style={{overflowY: 'scroll', minHeight: '475px', maxHeight: '475px'}}>
+        </Paper>  
+                                
+        <Paper zDepth={1} style={pickBetweenThreeStyles(category)}>
           {sortedActivities.map((activity, index) => {
             return (
               <ActivityCard
@@ -85,10 +86,42 @@ const ActivityGroup = props => {
             );
           })}
         </Paper>
+
+        <Paper zDepth={1} style={
+          function inlineStyle() {
+            let style = {
+              font: "Open Sans",
+              background: "black",
+              padding: "10px 5px 10px 5px",
+              textAlign: "center",
+              color: "white",
+              fontWeight: "bolder",
+              // fontSize: "115%",
+              onMouseOver: "#FFF",
+              borderRadius: "0px 0px 15px 15px"
+            }
+
+            style.background = colorBgMap[category];
+            return style;
+          }()
+        }>
+        </Paper>
       </Paper>
     </div>
   );
 };
+
+const colorBgMap = {
+  productive: '#258039',
+  neutral: '#F5BE41',
+  distracting: '#CF3721'
+}
+
+const colorMap = {
+  productive: '#F1F8E9',
+  neutral: '#FFFDE7',
+  distracting: '#FBE9E7'
+}
 
 const getTotalDuration = activities => {
   let duration = 0;
@@ -101,38 +134,48 @@ const getTotalDuration = activities => {
   return formatDuration;
 };
 
+const pickBetweenThreeStyles = (category) => {
+  let cssStyle = {
+    overflowY: 'scroll', minHeight: '475px', maxHeight: '475px'
+  }
+
+  cssStyle.background = colorMap[category];
+
+  return cssStyle;
+}
+
 let styleCategoryP = {
   font: "Open Sans",
-  background: "#43A047",
+  background: "#258039",
   padding: "10px 5px 10px 5px",
   textAlign: "center",
   color: "white",
   fontWeight: "bolder",
-  fontSize: "115%",
+  fontSize: "110%",
   onMouseOver: "#FFF",
   borderRadius: "15px 15px 0px 0px"
 };
 
 let styleCategoryN = {
   font: "Open Sans",
-  background: "#00BCD4",
+  background: "#F5BE41",
   padding: "10px 5px 10px 5px",
   textAlign: "center",
   color: "white",
   fontWeight: "bolder",
-  fontSize: "115%",
+  fontSize: "110%",
   onMouseOver: "#FFF",
   borderRadius: "15px 15px 0px 0px"
 };
 
 let styleCategoryD = {
   font: "Open Sans",
-  background: "#FF5722",
+  background: "#CF3721",
   padding: "10px 5px 10px 5px",
   textAlign: "center",
   color: "white",
   fontWeight: "bolder",
-  fontSize: "115%",
+  fontSize: "110%",
   onMouseOver: "#FFF",
   borderRadius: "15px 15px 0px 0px"
 };

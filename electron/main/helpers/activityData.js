@@ -6,6 +6,7 @@ const { ipcMain, session } = electron;
 const axios = require('axios');
 const chalk = require('chalk');
 const path = require('path');
+const url = require('url');
 
 const { serverURL } = require(path.join(__dirname, '../config.js'));
 
@@ -30,7 +31,12 @@ const monitorActivity = (activities, user) => {
         }
         return axios.get(serverURL + '/api/classifications', {params: qs})
           .then((resp) => {
-            if (typeof resp.data !== 'object') console.log(chalk.blue('RECEIVED PROD OBJ FROM SERVER THAT IS NOT OBJECT!'))
+            if (typeof resp.data !== 'object') {
+              console.log(chalk.blue('RECEIVED PROD OBJ FROM SERVER THAT IS NOT OBJECT!'));
+              console.log('received this instead', resp.data)
+            } else {
+              console.log('server response to looking up categorization', resp.data);
+            }
             return {
               ...lastActivity,
               productivity: resp.data
@@ -68,6 +74,19 @@ const stripEmoji = (title) => {
   } else return title;
 }
 
+const getDomainName = (url) => {
+  const match = url.match(/^(?:https?:\/\/)?(?:[^@\n]+@)?(?:www\.)?([^:\/\n\?\=]+)/im)
+  if (match) {
+    const result = match[1]
+    const secondMatch = result.match(/^[^\.]+\.(.+\..+)$/)
+    if (secondMatch) {
+        return secondMatch[1]
+    }
+    return result
+  }
+  return url
+}
+
 const sanitizeTitle = (title) => {
 
   let titlesObj = {
@@ -80,14 +99,25 @@ const sanitizeTitle = (title) => {
     'Notification settings': ' ',
     'Google Accounts': ' ',
     'Google Search': ' ',
+    'Untitled': ' ',
     'Gmail': 'Gmail',
+    'Google Calendar': 'Google Calendar',
     'Stack Overflow': 'Stack Overflow',
     'JSFiddle': 'JSFiddle'
   }
   if(titlesObj[title]) return titlesObj[title];
 
+  if (title.startsWith('http') || title.startsWith('www.')) {
+    console.log(`turning ${title} into ${getDomainName(title)}`)
+    return getDomainName(title);
+  }
+
   let name = title.split('-').reverse()[0].trim()
-  if(titlesObj[name]) return titlesObj[name];
+  if (titlesObj[name]) return titlesObj[name];
+
+  name = title.split('-')[0].trim();
+  if (titlesObj[name]) return titlesObj[name];
+
   return title;
 }
 

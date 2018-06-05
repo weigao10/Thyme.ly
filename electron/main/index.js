@@ -16,9 +16,9 @@ let mainWindow, popUpWindow, tray, splash;
 let force_quit = false;
 
 const createTray = () => {
-  let image = nativeImage.createFromPath(path.join(__dirname, '../iconTemplate.png'))
+  let image = nativeImage.createFromPath(path.join(__dirname, '../leaf.png'))
   tray = new Tray(image);
-  tray.setToolTip('Thyme');
+  tray.setToolTip('Thyme.ly');
   tray.on('click', () => {
     mainWindow.isVisible() ? mainWindow.hide() : mainWindow.show();
   })
@@ -31,8 +31,8 @@ const createWindow = () => {
   })
 
   splash = new BrowserWindow({
-    width: 400, 
-    height: 400, 
+    width: 150, 
+    height: 150, 
     transparent: true,
     frame: false, 
     alwaysOnTop: true
@@ -46,13 +46,13 @@ const createWindow = () => {
 
   // let appSession = session.fromPartition('partition1');
   mainWindow = new BrowserWindow({
-        width: winState.width,
-        height: winState.height,
-        x: winState.x,
-        y: winState.y,
-        minWidth: 400,
-        minHeight: 300,
-        show: false
+      width: winState.width,
+      height: winState.height,
+      x: winState.x,
+      y: winState.y,
+      minWidth: 400,
+      minHeight: 300,
+      show: false
   });
 
   popUpWindow = new BrowserWindow({
@@ -144,6 +144,18 @@ app.on('ready', () => {
   });
 });
 
+app.on('activate', () => { 
+  mainWindow.isVisible() ? mainWindow.hide() : mainWindow.show();
+});
+
+// const iconUrl = url.format({
+//   pathname: path.join(__dirname, 'react-client/dist/dock-leaf.png'),
+//   protocol: 'file:',
+//   slashes: true
+// })
+// alert('icon url', iconUrl)
+// app.dock.setIcon(iconUrl)
+
 ipcMain.on('got-idle-activity', (event, message) => {
   mainWindow.webContents.send('add-idle-activity', message)
   popUpWindow.hide()
@@ -161,13 +173,11 @@ const mainMenuTemplate = [
     label: 'File', 
     submenu: [ 
       {
-        label: 'Add Item', 
+        label: 'Hide/Show', 
+        accelerator: process.platform === 'darwin' ? 'Command+W' : 'Ctrl+W',
         click(){
-          createAddWindow();
+          mainWindow.isVisible() ? mainWindow.hide() : mainWindow.show();
         }
-      }, 
-      {
-        label: 'Clear Items'
       },
       {
         label: 'Quit',

@@ -1,6 +1,8 @@
 import React from 'react';
 import { Treemap, Tooltip } from 'recharts';
 import moment from 'moment';
+import stylePaper from '../../constants.js';
+import Paper from 'material-ui/Paper';
 
 const timestampToUnix = (timeStamp) => {
   return moment(timeStamp, 'MMMM Do YYYY, h:mm:ss a').valueOf();
@@ -59,7 +61,7 @@ const treeMapActivities = (activities) => {
   ];
 }
 
-const COLORS = ['#8889DD', '#9597E4', '#8DC77B', '#A5D297', '#E2CF45', '#F8C12D'];
+const COLORS = ['#CF3721', '#F5BE41', '#258039'];
 
 class CustomizedContent extends React.Component {
   constructor(props) {
@@ -75,7 +77,7 @@ class CustomizedContent extends React.Component {
           width={width}
           height={height}
           style={{
-            fill: depth < 2 ? colors[Math.floor(index / root.children.length * 6)] : 'none',
+            fill: depth < 2 ? colors[Math.floor(index / root.children.length * 3)] : 'none',
             stroke: '#fff',
             strokeWidth: 2 / (depth + 1e-10),
             strokeOpacity: 1 / (depth + 1e-10),
@@ -122,19 +124,21 @@ class ActivityTreeMap extends React.Component {
     const data = treeMapActivities(this.props.activities)
 
     return (
-      <Treemap
-      width={400}
-      height={200}
-      data={data}
-      dataKey="size"
-      ratio={4/3}
-      stroke="#fff"
-      fill="#8884d8"
-      content={<CustomizedContent colors={COLORS}/>}
-      isAnimationActive={true}
-    >
-     <Tooltip></Tooltip>
-    </Treemap>
+      <Paper style={{margin: '15px'}}>
+        <Treemap
+        width={400}
+        height={200}
+        data={data}
+        dataKey="size"
+        ratio={4/3}
+        stroke="#fff"
+        fill="#8884d8"
+        content={<CustomizedContent colors={COLORS}/>}
+        isAnimationActive={true}
+      >
+      <Tooltip></Tooltip>
+      </Treemap>
+    </Paper>
     );
   }
 } 

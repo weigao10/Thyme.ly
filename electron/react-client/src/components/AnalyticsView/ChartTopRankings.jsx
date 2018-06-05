@@ -1,6 +1,9 @@
 import React from 'react';
 import { PieChart, Pie } from 'recharts';
 
+import Paper from 'material-ui/Paper'
+import stylePaper from '../../constants.js';
+
 const prettifier = (text) => {
   //truncates really long App names and adds an ellipsis if too long
   if (text.length >= 25) {
@@ -31,41 +34,46 @@ const ChartTopRankings = (props) => {
 
   return (
     <div>
-      <h3>Top 5 Productive Apps/Websites</h3>
-            <PieChart width={550} height={300}>
-              <Pie 
-                data={topFiveProductive} 
-                dataKey="duration" 
-                nameKey="title" 
-                cx="50%" 
-                cy="50%" 
-                outerRadius={50} 
-                fill="#8884d8"
-                label={(activity) => prettifier(activity.title)}
-              >
-                
-              </Pie>
-          
-            </PieChart>
+        <h3 style={{textAlign: 'center', fontWeight: 'bold'}}>Top 5 Productive</h3>
+        <PieChart width={600} height={300}>
+          <Pie 
+            data={topFiveProductive} 
+            dataKey="duration" 
+            nameKey="title" 
+            cx="50%" 
+            cy="50%" 
+            outerRadius={70} 
+            fill="#8884d8"
+            label={(activity) => prettifier(activity.title)}
+          >
+            
+          </Pie>
+      
+        </PieChart>
 
-            <h3>Top 5 Distracting Apps/Websites</h3>
-            <PieChart width={550} height={300}>
-              <Pie 
-                data={topFiveDistracting} 
-                dataKey="duration" 
-                nameKey="title" 
-                cx="50%" 
-                cy="50%" 
-                outerRadius={50} 
-                fill="#8884d8"
-                label={(activity) => prettifier(activity.title)}
-              >
-                
-              </Pie>
-          
-            </PieChart>
+
+
+        <h3 style={{textAlign: 'center', fontWeight: 'bold'}}>Top 5 Distracting</h3>
+        <PieChart width={600} height={300}>
+          <Pie 
+            data={topFiveDistracting} 
+            dataKey="duration" 
+            nameKey="title" 
+            cx="50%" 
+            cy="50%" 
+            outerRadius={70} 
+            fill="#8884d8"
+            label={(activity) => prettifier(activity.title)}
+          >
+            
+          </Pie>
+      
+        </PieChart>
+
     </div>
   );
 }
+
+
 
 export default ChartTopRankings;

@@ -1,9 +1,11 @@
 @import url(https://fonts.googleapis.com/css?family=Roboto:300);
 
 .login-page {
-  width: 360px;
+  width: 100%;
+  height: 100%;
   padding: 8% 0 0;
   margin: auto;
+  /* background-color: 'green'; */
 }
 .form {
   position: relative;
@@ -44,7 +46,8 @@
   background: #76FF03;
 }
 .form .message {
-  margin: 15px 0 0;
+  text-align: center;
+  margin: 10px 0 0;
   color: #b3b3b3;
   font-size: 12px;
 }
@@ -89,8 +92,20 @@
   color: #EF3B3A;
 }
 body {
-  background: #DCEDC8; /* fallback for old browsers */
+  background: 'red';
+  padding: '0px';
   font-family: "Roboto", sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;      
+}
+
+#leaf-icon {
+  max-width: 30%;
+  text-align: center;
+  margin: auto;
+  display: block;
+}
+
+h2{
+  text-align: center;
 }

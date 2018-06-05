@@ -20,7 +20,7 @@ class DashboardContainer extends React.Component {
     
     return (
       <div style={{margin: '0px', background: 'white'}}>
-        <Paper zDepth={1} style={{display: 'inline-block', background: 'white', margin: '0px', padding: '0px', width: '75%', minHeight: '500px', maxHeight: '550px', verticalAlign: 'top'}}>
+        <Paper zDepth={1} style={{display: 'inline-block', background: 'white', margin: '0px', padding: '0px', width: '75%', minHeight: '500px', maxHeight: '700px', verticalAlign: 'top'}}>
           <ActivityGroup
             category='productive'
             activities={activities.productive}
@@ -49,7 +49,7 @@ class DashboardContainer extends React.Component {
             affirmCategorization={affirmCategorization}
           />
         </Paper>
-        <Paper style={{display: 'inline-block', background: 'white', margin: '0', padding: '0px', width: '25%', minHeight: '520px', maxHeight: '550px', verticalAlign: 'top'}}>
+        <Paper zDepth={1} style={{borderRadius: '15 15 15 15', display: 'inline-block', background: 'white', margin: '0', padding: '90px 0px 0px 0px', width: '25%', height: '450px', verticalAlign: 'top'}}>
           <ProductivityScore 
             activities={activities}
           />
@@ -67,9 +67,9 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    changeCategory: (activity, oldCat, newCat, isTracked, user) => {
+    changeCategory: (activity, oldCat, newCat, isTracked, user, wasML) => {
       if (oldCat !== newCat) {
-        dispatch(changeCategory(activity, oldCat, newCat, isTracked, user))
+        dispatch(changeCategory(activity, oldCat, newCat, isTracked, user, wasML))
       };
     },
     deleteActivity: (activity, category, isTracked, user) => {
