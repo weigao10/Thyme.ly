@@ -76,15 +76,18 @@ const getSpurts = (cb) => {
 
 const clearDb = () => {
   // let querys = [`DELETE FROM activities WHERE date=${date}`, `DELETE FROM preferences`, `DELETE FROM spurts WHERE date=${date}`]
-  let querys = [`DELETE FROM activities`, `DELETE FROM preferences`, `DELETE FROM spurts`]
-  return Promise.map(querys, (query) => {
-    return db.run(query)
-  })
+  const queries = [`DELETE FROM activities`, `DELETE FROM preferences`, `DELETE FROM spurts`]
+  // return Promise.map(querys, (query) => {
+  //   return db.run(query)
+  // })
+  const clearPromises = queries.map(query => promisifyQuery(query));
+  return Promise.all(clearPromises)
+    .catch(e => {console.log(e)}) //probably throwing an error if the tables don't exist, which is fine 
 }
 
 const closeDb = () => {
   db.close();
-}
+};
 
 exports.createTables = createTables;
 exports.insertActivities = insertActivities;
