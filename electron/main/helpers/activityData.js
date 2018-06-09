@@ -34,8 +34,6 @@ const monitorActivity = (activities, user) => {
             if (typeof resp.data !== 'object') {
               console.log(chalk.blue('RECEIVED PROD OBJ FROM SERVER THAT IS NOT OBJECT!'));
               console.log('received this instead', resp.data)
-            } else {
-              console.log('server response to looking up categorization', resp.data);
             }
             return {
               ...lastActivity,

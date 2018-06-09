@@ -6,10 +6,6 @@ const Promise = require('bluebird')
 const moment = require('moment')
 let date = moment().format('YYYY-MM-DD')
 
-
-//PRODUCTIVITY NOW IS AN OBJ LIKE THIS
-//{ class: 'productive', source: 'user' }
-
 const promisifyQuery = (queryStr, params) => {
   if (params) {
     return new Promise((resolve, reject) => {
@@ -37,53 +33,37 @@ const createTables = () => {
 
 const insertActivities = ({id, productivity, app, title, duration}) => {
   if (typeof productivity !== 'object') console.log(`productivity for ${app} and ${title} was not an object!`)
-  let query = `INSERT INTO activities(id, date, productivity, source, app, title, duration) VALUES(?, ?, ?, ?, ?, ?, ?)`;
-  let params = [id, date, productivity.class, productivity.source, app, title, duration];
-  return new Promise ((resolve, reject) => {
-    db.run(query, params, (err, result) => {
-      if (err) reject(err)
-      else resolve(result)
-    })
-  })
+  const query = `INSERT INTO activities(id, date, productivity, source, app, title, duration) VALUES(?, ?, ?, ?, ?, ?, ?)`;
+  const params = [id, date, productivity.class, productivity.source, app, title, duration];
+  return promisifyQuery(query, params);
 }
 
 const insertPreferences = (data, category) => {
-  let query = `INSERT INTO preferences(data, category) VALUES(?, ?)`;
-  let params = [data, category];
-  return new Promise ((resolve, reject) => {
-    db.run(query, params, (err, result) => {
-      if (err) reject(err)
-      else resolve(result)
-    })
-  })
+  const query = `INSERT INTO preferences(data, category) VALUES(?, ?)`;
+  const params = [data, category];
+  return promisifyQuery(query, params);
 }
 
 //NEED TO ADD DATE
 const insertSpurts = ({id, productivity, app, title}, {startTime, endTime}) => {
-  let query = `INSERT INTO spurts(id, date, productivity, app, title, startTime, endTime) VALUES(?, ?, ?, ?, ?, ?, ?)`;
-  let params = [id, date, productivity.class, app, title, startTime, endTime];
-  return new Promise ((resolve, reject) => {
-    db.run(query, params, (err, result) => {
-      if (err) reject(err)
-      else resolve(result)
-    })
-  })
+  const query = `INSERT INTO spurts(id, date, productivity, app, title, startTime, endTime) VALUES(?, ?, ?, ?, ?, ?, ?)`;
+  const params = [id, date, productivity.class, app, title, startTime, endTime];
+  return promisifyQuery(query, params);
 }
 
 const getActivities = () => {
-  console.log('trying to read from tables')
   // let query = `SELECT id, date, productivity, source, app, title, duration FROM activities WHERE date=date(${date})`;
-  let query = `SELECT id, date, productivity, source, app, title, duration FROM activities`
+  const query = `SELECT id, date, productivity, source, app, title, duration FROM activities`
   return new Promise ((resolve, reject) => {
     db.all(query, [], (err, result) => {
       if (err) reject(err)
       else resolve(result)
     })
   })
+  return promisifyQuery(query)
 }
 
 const getSpurts = (cb) => {
-
   // let query = `SELECT id, date, productivity, app, title, startTime, endTime FROM spurts WHERE date=date(${date})`;
   let query = `SELECT id, date, productivity, app, title, startTime, endTime FROM spurts`
   return new Promise ((resolve, reject) => {
@@ -95,7 +75,6 @@ const getSpurts = (cb) => {
 }
 
 const clearDb = () => {
-
   // let querys = [`DELETE FROM activities WHERE date=${date}`, `DELETE FROM preferences`, `DELETE FROM spurts WHERE date=${date}`]
   let querys = [`DELETE FROM activities`, `DELETE FROM preferences`, `DELETE FROM spurts`]
   return Promise.map(querys, (query) => {

@@ -6,7 +6,6 @@ const { ipcMain } = require('electron');
 const populateStore = (mainWindow) => {
   let trackedApps = ['Google Chrome', 'Firefox', 'Safari', 'Idle']; //change to get prefs from db
   let newActivities;
-  // createTable();
   createTables()
     .then(() => {
       return getActivities();
