@@ -9,11 +9,31 @@ let date = moment().format('YYYY-MM-DD')
 
 //PRODUCTIVITY NOW IS AN OBJ LIKE THIS
 //{ class: 'productive', source: 'user' }
-const createTable = () => {
-  db.run("CREATE TABLE IF NOT EXISTS activities (id INT, date DATE, productivity TEXT, source TEXT, app TEXT, title TEXT, duration INT)")
-  db.run("CREATE TABLE IF NOT EXISTS preferences (category TEXT, data TEXT)")
-  db.run("CREATE TABLE IF NOT EXISTS spurts (id INT, date DATE, productivity TEXT, app TEXT, title TEXT, startTime TEXT, endTime TEXT)")
-}
+
+const promisifyQuery = (queryStr, params) => {
+  if (params) {
+    return new Promise((resolve, reject) => {
+      db.run(queryStr, params, (err, result) => {
+        if (err) reject(err);
+        else resolve(result)
+      });
+    });
+  } else {
+    return new Promise((resolve, reject) => {
+      db.run(queryStr, (err, result) => {
+        if (err) reject(err);
+        else resolve(result);
+      });
+    });
+  }
+};
+
+const createTables = () => {
+  const activitiesTable = promisifyQuery("CREATE TABLE IF NOT EXISTS activities (id INT, date DATE, productivity TEXT, source TEXT, app TEXT, title TEXT, duration INT)");
+  const prefsTable = promisifyQuery("CREATE TABLE IF NOT EXISTS preferences (category TEXT, data TEXT)")
+  const spurtsTable = promisifyQuery("CREATE TABLE IF NOT EXISTS spurts (id INT, date DATE, productivity TEXT, app TEXT, title TEXT, startTime TEXT, endTime TEXT)")
+  return Promise.all([activitiesTable, prefsTable, spurtsTable]);
+};
 
 const insertActivities = ({id, productivity, app, title, duration}) => {
   if (typeof productivity !== 'object') console.log(`productivity for ${app} and ${title} was not an object!`)
@@ -51,7 +71,7 @@ const insertSpurts = ({id, productivity, app, title}, {startTime, endTime}) => {
 }
 
 const getActivities = () => {
-  // console.log('in get activities', date)
+  console.log('trying to read from tables')
   // let query = `SELECT id, date, productivity, source, app, title, duration FROM activities WHERE date=date(${date})`;
   let query = `SELECT id, date, productivity, source, app, title, duration FROM activities`
   return new Promise ((resolve, reject) => {
@@ -87,7 +107,7 @@ const closeDb = () => {
   db.close();
 }
 
-exports.createTable = createTable;
+exports.createTables = createTables;
 exports.insertActivities = insertActivities;
 exports.insertPreferences = insertPreferences;
 exports.insertSpurts = insertSpurts;
