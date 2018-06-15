@@ -29,7 +29,6 @@ class MonitorContainer extends React.Component {
     }
 
     this.checkState = this.checkState.bind(this);
-    // this.toggleTimerButton = this.toggleTimerButton.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.handlePlayButtonChange = this.handlePlayButtonChange.bind(this);
     this.logout = this.logout.bind(this);
@@ -55,7 +54,6 @@ class MonitorContainer extends React.Component {
     });
 
     ipcRenderer.on('system', (event, message) => {
-      // console.log('got system message of', message)
       if (message === 'sleep') {
         this.props.pauseMonitor();
       }
@@ -105,18 +103,6 @@ class MonitorContainer extends React.Component {
     }
   }
 
-  // toggleTimerButton() { //call this.props.pauseMonitor or this.props.startMonitor depending on current this.props.monitor.running
-  //   let toggle = !this.state.showTimerButton;
-  //   this.setState({
-  //     showTimerButton: toggle
-  //   });
-  //   if (!toggle) {
-  //     this.pauseMonitor();
-  //   } else {
-  //     this.connectMonitor(this.props.user.user);
-  //   }
-  // }
-
   checkState (data, isTracked) {
     for (let category in this.props.activities) {
       let activities = this.props.activities[category]
@@ -138,9 +124,7 @@ class MonitorContainer extends React.Component {
 
   render() {
     return (
-      // TODO: Make this component render a Pause/Start timer button
       <Paper zDepth={2} style={bottomBarStyle}>
-        {/* <button onClick={this.logout}>Test logout button</button> */}
         <FlatButton 
           label="Logout & Quit" 
           hoverColor="#64B5F6"
@@ -148,10 +132,6 @@ class MonitorContainer extends React.Component {
           style={{position: 'relative', top: '8px', marginLeft: '10px'}}
           labelStyle={{font: 'Tahoma', color: 'white', fontWeight: 'bold'}}
         />
-        {/* IS MONITOR RUNNING? {JSON.stringify(this.props.monitor.running)}
-        <button onClick={this.props.pauseMonitor}>Test pause button</button>
-        <button onClick={() => this.props.startMonitor(this.props.user.user)}>Test start button</button> */}
-        {/* <pre>'current user is' {JSON.stringify(this.props.user)}</pre> */}
         
         <RaisedButton 
           label={this.props.monitor.running ? "Pause" : "Play"}

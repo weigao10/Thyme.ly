@@ -41,9 +41,9 @@ const populateStore = (mainWindow) => {
           }
         }
       })
-      mainWindow.send('sqlActivities', newActivities) //IT IS BREAKING HERE WHY!
+      mainWindow.send('sqlActivities', newActivities)
     })
-    .catch((err) => console.error('error populating store from local db:', err)) //'no such table: activities'
+    .catch((err) => console.error('error populating store from local db:', err))
 }
 
 const saveStoreToSql = (mainWindow) => {
@@ -52,18 +52,18 @@ const saveStoreToSql = (mainWindow) => {
     mainWindow.send("windowClose", "close")
     ipcMain.once("store", (event, data) => {
       let { activities, preferences } = JSON.parse(data);
-      for(let category in activities){
-        if(category !== 'nextId'){
+      for (let category in activities) {
+        if (category !== 'nextId') {
           activities[category].forEach((el) => {
             el.spurts.forEach((spurt) => {
-              insertSpurts(el, spurt)
+              insertSpurts(el, spurt);
             })
-            insertActivities(el)
+            insertActivities(el);
           })
         }
       }
   
-      for(let category in preferences){ //ex: category = trackedApps, el = Google Chrome
+      for (let category in preferences) {
         preferences[category].forEach((el) => (insertPreferences(el, category)))
       }
     })

@@ -13,7 +13,7 @@ export const LOG_OUT = 'LOG_OUT';
 export const SET_TOKEN = 'SET_TOKEN';
 export const GET_TOKEN = 'GET_TOKEN';
 
-export const START_POM = 'START_POM'; //TODO: connect to user's pom prefs
+export const START_POM = 'START_POM';
 export const PAUSE_POM = 'PAUSE_POM';
 export const RESUME_POM = 'RESUME_POM';
 export const CLEAR_POM = 'CLEAR_POM';

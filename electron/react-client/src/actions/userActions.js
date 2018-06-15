@@ -15,10 +15,6 @@ export const setToken = (token) => {
   }
 }
 
-export const logout = () => {
-
-}
-
 export const getUser = () => {
   return {
     type: GET_USER

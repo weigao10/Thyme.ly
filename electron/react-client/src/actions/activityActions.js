@@ -88,7 +88,6 @@ export const affirmCategorization = (activity, category, isTracked, user) => {
 }
 
 export const setAllActivities = (data) => {
-  // console.log('in set all activities', data)
   return {
     type: SET_ALL_ACTIVITIES,
     payload: data
