@@ -53,6 +53,8 @@ To run the server in development mode, run `npm run dev` from inside the `server
 
 To run the web scraper, use `npm run scrape` after making the appropriate edits inside the scraper file.
 
+If you are in the top-level repo directory you can also use `npm run electron-dev` or `npm run server-dev` to `cd` into the appropriate directory and run in development mode.
+
 ## Team
 
   - __Full Stack Developers__: Andrew Lee, Brian Lee, Wei Gao

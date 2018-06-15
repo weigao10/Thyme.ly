@@ -44,7 +44,6 @@ const createWindow = () => {
     slashes: true
   }))
 
-  // let appSession = session.fromPartition('partition1');
   mainWindow = new BrowserWindow({
       width: winState.width,
       height: winState.height,
@@ -105,7 +104,7 @@ const createWindow = () => {
       force_quit = true;
       popUpWindow.destroy();
       app.quit()
-    }, 600) //maybe refactor into async await
+    }, 600)
   });
 
   const mainMenu = Menu.buildFromTemplate(mainMenuTemplate);
@@ -118,9 +117,6 @@ const createWindow = () => {
 app.on('ready', () => {
   createWindow();
   createTray();
-  mainWindow.webContents.on('did-finish-load', () => {
-    // console.log('main window finished loading!')
-  })
 
   let idleStart, idleEnd, duration;
   electron.powerMonitor.on('suspend', () => {
@@ -148,27 +144,17 @@ app.on('activate', () => {
   mainWindow.isVisible() ? mainWindow.hide() : mainWindow.show();
 });
 
-// const iconUrl = url.format({
-//   pathname: path.join(__dirname, 'react-client/dist/dock-leaf.png'),
-//   protocol: 'file:',
-//   slashes: true
-// })
-// alert('icon url', iconUrl)
-// app.dock.setIcon(iconUrl)
-
 ipcMain.on('got-idle-activity', (event, message) => {
   mainWindow.webContents.send('add-idle-activity', message)
   popUpWindow.hide()
 })
 
-//change save store to sql function to promises
 function logoutAndQuit (mainSession) {
   mainSession.clearStorageData();
   app.quit();
 }
 
 const mainMenuTemplate = [
-  //if mac, need an empty object here
   {
     label: 'File', 
     submenu: [ 
@@ -182,7 +168,6 @@ const mainMenuTemplate = [
       {
         label: 'Quit',
         accelerator: process.platform === 'darwin' ? 'Command+Q' : 'Ctrl+Q',
-        //darwin (mac), win32 (windows)
         click(){
           app.quit();
         }
@@ -207,7 +192,6 @@ if (process.platform === 'darwin'){
   mainMenuTemplate.unshift({});
 }
 
-//devtools
 if (process.env.NODE_ENV !== 'production'){
   mainMenuTemplate.push({
     label: 'Developer Tools',
