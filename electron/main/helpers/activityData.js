@@ -103,7 +103,7 @@ const sanitizeTitle = (title) => {
     'Stack Overflow': 'Stack Overflow',
     'JSFiddle': 'JSFiddle'
   }
-  if(titlesObj[title]) return titlesObj[title];
+  if (titlesObj[title]) return titlesObj[title];
 
   if (title.startsWith('http') || title.startsWith('www.')) {
     console.log(`turning ${title} into ${getDomainName(title)}`)
@@ -168,10 +168,4 @@ exports.stopMonitorProcess = () => {
 
 exports.restartMonitorProcess = (mainWindow, mainSession) => {
   intervalId = startMonitor(mainWindow, activities, user);
-}
-
-/*
-ideas for tests:
-make sure chunks are properly assembled by making sure it's not making a new chunk every second
-make sure entire time period is covered by chunks
-*/
+};

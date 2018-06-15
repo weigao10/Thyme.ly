@@ -13,7 +13,6 @@ const user = (state = initialState, action) => {
         user: action.payload
       }
     case SET_TOKEN:
-      // console.log('in reducer, about to set user to', action.payload)
       return {
         ...state,
         token: action.payload
