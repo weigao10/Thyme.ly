@@ -1,4 +1,4 @@
-const { createTable, insertActivities, insertPreferences, getActivities, insertSpurts,
+const { createTables, insertActivities, insertPreferences, getActivities, insertSpurts,
         getSpurts, clearDb, closeDb } = require('../../database/sqlite.js');
 const { ipcMain } = require('electron');
 
@@ -6,8 +6,10 @@ const { ipcMain } = require('electron');
 const populateStore = (mainWindow) => {
   let trackedApps = ['Google Chrome', 'Firefox', 'Safari', 'Idle']; //change to get prefs from db
   let newActivities;
-  createTable();
-  getActivities()
+  createTables()
+    .then(() => {
+      return getActivities();
+    })
     .then((activities) => {
       newActivities = activities.map(activityObj => {
         const mappedAct = {
@@ -17,7 +19,7 @@ const populateStore = (mainWindow) => {
             class: activityObj.productivity
           }
         }
-        const {source, ...noSource} = mappedAct;
+        const { source, ...noSource } = mappedAct;
         return noSource;
       });
       return getSpurts()
@@ -30,7 +32,7 @@ const populateStore = (mainWindow) => {
                     spurt.title === activity.title && spurt.app === activity.app : 
                     spurt.app === activity.app
 
-          if(query){
+          if (query) {
             activity.spurts = activity.spurts || []
             activity.spurts.push({
               startTime: spurt.startTime,
@@ -41,7 +43,7 @@ const populateStore = (mainWindow) => {
       })
       mainWindow.send('sqlActivities', newActivities) //IT IS BREAKING HERE WHY!
     })
-
+    .catch((err) => console.error('error populating store from local db:', err)) //'no such table: activities'
 }
 
 const saveStoreToSql = (mainWindow) => {

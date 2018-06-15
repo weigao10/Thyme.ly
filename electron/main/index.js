@@ -91,7 +91,7 @@ const createWindow = () => {
   })
 
   mainWindow.on('close', function(e){
-    if(!force_quit){
+    if (!force_quit) {
       e.preventDefault();
       mainWindow.hide();
     }
