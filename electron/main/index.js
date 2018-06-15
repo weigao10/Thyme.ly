@@ -208,22 +208,22 @@ if (process.platform === 'darwin'){
 }
 
 //devtools
-// if (process.env.NODE_ENV !== 'production'){
-//   mainMenuTemplate.push({
-//     label: 'Developer Tools',
-//     submenu: [
-//       {
-//         label: 'Toggle DevTools',
-//         role: 'toggledevtools',
-//         accelerator: process.platform === 'darwin' ? 'Command+I' : 'Ctrl+I',
-//       },
-//       {
-//         role: 'reload'
-//       }, {
-//         role: 'togglefullscreen'
-//       }
-//     ]
-//   })
-// }
+if (process.env.NODE_ENV !== 'production'){
+  mainMenuTemplate.push({
+    label: 'Developer Tools',
+    submenu: [
+      {
+        label: 'Toggle DevTools',
+        role: 'toggledevtools',
+        accelerator: process.platform === 'darwin' ? 'Command+I' : 'Ctrl+I',
+      },
+      {
+        role: 'reload'
+      }, {
+        role: 'togglefullscreen'
+      }
+    ]
+  })
+}
 
 exports.logoutAndQuit = logoutAndQuit;
