@@ -17,7 +17,7 @@ import Snackbar from 'material-ui/Snackbar';
 
 import { addActivity, patchActivity, setAllActivities } from '../actions/activityActions.js';
 import { setUser, setToken } from '../actions/userActions.js';
-import { listEvents } from '../index.jsx'
+// import { listEvents } from '../index.jsx';
 import { startMonitor, pauseMonitor, toggleMonitor } from '../actions/monitorActions.js';
 
 class MonitorContainer extends React.Component {

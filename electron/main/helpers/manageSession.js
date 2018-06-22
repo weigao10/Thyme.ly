@@ -2,7 +2,7 @@ const electron = require('electron')
 const { app, BrowserWindow, ipcMain, session } = electron;
 const moment = require('moment');
 
-const { serverURL } = require('../config.js');
+const { serverURL } = require('../mainConfig.js');
 const index = require('../index.js');
 
 const manageCookies = (mainSession, mainWindow) => {

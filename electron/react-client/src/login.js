@@ -1,18 +1,14 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import $ from 'jquery';
-import { parse } from 'url'
-import { remote, ipcRenderer } from 'electron'
-import axios from 'axios'
-import qs from 'qs'
-import readline from 'readline';
-import { google } from 'googleapis'
-import cron from 'cron';
-import moment from 'moment';
+import { parse } from 'url';
+import { remote, ipcRenderer } from 'electron';
+import axios from 'axios';
+import qs from 'qs';
 
 import App from './App.jsx';
-import config from '../config.js';
-const { apiKey, authDomain, bundleId, clientId, databaseURL, projectId, redirectURI, storageBucket, messagingSenderId } = config;
+import config from '../reactConfig.js';
+const { bundleId, clientId, redirectURI } = config;
 
 //bypass login page if a user is logged in already via cookie
 ipcRenderer.send('cookies', 'check');
@@ -39,15 +35,15 @@ const renderApp = (uId) => {
   ipcRenderer.send('cookies', 'logged in', uId)
   ReactDOM.render((<App user={uId}/>), document.getElementById('app'));
   document.getElementById('login-page').innerHTML = '';
-}
+};
 
+//add event listeners for the three login methods
 loginButton.addEventListener('click', () => {
   const emailField = document.getElementById('email').value;
   const passwordField = document.getElementById('password').value;
-  firebase.auth().signInWithEmailAndPassword(emailField, passwordField)
+  auth.signInWithEmailAndPassword(emailField, passwordField)
     .then((data) => {
-      const uId = data.user.uid;
-      renderApp(uId);
+      renderApp(data.user.uid);
     })
     .catch((err) => {
       alert('Error logging in - are you sure you have the right email and password?');
@@ -60,11 +56,9 @@ registerButton.addEventListener('click', () => {
   const name = document.getElementById('reg-name').value;
   const email = document.getElementById('reg-email').value;
   const password = document.getElementById('reg-password').value;
-
   auth.createUserWithEmailAndPassword(email, password)
     .then((data) => {
-      const uId = data.user.uid;
-      renderApp(uId);
+      renderApp(data.user.uid);
     })
     .catch((err) => {
       alert(err.message);
@@ -84,53 +78,52 @@ googleButton.addEventListener('click', () => {
     })
 });
 
-const GOOGLE_AUTHORIZATION_URL = 'https://accounts.google.com/o/oauth2/v2/auth'
-const GOOGLE_TOKEN_URL = 'https://www.googleapis.com/oauth2/v4/token'
-const GOOGLE_PROFILE_URL = 'https://www.googleapis.com/userinfo/v2/me'
+const GOOGLE_AUTHORIZATION_URL = 'https://accounts.google.com/o/oauth2/v2/auth';
+const GOOGLE_TOKEN_URL = 'https://www.googleapis.com/oauth2/v4/token';
+const GOOGLE_PROFILE_URL = 'https://www.googleapis.com/userinfo/v2/me';
 
-function signInWithPopup (provider) {
+const signInWithPopup = (provider) => {
   return new Promise((resolve, reject) => {
     const authWindow = new remote.BrowserWindow({
       width: 500,
       height: 600,
       show: true,
-    })
+    });
 
     const urlParams = {
       response_type: 'code',
       redirect_uri: bundleId + ':' +redirectURI,
       client_id: clientId,
       scope: 'profile email https://www.googleapis.com/auth/calendar',
-    }
-    const authUrl = `${GOOGLE_AUTHORIZATION_URL}?${qs.stringify(urlParams)}`
+    };
+    const authUrl = `${GOOGLE_AUTHORIZATION_URL}?${qs.stringify(urlParams)}`;
 
     function handleNavigation (url) {
-      const query = parse(url, true).query
+      const query = parse(url, true).query;
       if (query) {
         if (query.error) {
-          reject(new Error(`There was an error: ${query.error}`))
+          reject(new Error(`There was an error: ${query.error}`));
         } else if (query.code) {
-          // Login is complete
-          authWindow.removeAllListeners('closed')
-          setImmediate(() => authWindow.close())
+          authWindow.removeAllListeners('closed');
+          setImmediate(() => authWindow.close());
           resolve(query.code);
         }
       }
     }
 
     authWindow.webContents.on('will-navigate', (event, url) => {
-      handleNavigation(url)
-    })
+      handleNavigation(url);
+    });
 
     authWindow.webContents.on('did-get-redirect-request', (event, oldUrl, newUrl) => {
-      handleNavigation(newUrl)
-    })
+      handleNavigation(newUrl);
+    });
 
-    authWindow.loadURL(authUrl)
+    authWindow.loadURL(authUrl);
   })
 }
 
-function fetchAccessTokens (code) {
+const fetchAccessTokens = (code) => {
   return axios.post(GOOGLE_TOKEN_URL, qs.stringify({
     code,
     client_id: clientId,
@@ -142,9 +135,9 @@ function fetchAccessTokens (code) {
     },
   })
   .then((data) => data.data.access_token)
-}
+};
 
-function fetchGoogleProfile (accessToken) {
+const fetchGoogleProfile = (accessToken) => {
   return axios.get(GOOGLE_PROFILE_URL, {
     headers: {
       'Content-Type': 'application/json',
@@ -152,8 +145,7 @@ function fetchGoogleProfile (accessToken) {
     },
   })
   .then((data) => {
-    ipcRenderer.send('cookies', 'logged in', data.data.id)
-    ipcRenderer.send('token', 'logged in', accessToken)
-    return data.data
+    ipcRenderer.send('token', 'logged in', accessToken);
+    return data.data;
   })
-}
+};

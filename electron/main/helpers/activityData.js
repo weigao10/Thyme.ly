@@ -8,7 +8,7 @@ const chalk = require('chalk');
 const path = require('path');
 const url = require('url');
 
-const { serverURL } = require(path.join(__dirname, '../config.js'));
+const { serverURL } = require(path.join(__dirname, '../mainConfig.js'));
 
 const monitorActivity = (activities, user) => {
   return activeWin()

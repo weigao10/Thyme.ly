@@ -19,7 +19,7 @@ class App extends React.Component {
 
   constructor(props) {
     super(props);
-
+    console.log('user id passed to app via props', props.user)
     this.state = {
       tabIndex: 0
     }

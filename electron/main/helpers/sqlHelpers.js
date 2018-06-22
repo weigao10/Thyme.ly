@@ -2,7 +2,6 @@ const { createTables, insertActivities, insertPreferences, getActivities, insert
         getSpurts, clearDb, closeDb } = require('../../database/sqlite.js');
 const { ipcMain } = require('electron');
 
-
 const populateStore = (mainWindow) => {
   let trackedApps = ['Google Chrome', 'Firefox', 'Safari', 'Idle']; //change to get prefs from db
   let newActivities;
