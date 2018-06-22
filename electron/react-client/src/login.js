@@ -9,11 +9,12 @@ import qs from 'qs';
 import App from './App.jsx';
 import config from '../reactConfig.js';
 const { bundleId, clientId, redirectURI } = config;
+const serverURL = process.env.NODE_ENV === 'localhost' ? config.localhost : config.server;
 
 //bypass login page if a user is logged in already via cookie
 ipcRenderer.send('cookies', 'check');
 ipcRenderer.on('cookies', (event, message) => {
-  ReactDOM.render((<App user={message.value}/>), document.getElementById('app'));
+  ReactDOM.render((<App/>), document.getElementById('app'));
   document.getElementById('login-page').innerHTML = '';
 });
 
@@ -26,6 +27,7 @@ if (!firebase.apps.length) {
 }
 
 const auth = firebase.auth();
+firebase.auth().setPersistence(firebase.auth.Auth.Persistence.NONE);
 const provider = new firebase.auth.GoogleAuthProvider();
 const registerButton = document.getElementById('register');
 const loginButton = document.getElementById('login');
@@ -33,20 +35,39 @@ const googleButton = document.getElementById('google');
 
 const renderApp = (uId) => {
   ipcRenderer.send('cookies', 'logged in', uId)
-  ReactDOM.render((<App user={uId}/>), document.getElementById('app'));
+  ReactDOM.render((<App/>), document.getElementById('app'));
   document.getElementById('login-page').innerHTML = '';
 };
 
+//get initial HTTP only cookie
+console.log('trying to set cookies')
+axios.get(serverURL + '/cookies')
+  .catch(err => console.log('err trying to get cookies', err))
+
 //add event listeners for the three login methods
 loginButton.addEventListener('click', () => {
-  const emailField = document.getElementById('email').value;
-  const passwordField = document.getElementById('password').value;
-  auth.signInWithEmailAndPassword(emailField, passwordField)
+  const email = document.getElementById('email').value;
+  const password = document.getElementById('password').value;
+  auth.signInWithEmailAndPassword(email, password)
     .then((data) => {
-      renderApp(data.user.uid);
+      console.log('user data is', data);
+      return data.user.getIdToken()
+        .then(idToken => {
+          return axios.post(serverURL + '/sessionLogin', {idToken})
+        })
+    })
+    .then((idToken) => {
+      return axios.get(serverURL + '/cookies2')
+      // console.log(idToken)
+      // const csrfToken = $.getCookie('csrfToken')
+      // console.log('csrf token is', csrfToken)
+    })
+    .then(() => {
+      renderApp();
     })
     .catch((err) => {
-      alert('Error logging in - are you sure you have the right email and password?');
+      console.log('err trying to get id token', err);
+      // alert('Error logging in - are you sure you have the right email and password?');
       document.getElementById('email').value = '';
       document.getElementById('password').value = '';
     });

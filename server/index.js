@@ -22,6 +22,21 @@ app.use((req, res, next) => {
   next();
 });
 
+app.get('/cookies', (req, res) => {
+  console.log('req cookie is', req.headers.cookie)
+  res.setHeader('Set-Cookie', 'foo=bar; HttpOnly');
+  res.send('ok');
+});
+
+app.get('/cookies2', (req, res) => {
+  console.log('req cookie inside cookies 2 is', req.headers.cookie)
+  res.send('ok');
+});
+
+app.post('/sessionLogin', (req, res) => {
+  console.log('req cookie inside cookies 2 is', req.headers.cookie)
+  res.send('ok');
+});
 
 app.get('/api/classifications', async (req, res) => {
   const {user_name, app_name, window_title} = req.query;
