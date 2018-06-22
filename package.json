@@ -4,7 +4,8 @@
   "description": "Productivity Manager",
   "scripts": {
     "electron-dev": "cd electron && npm start",
-    "server-dev": "cd server && npm run dev"
+    "server-dev": "cd server && npm run dev",
+    "local-electron-dev": "NODE_ENV=localhost npm run electron-dev"
   },
   "repository": {
     "type": "git",
