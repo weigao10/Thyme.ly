@@ -12,11 +12,7 @@ import moment from 'moment';
 
 import App from './App.jsx';
 import config from '../config.js';
-const { apiKey, authDomain, databaseURL, projectId, storageBucket, messagingSenderId } = config;
-
-const GOOGLE_AUTHORIZATION_URL = 'https://accounts.google.com/o/oauth2/v2/auth';
-const GOOGLE_TOKEN_URL = 'https://www.googleapis.com/oauth2/v4/token';
-const GOOGLE_PROFILE_URL = 'https://www.googleapis.com/userinfo/v2/me';
+const { apiKey, authDomain, bundleId, clientId, databaseURL, projectId, redirectURI, storageBucket, messagingSenderId } = config;
 
 //bypass login page if a user is logged in already via cookie
 ipcRenderer.send('cookies', 'check');
@@ -25,9 +21,9 @@ ipcRenderer.on('cookies', (event, message) => {
   document.getElementById('login-page').innerHTML = '';
 });
 
-// $('.message a').click(function(){
-//   $('form').animate({height: "toggle", opacity: "toggle"}, "slow");
-// });
+$('.message a').click(function(){
+  $('form').animate({height: "toggle", opacity: "toggle"}, "slow");
+});
 
 if (!firebase.apps.length) {
   firebase.initializeApp(config);
@@ -39,21 +35,25 @@ const registerButton = document.getElementById('register');
 const loginButton = document.getElementById('login');
 const googleButton = document.getElementById('google');
 
+const renderApp = (uId) => {
+  ipcRenderer.send('cookies', 'logged in', uId)
+  ReactDOM.render((<App user={uId}/>), document.getElementById('app'));
+  document.getElementById('login-page').innerHTML = '';
+}
+
 loginButton.addEventListener('click', () => {
   const emailField = document.getElementById('email').value;
   const passwordField = document.getElementById('password').value;
   firebase.auth().signInWithEmailAndPassword(emailField, passwordField)
     .then((data) => {
       const uId = data.user.uid;
-      ipcRenderer.send('cookies', 'logged in', uId)
-      ReactDOM.render((<App user={uId}/>), document.getElementById('app'));
-      document.getElementById('login-page').innerHTML = '';
+      renderApp(uId);
     })
     .catch((err) => {
       alert('Error logging in - are you sure you have the right email and password?');
       document.getElementById('email').value = '';
       document.getElementById('password').value = '';
-    })
+    });
 });
 
 registerButton.addEventListener('click', () => {
@@ -63,12 +63,97 @@ registerButton.addEventListener('click', () => {
 
   auth.createUserWithEmailAndPassword(email, password)
     .then((data) => {
-      ipcRenderer.send('cookies', 'logged in', data.user.uid);
-      ReactDOM.render((<App user={uId}/>), document.getElementById('app'));
-      document.getElementById('login-page').innerHTML = '';
+      const uId = data.user.uid;
+      renderApp(uId);
     })
     .catch((err) => {
       alert(err.message);
     });
 });
 
+googleButton.addEventListener('click', () => {
+  signInWithPopup()
+    .then((code) => {
+      return fetchAccessTokens(code);
+    })
+    .then((token) => {
+      return fetchGoogleProfile(token);
+    })
+    .then(({id}) => {
+      renderApp(id);
+    })
+});
+
+const GOOGLE_AUTHORIZATION_URL = 'https://accounts.google.com/o/oauth2/v2/auth'
+const GOOGLE_TOKEN_URL = 'https://www.googleapis.com/oauth2/v4/token'
+const GOOGLE_PROFILE_URL = 'https://www.googleapis.com/userinfo/v2/me'
+
+function signInWithPopup (provider) {
+  return new Promise((resolve, reject) => {
+    const authWindow = new remote.BrowserWindow({
+      width: 500,
+      height: 600,
+      show: true,
+    })
+
+    const urlParams = {
+      response_type: 'code',
+      redirect_uri: bundleId + ':' +redirectURI,
+      client_id: clientId,
+      scope: 'profile email https://www.googleapis.com/auth/calendar',
+    }
+    const authUrl = `${GOOGLE_AUTHORIZATION_URL}?${qs.stringify(urlParams)}`
+
+    function handleNavigation (url) {
+      const query = parse(url, true).query
+      if (query) {
+        if (query.error) {
+          reject(new Error(`There was an error: ${query.error}`))
+        } else if (query.code) {
+          // Login is complete
+          authWindow.removeAllListeners('closed')
+          setImmediate(() => authWindow.close())
+          resolve(query.code);
+        }
+      }
+    }
+
+    authWindow.webContents.on('will-navigate', (event, url) => {
+      handleNavigation(url)
+    })
+
+    authWindow.webContents.on('did-get-redirect-request', (event, oldUrl, newUrl) => {
+      handleNavigation(newUrl)
+    })
+
+    authWindow.loadURL(authUrl)
+  })
+}
+
+function fetchAccessTokens (code) {
+  return axios.post(GOOGLE_TOKEN_URL, qs.stringify({
+    code,
+    client_id: clientId,
+    redirect_uri: bundleId + ':' +redirectURI,
+    grant_type: 'authorization_code',
+  }), {
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+    },
+  })
+  .then((data) => data.data.access_token)
+}
+
+function fetchGoogleProfile (accessToken) {
+  return axios.get(GOOGLE_PROFILE_URL, {
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${accessToken}`,
+    },
+  })
+  .then((data) => {
+    ipcRenderer.send('cookies', 'logged in', data.data.id)
+    ipcRenderer.send('token', 'logged in', accessToken)
+    return data.data
+  })
+}
