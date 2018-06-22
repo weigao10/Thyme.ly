@@ -8,6 +8,6 @@ module.exports = {
   redirectURI: 'com.googleusercontent.apps.79209900610-ddvq73mdc5vu6ja54prt49alsr4hjimf',
   storageBucket: "thymely-cd776.appspot.com",
   messagingSenderId: "79209900610",
-  serverURL: 'http://ec2-52-23-249-26.compute-1.amazonaws.com',
-  // serverURL: 'http://127.0.0.1:3000'
+  localhost: 'http://127.0.0.1:3000',
+  server: 'http://ec2-52-23-249-26.compute-1.amazonaws.com'
 };

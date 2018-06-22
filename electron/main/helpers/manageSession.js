@@ -1,8 +1,10 @@
 const electron = require('electron')
 const { app, BrowserWindow, ipcMain, session } = electron;
 const moment = require('moment');
+const path = require('path');
 
-const { serverURL } = require('../mainConfig.js');
+const config = require(path.join(__dirname, '../mainConfig.js'));
+const serverURL = process.env.NODE_ENV === 'localhost' ? config.localhost : config.server;
 const index = require('../index.js');
 
 const manageCookies = (mainSession, mainWindow) => {

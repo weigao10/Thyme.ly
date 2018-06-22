@@ -1,7 +1,9 @@
 import { ADD_ACTIVITY, PATCH_ACTIVITY, CATEGORIZE_ACTIVITY, DELETE_ACTIVITY, SET_ALL_ACTIVITIES, AFFIRM_CATEGORIZATION } from './types'; 
-import moment from 'moment';
 import axios from 'axios';
-import { serverURL } from '../../reactConfig.js';
+
+const config = require('../../reactConfig.js');
+const serverURL = process.env.NODE_ENV === 'localhost' ? config.localhost : config.server;
+console.log('server url is', serverURL) 
 
 export const addActivity = (data) => {
   return {

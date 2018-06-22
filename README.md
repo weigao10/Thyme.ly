@@ -49,11 +49,11 @@ The app is split into the `electron` and `server` top level folders.  To install
 ### Running in Development Mode
 From inside the `electron` folder, run `npm start` to run the Thymely client in dev mode.  To create a MacOS executable, run `npm run package` and to create a zip file which includes the executable, run `npm run make`.  The executable or zip will appear in the `electron/out` folder.
 
-To run the server in development mode, run `npm run dev` from inside the `server` folder.  You will also probably want to edit the Electron client's config file so that `serverURL` points to your local host, not our cloud server.  To do this, edit the config files in both `electron/main/config.js` and `electron/react-client/config.js`.
+To run the server in development mode, run `npm run dev` from inside the `server` folder.  You will probably also want the Electron client to point to your localhost and not our cloud server.  To do this, run `npm run local-electron-dev` from either the top level directory or the `electron` folder.
 
 To run the web scraper, use `npm run scrape` after making the appropriate edits inside the scraper file.
 
-If you are in the top-level repo directory you can also use `npm run electron-dev` or `npm run server-dev` to `cd` into the appropriate directory and run in development mode.
+If you are in the top-level repo directory you can also use `npm run electron-dev`, `npm run server-dev`, and/or `npm run local-electron-dev` to `cd` into the appropriate directory and run in development mode.
 
 ## Team
 

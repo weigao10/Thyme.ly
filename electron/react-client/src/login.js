@@ -21,8 +21,6 @@ $('.message a').click(function(){
   $('form').animate({height: "toggle", opacity: "toggle"}, "slow");
 });
 
-console.log('node env is', process.env.NODE_ENV);
-
 if (!firebase.apps.length) {
   firebase.initializeApp(config);
 }
