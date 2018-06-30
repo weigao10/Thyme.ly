@@ -1,6 +1,7 @@
 const express = require('express');
 const path = require('path');
 const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser');
 const partials = require('express-partials');
 const app = express();
 const port = process.env.PORT || 3000;
@@ -14,6 +15,7 @@ const ml = require('./learn/naiveBayes.js');
 ml.initClassifier();
 
 app.use(bodyParser.json());
+app.use(cookieParser());
 app.use(express.static(path.join(__dirname, './splash-client/dist')));
 
 app.use((req, res, next) => {
@@ -22,19 +24,31 @@ app.use((req, res, next) => {
   next();
 });
 
-app.get('/cookies', (req, res) => {
-  console.log('req cookie is', req.headers.cookie)
-  res.setHeader('Set-Cookie', 'foo=bar; HttpOnly');
-  res.send('ok');
-});
+const admin = require('firebase-admin');
+const serviceAccount = require('./firebaseConfig.json');
 
-app.get('/cookies2', (req, res) => {
-  console.log('req cookie inside cookies 2 is', req.headers.cookie)
-  res.send('ok');
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount),
+  databaseURL: 'https://thymely-cd776.firebaseio.com'
 });
 
 app.post('/sessionLogin', (req, res) => {
-  console.log('req cookie inside cookies 2 is', req.headers.cookie)
+  const idToken = req.body.idToken.toString();
+  console.log('id token is', idToken)
+  const expiresIn = 60 * 60 * 24 * 5 * 1000;
+  admin.auth().createSessionCookie(idToken, {expiresIn})
+    .then((sessionCookie) => {
+      const options = {maxAge: expiresIn, httpOnly: true, secure: true};
+      res.cookie('session', sessionCookie, options);
+      res.end(JSON.stringify({status: 'success'}));
+    })
+    .catch((err) => {
+      res.status(401).send('UNAUTHORIZED REQUEST!');
+    })
+});
+
+app.get('/test', (req, res) => {
+  console.log('req.cookies are', req.cookies) //req.cookies are {}
   res.send('ok');
 });
 

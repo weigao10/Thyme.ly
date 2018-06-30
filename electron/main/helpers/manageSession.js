@@ -31,6 +31,10 @@ const manageCookies = (mainSession, mainWindow) => {
       });
     } else if (event === 'logout') {
       index.logoutAndQuit(mainSession);
+    } else if (event === 'see all') {
+      mainSession.cookies.get({}, (error, cookies) => {
+        console.log(error, cookies)
+      });
     }
   })
 }

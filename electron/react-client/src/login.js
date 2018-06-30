@@ -39,11 +39,6 @@ const renderApp = (uId) => {
   document.getElementById('login-page').innerHTML = '';
 };
 
-//get initial HTTP only cookie
-console.log('trying to set cookies')
-axios.get(serverURL + '/cookies')
-  .catch(err => console.log('err trying to get cookies', err))
-
 //add event listeners for the three login methods
 loginButton.addEventListener('click', () => {
   const email = document.getElementById('email').value;
@@ -51,19 +46,13 @@ loginButton.addEventListener('click', () => {
   auth.signInWithEmailAndPassword(email, password)
     .then((data) => {
       console.log('user data is', data);
-      return data.user.getIdToken()
-        .then(idToken => {
-          return axios.post(serverURL + '/sessionLogin', {idToken})
-        })
+      return data.user.getIdToken();
     })
     .then((idToken) => {
-      return axios.get(serverURL + '/cookies2')
-      // console.log(idToken)
-      // const csrfToken = $.getCookie('csrfToken')
-      // console.log('csrf token is', csrfToken)
+      return axios.post(serverURL + '/sessionLogin', {idToken});
     })
     .then(() => {
-      renderApp();
+      axios.get(serverURL + '/test', {withCredentials: true});
     })
     .catch((err) => {
       console.log('err trying to get id token', err);
