@@ -26,6 +26,7 @@ if (!firebase.apps.length) {
   firebase.initializeApp(config);
 }
 
+//login needs to pass firebase info to main session too
 const auth = firebase.auth();
 firebase.auth().setPersistence(firebase.auth.Auth.Persistence.NONE);
 const provider = new firebase.auth.GoogleAuthProvider();
@@ -33,8 +34,9 @@ const registerButton = document.getElementById('register');
 const loginButton = document.getElementById('login');
 const googleButton = document.getElementById('google');
 
-const renderApp = (uId) => {
+const renderApp = (uId, jwtToken) => {
   ipcRenderer.send('cookies', 'logged in', uId)
+  //set JWT token too
   ReactDOM.render((<App/>), document.getElementById('app'));
   document.getElementById('login-page').innerHTML = '';
 };
@@ -46,13 +48,15 @@ loginButton.addEventListener('click', () => {
   auth.signInWithEmailAndPassword(email, password)
     .then((data) => {
       console.log('user data is', data);
+      // renderApp(data.user.uid);
       return data.user.getIdToken();
     })
     .then((idToken) => {
-      return axios.post(serverURL + '/sessionLogin', {idToken});
+      return axios.post(serverURL + '/session', {idToken});
     })
-    .then(() => {
-      axios.get(serverURL + '/test', {withCredentials: true});
+    .then((data) => {
+      console.log('response from server after posting idtoken is', data)
+      //render app with uid and jwt (maybe just need jwt)
     })
     .catch((err) => {
       console.log('err trying to get id token', err);

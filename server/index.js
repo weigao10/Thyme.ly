@@ -1,7 +1,7 @@
 const express = require('express');
 const path = require('path');
 const bodyParser = require('body-parser');
-const cookieParser = require('cookie-parser');
+const jwt = require('jsonwebtoken');
 const partials = require('express-partials');
 const app = express();
 const port = process.env.PORT || 3000;
@@ -11,11 +11,11 @@ const chalk = require('chalk');
 const db = require('./database/index.js');
 const scrapeDb = require('./database/scraper.js');
 const ml = require('./learn/naiveBayes.js');
+const secret = require('./config.js').secret;
 
 ml.initClassifier();
 
 app.use(bodyParser.json());
-app.use(cookieParser());
 app.use(express.static(path.join(__dirname, './splash-client/dist')));
 
 app.use((req, res, next) => {
@@ -32,24 +32,24 @@ admin.initializeApp({
   databaseURL: 'https://thymely-cd776.firebaseio.com'
 });
 
-app.post('/sessionLogin', (req, res) => {
+app.post('/session', (req, res) => {
   const idToken = req.body.idToken.toString();
-  console.log('id token is', idToken)
-  const expiresIn = 60 * 60 * 24 * 5 * 1000;
-  admin.auth().createSessionCookie(idToken, {expiresIn})
-    .then((sessionCookie) => {
-      const options = {maxAge: expiresIn, httpOnly: true, secure: true};
-      res.cookie('session', sessionCookie, options);
-      res.end(JSON.stringify({status: 'success'}));
+  // authenticate this token, which will always be new (bc user just logged in)
+  // send back our own JWT using a client secret with our own expiration policy
+  // in electron, use this to manually set a cookie
+  // manually attach that cookie to every request (both from renderer and main)
+  // in middleware (which applies to all routes besides this one and index), decode that JWT to get the uId
+  admin.auth().verifyIdToken(idToken)
+    .then((decodedToken) => {
+      const uid = decodedToken.uid;
+      const token = jwt.sign({ uid }, secret, {
+        expiresIn: 86400 * 7 // expires in 1 week
+      });
+      res.send({uid, token})
     })
-    .catch((err) => {
+    .catch((error) => {
       res.status(401).send('UNAUTHORIZED REQUEST!');
-    })
-});
-
-app.get('/test', (req, res) => {
-  console.log('req.cookies are', req.cookies) //req.cookies are {}
-  res.send('ok');
+    });
 });
 
 app.get('/api/classifications', async (req, res) => {
