@@ -62,7 +62,8 @@ const assembleActivity = (activeWinObj) => {
     id: activeWinObj.id,
     app,
     title, 
-    startTime: timestamp()
+    startTime: timestamp(),
+    toShow: true
   };
 };
 

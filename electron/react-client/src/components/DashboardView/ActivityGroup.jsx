@@ -17,7 +17,6 @@ const comparisonTarget = {
     const newCategory = props.category;
     const wasML = activity.productivity.source === 'ml';
     const user = props.user
-    // console.log('activity being moved is', activity);
     props.changeCategory(activity, oldCategory, newCategory, isTracked, user, wasML);
   }
 };
@@ -130,7 +129,7 @@ const getTotalDuration = activities => {
   });
   let formatDuration = moment
     .duration(duration, "seconds")
-    .format("h[h], m[m] s[s]");
+    .format("h[h] m[m] s[s]");
   return formatDuration;
 };
 

@@ -63,41 +63,13 @@ const prettifier = (text) => {
 }
 
 const ActivityCard = (props) => {
-  const { activity, category, deleteActivity, index, preferences, user, affirmCategorization } = props;
+  const { activity, category, deleteActivity, index, preferences, user, affirmCategorization, connectDragSource, isDragging } = props;
   
   let formattedDuration = moment.duration(activity.duration, "seconds").format("h[h] m[m] s[s]");
+  coreStyle.background = (index % 2 === 0) ? colorMap[category]['tick'] : colorMap[category]['tock']
+  let isTracked = preferences.trackedApps.includes(activity.app) ? true : false
 
-  let coreStyle = {
-    font: 'Roboto', 
-    padding: '10px 15px 15px 5px',
-    margin: '0px 8x 0px 8px',
-    textAlign: 'left',
-    background: 'white',
-    color: 'black',
-    fontSize: '80%',
-  };
-
-  let colorMap = {
-    'productive': {tick: '#DCEDC8', tock: '#C5E1A5' },
-    'neutral': {tick: '#FFF9C4', tock: '#FFF59D' },
-    'distracting': {tick: '#FFCCBC', tock: '#FFAB91'}
-  }
-
-  if (index % 2 === 0) {
-    coreStyle.background = colorMap[category]['tick'];
-  } else {
-    coreStyle.background = colorMap[category]['tock'];
-  }
-
-  const { connectDragSource, isDragging } = props;
-
-  let isTracked;
-  if (preferences.trackedApps.includes(activity.app)) {
-    isTracked = true;
-  } else {
-    isTracked = false;
-  }
-
+  if(activity.toShow){  
     return connectDragSource(
       //React DnD requires components to be wrapped in a <div> and not <Paper>
       <div> 
@@ -139,14 +111,13 @@ const ActivityCard = (props) => {
           <button onClick={() => {affirmCategorization(activity, category, isTracked, user)}}>✔️
           </button>) : null} */}
           </div>
-          
-          
 
           {/* <button onClick={() => {deleteActivity(activity, category, isTracked, user)}}>🗑️</button> */}
             
         </Paper>
       </div>
     )
+  }
 }
 
 ActivityCard.propTypes = {
@@ -161,3 +132,20 @@ ActivityCard.propTypes = {
 };
 
 export default DragSource(ItemTypes.CARD, cardSource, collect)(ActivityCard);
+
+
+const coreStyle = {
+  font: 'Roboto', 
+  padding: '10px 15px 15px 5px',
+  margin: '0px 8x 0px 8px',
+  textAlign: 'left',
+  background: 'white',
+  color: 'black',
+  fontSize: '80%',
+};
+
+const colorMap = {
+  'productive': {tick: '#DCEDC8', tock: '#C5E1A5' },
+  'neutral': {tick: '#FFF9C4', tock: '#FFF59D' },
+  'distracting': {tick: '#FFCCBC', tock: '#FFAB91'}
+}

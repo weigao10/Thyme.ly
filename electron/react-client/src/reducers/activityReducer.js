@@ -14,7 +14,7 @@ const activities = (state = initialState, action) => {
   switch (action.type) {
     case ADD_ACTIVITY: {
       // console.log('action payload', action.payload)
-      const {app, title, startTime, endTime, productivity} = action.payload
+      const { app, title, startTime, endTime, productivity, toShow } = action.payload
       const duration = getDuration(startTime, endTime)
       const convertedProd = {
         ...productivity,
@@ -27,7 +27,8 @@ const activities = (state = initialState, action) => {
         'title': title,
         'spurts': [{'startTime': startTime, 'endTime': endTime}],
         'duration': duration,
-        'productivity': convertedProd
+        'productivity': convertedProd,
+        'toShow': toShow
       }
       return {
         ...state,
