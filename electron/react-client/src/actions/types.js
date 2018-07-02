@@ -9,6 +9,7 @@ export const UNTRACK_APP_TITLE = 'UNTRACK_APP_TITLE';
 
 export const SET_USER = 'SET_USER';
 export const GET_USER = 'GET_USER';
+export const SET_JWT = 'SET_JWT';
 export const LOG_OUT = 'LOG_OUT';
 export const SET_TOKEN = 'SET_TOKEN';
 export const GET_TOKEN = 'GET_TOKEN';

@@ -20,7 +20,11 @@ app.use(express.static(path.join(__dirname, './splash-client/dist')));
 
 app.use((req, res, next) => {
   res.header(`Access-Control-Allow-Origin`, `*`);
-  res.header(`Access-Control-Allow-Headers`, `Origin, X-Requested-With, Content-Type, Accept`);
+  res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
+  res.header(`Access-Control-Allow-Headers`, `Origin, X-Requested-With, Content-Type, Accept, Authorization`);
+  const headers = req.headers
+  // console.log('auth header is', JSON.parse(headers.authorization))
+  console.log('auth header is', JSON.stringify(headers.authorization))
   next();
 });
 
@@ -30,6 +34,14 @@ const serviceAccount = require('./firebaseConfig.json');
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
   databaseURL: 'https://thymely-cd776.firebaseio.com'
+});
+
+app.options("/*", (req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Content-Length, X-Requested-With, X-Access-Token');
+  console.log('options request made')
+  res.send(200);
 });
 
 app.post('/session', (req, res) => {
@@ -51,6 +63,16 @@ app.post('/session', (req, res) => {
       res.status(401).send('UNAUTHORIZED REQUEST!');
     });
 });
+
+app.post('/test', (req, res) => {
+  const token = req.body.jwtToken.toString();
+  jwt.verify(token, secret, function(err, decoded) {
+    if (err) return res.status(500).send({ auth: false, message: 'Failed to authenticate token.' });
+    console.log('decoded token', token)
+    console.log('into id', decoded)
+    res.status(200).send(decoded);
+  });
+})
 
 app.get('/api/classifications', async (req, res) => {
   const {user_name, app_name, window_title} = req.query;

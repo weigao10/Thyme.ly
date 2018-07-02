@@ -3,7 +3,7 @@ import axios from 'axios';
 
 const config = require('../../reactConfig.js');
 const serverURL = process.env.NODE_ENV === 'localhost' ? config.localhost : config.server;
-console.log('server url is', serverURL) 
+console.log('server url is', serverURL);
 
 export const addActivity = (data) => {
   return {

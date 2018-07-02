@@ -35,8 +35,7 @@ const loginButton = document.getElementById('login');
 const googleButton = document.getElementById('google');
 
 const renderApp = (uId, jwtToken) => {
-  ipcRenderer.send('cookies', 'logged in', uId)
-  //set JWT token too
+  ipcRenderer.send('cookies', 'logged in', {user: uId, jwt: jwtToken}) //maybe send an object as the third arg and set two cookies at once
   ReactDOM.render((<App/>), document.getElementById('app'));
   document.getElementById('login-page').innerHTML = '';
 };
@@ -54,9 +53,8 @@ loginButton.addEventListener('click', () => {
     .then((idToken) => {
       return axios.post(serverURL + '/session', {idToken});
     })
-    .then((data) => {
-      console.log('response from server after posting idtoken is', data)
-      //render app with uid and jwt (maybe just need jwt)
+    .then((resp) => {
+      renderApp(resp.data.uid, resp.data.token);
     })
     .catch((err) => {
       console.log('err trying to get id token', err);
