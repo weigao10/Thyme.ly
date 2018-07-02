@@ -22,9 +22,6 @@ app.use((req, res, next) => {
   res.header(`Access-Control-Allow-Origin`, `*`);
   res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
   res.header(`Access-Control-Allow-Headers`, `Origin, X-Requested-With, Content-Type, Accept, Authorization`);
-  const headers = req.headers
-  // console.log('auth header is', JSON.parse(headers.authorization))
-  console.log('auth header is', JSON.stringify(headers.authorization))
   next();
 });
 
@@ -74,7 +71,7 @@ app.post('/test', (req, res) => {
   });
 })
 
-app.get('/api/classifications', async (req, res) => {
+app.get('/api/classifications', checkJWT, async (req, res) => {
   const {user_name, app_name, window_title} = req.query;
 
   try {
@@ -143,4 +140,22 @@ let server = app.listen(port, () => {
   console.log(`listening on port ${port}`);
 });
 
-
+function checkJWT(req, res, next) {
+  // console.log('checking JWT!')
+  const authHeader = req.headers.authorization;
+  const userId = authHeader.split(' ')[0];
+  const jwtToken = authHeader.split(' ')[1];
+  jwt.verify(jwtToken, secret, function(err, decoded) {
+    if (err) {
+      console.log('error decoding jwt', err);
+      return res.status(500).send({ auth: false, message: 'Failed to authenticate token.' })
+    };
+    if (decoded.uid === userId) {
+      console.log('decoded token matches uid');
+      next()
+    } else {
+      console.log('decoded token does NOT match uid...unauthorized')
+      res.status(401).send('UNAUTHORIZED REQUEST!');
+    }
+  });
+}
