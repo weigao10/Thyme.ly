@@ -6,6 +6,7 @@ const Promise = require('bluebird')
 const moment = require('moment')
 let date = moment().format('YYYY-MM-DD')
 
+//whooooooooo this is cool!!!! Shout out to Vanessa!
 
 //PRODUCTIVITY NOW IS AN OBJ LIKE THIS
 //{ class: 'productive', source: 'user' }
