@@ -1,17 +1,16 @@
 const express = require('express');
 const path = require('path');
 const bodyParser = require('body-parser');
-const jwt = require('jsonwebtoken');
 const partials = require('express-partials');
 const app = express();
 const port = process.env.PORT || 3000;
 const moment = require('moment');
 const chalk = require('chalk');
 
+const auth = require('./utils/auth.js');
 const db = require('./database/index.js');
 const scrapeDb = require('./database/scraper.js');
 const ml = require('./learn/naiveBayes.js');
-const secret = require('./config.js').secret;
 
 ml.initClassifier();
 
@@ -33,22 +32,12 @@ admin.initializeApp({
   databaseURL: 'https://thymely-cd776.firebaseio.com'
 });
 
-app.options("/*", (req, res, next) => {
-  res.header('Access-Control-Allow-Origin', '*');
-  res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
-  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Content-Length, X-Requested-With, X-Access-Token');
-  console.log('options request made')
-  res.send(200);
-});
-
 app.post('/session', (req, res) => {
   const idToken = req.body.idToken.toString();
   admin.auth().verifyIdToken(idToken)
     .then((decodedToken) => {
       const uid = decodedToken.uid;
-      const token = jwt.sign({ uid }, secret, {
-        expiresIn: 86400 * 7 // expires in 1 week
-      });
+      const token = auth.createToken(uid);
       res.send({uid, token})
     })
     .catch((error) => {
@@ -56,7 +45,7 @@ app.post('/session', (req, res) => {
     });
 });
 
-app.get('/api/classifications', checkJWT, async (req, res) => {
+app.get('/api/classifications', auth.checkJWT, async (req, res) => {
   const {user_name, app_name, window_title} = req.query;
 
   try {
@@ -81,7 +70,7 @@ app.get('/api/classifications', checkJWT, async (req, res) => {
   }
 });
 
-app.post('/api/classifications', checkJWT, async (req, res) => {
+app.post('/api/classifications', auth.checkJWT, async (req, res) => {
   const result = await db.addOrChangeProductivity(req.body.params);
 
   try {
@@ -105,7 +94,7 @@ app.post('/api/classifications', checkJWT, async (req, res) => {
   }
 });
 
-app.delete('/api/classifications', checkJWT, async (req, res) => {
+app.delete('/api/classifications', auth.checkJWT, async (req, res) => {
   const result = await db.deleteProductivityClass(req.body);
   
   try {
@@ -121,27 +110,6 @@ app.delete('/api/classifications', checkJWT, async (req, res) => {
   }
 });
 
-let server = app.listen(port, () => {
+const server = app.listen(port, () => {
   console.log(`listening on port ${port}`);
 });
-
-function checkJWT(req, res, next) {
-  const authHeader = req.headers.authorization;
-  if (!authHeader) return res.status(401).send('UNAUTHORIZED REQUEST!');
-
-  const userId = authHeader.split(' ')[0];
-  const jwtToken = authHeader.split(' ')[1];
-  jwt.verify(jwtToken, secret, function(err, decoded) {
-    if (err) {
-      console.log('error decoding jwt', err);
-      return res.status(500).send({ auth: false, message: 'Failed to authenticate token.' })
-    };
-    if (decoded.uid === userId) {
-      console.log('decoded token matches uid');
-      next();
-    } else {
-      console.log('decoded token does NOT match uid...unauthorized')
-      res.status(401).send('UNAUTHORIZED REQUEST!');
-    }
-  });
-}
