@@ -104,7 +104,8 @@ class MonitorContainer extends React.Component {
     if (this.props.monitor.running) {
       this.props.pauseMonitor();
     } else {
-      this.props.startMonitor();
+      const {user, jwt} = this.props.user;
+      this.props.startMonitor(user, jwt);
     }
   }
 
@@ -199,7 +200,7 @@ const mapDispatchToProps = dispatch => {
       dispatch(pauseMonitor())
     }, 
     toggleMonitor: () => {
-      dispatch(toggleMonitor());
+      dispatch(toggleMonitor(user, jwt));
     } 
   };
 }

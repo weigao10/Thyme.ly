@@ -34,7 +34,8 @@ const monitorActivity = (activities, user, jwt) => {
         const headers = {
           Authorization: `${user} ${jwt}`
         };
-        return axios.get(serverURL + '/api/classifications', {params: qs}, {headers})
+        console.log('headers in activity monitor are', headers);
+        return axios.get(serverURL + '/api/classifications', {headers, params: qs})
           .then((resp) => {
             if (typeof resp.data !== 'object') {
               console.log(chalk.blue('RECEIVED PROD OBJ FROM SERVER THAT IS NOT OBJECT!'));
