@@ -43,11 +43,6 @@ app.options("/*", (req, res, next) => {
 
 app.post('/session', (req, res) => {
   const idToken = req.body.idToken.toString();
-  // authenticate this token, which will always be new (bc user just logged in)
-  // send back our own JWT using a client secret with our own expiration policy
-  // in electron, use this to manually set a cookie
-  // manually attach that cookie to every request (both from renderer and main)
-  // in middleware (which applies to all routes besides this one and index), decode that JWT to get the uId
   admin.auth().verifyIdToken(idToken)
     .then((decodedToken) => {
       const uid = decodedToken.uid;
@@ -60,16 +55,6 @@ app.post('/session', (req, res) => {
       res.status(401).send('UNAUTHORIZED REQUEST!');
     });
 });
-
-app.post('/test', (req, res) => {
-  const token = req.body.jwtToken.toString();
-  jwt.verify(token, secret, function(err, decoded) {
-    if (err) return res.status(500).send({ auth: false, message: 'Failed to authenticate token.' });
-    console.log('decoded token', token)
-    console.log('into id', decoded)
-    res.status(200).send(decoded);
-  });
-})
 
 app.get('/api/classifications', checkJWT, async (req, res) => {
   const {user_name, app_name, window_title} = req.query;
@@ -96,7 +81,7 @@ app.get('/api/classifications', checkJWT, async (req, res) => {
   }
 });
 
-app.post('/api/classifications', async (req, res) => {
+app.post('/api/classifications', checkJWT, async (req, res) => {
   const result = await db.addOrChangeProductivity(req.body.params);
 
   try {
@@ -120,7 +105,7 @@ app.post('/api/classifications', async (req, res) => {
   }
 });
 
-app.delete('/api/classifications', async (req, res) => {
+app.delete('/api/classifications', checkJWT, async (req, res) => {
   const result = await db.deleteProductivityClass(req.body);
   
   try {
@@ -141,8 +126,9 @@ let server = app.listen(port, () => {
 });
 
 function checkJWT(req, res, next) {
-  // console.log('checking JWT!')
   const authHeader = req.headers.authorization;
+  if (!authHeader) return res.status(401).send('UNAUTHORIZED REQUEST!');
+
   const userId = authHeader.split(' ')[0];
   const jwtToken = authHeader.split(' ')[1];
   jwt.verify(jwtToken, secret, function(err, decoded) {
@@ -152,7 +138,7 @@ function checkJWT(req, res, next) {
     };
     if (decoded.uid === userId) {
       console.log('decoded token matches uid');
-      next()
+      next();
     } else {
       console.log('decoded token does NOT match uid...unauthorized')
       res.status(401).send('UNAUTHORIZED REQUEST!');
