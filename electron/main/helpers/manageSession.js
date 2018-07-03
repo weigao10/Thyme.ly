@@ -1,24 +1,27 @@
 const electron = require('electron')
 const { app, BrowserWindow, ipcMain, session } = electron;
 const moment = require('moment');
+const path = require('path');
 
-const { serverURL } = require('../config.js');
+const config = require(path.join(__dirname, '../mainConfig.js'));
+const serverURL = process.env.NODE_ENV === 'localhost' ? config.localhost : config.server;
 const index = require('../index.js');
 
 const manageCookies = (mainSession, mainWindow) => {
   ipcMain.on('cookies', (mainWindow, event, message) => {
-
     if (event === 'check') {
-      mainSession.cookies.get({name: 'userId', serverURL}, (err, cookies) => {
+      mainSession.cookies.get({name: 'userInfo', serverURL}, (err, cookies) => {
         if (cookies.length) mainWindow.sender.webContents.send('cookies', cookies[0]);
+        console.log(cookies[0])
       });
     } else if (event === 'logged in') {
       const cookie = {
         url: serverURL,
-        name: 'userId',
-        value: message,
+        name: 'userInfo',
+        value: JSON.stringify(message),
         expirationDate: moment().add(7, 'days').unix()
       };
+      console.log('message is', message)
       mainSession.cookies.set(cookie, (err) => {
         if (err) console.log('error setting cookies', err);
         else {

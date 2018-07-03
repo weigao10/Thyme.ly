@@ -16,8 +16,8 @@ import SendIcon from 'material-ui/svg-icons/content/send';
 import Snackbar from 'material-ui/Snackbar';
 
 import { addActivity, patchActivity, setAllActivities } from '../actions/activityActions.js';
-import { setUser, setToken } from '../actions/userActions.js';
-import { listEvents } from '../index.jsx'
+import { setUser, setToken, setJWT } from '../actions/userActions.js';
+// import { listEvents } from '../index.jsx';
 import { startMonitor, pauseMonitor, toggleMonitor } from '../actions/monitorActions.js';
 
 class MonitorContainer extends React.Component {
@@ -58,15 +58,20 @@ class MonitorContainer extends React.Component {
         this.props.pauseMonitor();
       }
       else if (message === 'resume') {
-        this.props.startMonitor(this.props.user.user)
+        this.props.startMonitor(this.props.user.user, this.props.user.jwt);
       };
     });
 
     ipcRenderer.send('cookies', 'check');
 
     ipcRenderer.on('cookies', (event, message) => {
-      this.props.setUser(message.value);
-      if (message.value) this.props.startMonitor(message.value);
+      console.log('cookies message inside monitor container is', message);
+      console.log('parsed message is', JSON.parse(message.value))
+      console.log('user is', JSON.parse(message.value).user)
+      const {user, jwt} = JSON.parse(message.value);
+      this.props.setUser(user);
+      this.props.setJWT(jwt);
+      if (message.value) this.props.startMonitor(user, jwt);
     });
 
     ipcRenderer.send('token', 'check');
@@ -99,7 +104,8 @@ class MonitorContainer extends React.Component {
     if (this.props.monitor.running) {
       this.props.pauseMonitor();
     } else {
-      this.props.startMonitor();
+      const {user, jwt} = this.props.user;
+      this.props.startMonitor(user, jwt);
     }
   }
 
@@ -184,14 +190,17 @@ const mapDispatchToProps = dispatch => {
     setToken: (token) => {
       dispatch(setToken(token))
     },
-    startMonitor: (user) => {
-      dispatch(startMonitor(user))
+    setJWT: (jwt) => {
+      dispatch(setJWT(jwt))
+    },
+    startMonitor: (user, jwt) => {
+      dispatch(startMonitor(user, jwt))
     },
     pauseMonitor: () => {
       dispatch(pauseMonitor())
     }, 
     toggleMonitor: () => {
-      dispatch(toggleMonitor());
+      dispatch(toggleMonitor(user, jwt));
     } 
   };
 }

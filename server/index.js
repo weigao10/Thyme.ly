@@ -7,6 +7,7 @@ const port = process.env.PORT || 3000;
 const moment = require('moment');
 const chalk = require('chalk');
 
+const auth = require('./utils/auth.js');
 const db = require('./database/index.js');
 const scrapeDb = require('./database/scraper.js');
 const ml = require('./learn/naiveBayes.js');
@@ -18,12 +19,33 @@ app.use(express.static(path.join(__dirname, './splash-client/dist')));
 
 app.use((req, res, next) => {
   res.header(`Access-Control-Allow-Origin`, `*`);
-  res.header(`Access-Control-Allow-Headers`, `Origin, X-Requested-With, Content-Type, Accept`);
+  res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
+  res.header(`Access-Control-Allow-Headers`, `Origin, X-Requested-With, Content-Type, Accept, Authorization`);
   next();
 });
 
+const admin = require('firebase-admin');
+const serviceAccount = require('./firebaseConfig.json');
 
-app.get('/api/classifications', async (req, res) => {
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount),
+  databaseURL: 'https://thymely-cd776.firebaseio.com'
+});
+
+app.post('/session', (req, res) => {
+  const idToken = req.body.idToken.toString();
+  admin.auth().verifyIdToken(idToken)
+    .then((decodedToken) => {
+      const uid = decodedToken.uid;
+      const token = auth.createToken(uid);
+      res.send({uid, token})
+    })
+    .catch((error) => {
+      res.status(401).send('UNAUTHORIZED REQUEST!');
+    });
+});
+
+app.get('/api/classifications', auth.checkJWT, async (req, res) => {
   const {user_name, app_name, window_title} = req.query;
 
   try {
@@ -48,7 +70,7 @@ app.get('/api/classifications', async (req, res) => {
   }
 });
 
-app.post('/api/classifications', async (req, res) => {
+app.post('/api/classifications', auth.checkJWT, async (req, res) => {
   const result = await db.addOrChangeProductivity(req.body.params);
 
   try {
@@ -72,7 +94,7 @@ app.post('/api/classifications', async (req, res) => {
   }
 });
 
-app.delete('/api/classifications', async (req, res) => {
+app.delete('/api/classifications', auth.checkJWT, async (req, res) => {
   const result = await db.deleteProductivityClass(req.body);
   
   try {
@@ -88,8 +110,6 @@ app.delete('/api/classifications', async (req, res) => {
   }
 });
 
-let server = app.listen(port, () => {
+const server = app.listen(port, () => {
   console.log(`listening on port ${port}`);
 });
-
-
