@@ -25,7 +25,7 @@ const promisifyQuery = (queryStr, params) => {
 };
 
 const createTables = () => {
-  const activitiesTable = promisifyQuery("CREATE TABLE IF NOT EXISTS activities (id INT, date DATE, productivity TEXT, source TEXT, app TEXT, title TEXT, duration INT)");
+  const activitiesTable = promisifyQuery("CREATE TABLE IF NOT EXISTS activities (id INT, date DATE, productivity TEXT, source TEXT, app TEXT, title TEXT, duration INT, toShow INT)");
   const prefsTable = promisifyQuery("CREATE TABLE IF NOT EXISTS preferences (category TEXT, data TEXT)")
   const spurtsTable = promisifyQuery("CREATE TABLE IF NOT EXISTS spurts (id INT, date DATE, productivity TEXT, app TEXT, title TEXT, startTime TEXT, endTime TEXT)")
   return Promise.all([activitiesTable, prefsTable, spurtsTable]);
@@ -33,8 +33,8 @@ const createTables = () => {
 
 const insertActivities = ({ id, productivity, app, title, duration, toShow }) => {
   if (typeof productivity !== 'object') console.log(`productivity for ${app} and ${title} was not an object!`)
-  const query = `INSERT INTO activities(id, date, productivity, source, app, title, duration) VALUES(?, ?, ?, ?, ?, ?, ?)`;
-  const params = [id, date, productivity.class, productivity.source, app, title, duration];
+  const query = `INSERT INTO activities(id, date, productivity, source, app, title, duration, toShow) VALUES(?, ?, ?, ?, ?, ?, ?, ?)`;
+  const params = [id, date, productivity.class, productivity.source, app, title, duration, toShow];
   return promisifyQuery(query, params);
 }
 
@@ -53,7 +53,7 @@ const insertSpurts = ({id, productivity, app, title}, {startTime, endTime}) => {
 
 const getActivities = () => {
   // let query = `SELECT id, date, productivity, source, app, title, duration FROM activities WHERE date=date(${date})`;
-  const query = `SELECT id, date, productivity, source, app, title, duration FROM activities`
+  const query = `SELECT id, date, productivity, source, app, title, duration, toShow FROM activities`
   return new Promise ((resolve, reject) => {
     db.all(query, [], (err, result) => {
       if (err) reject(err)
