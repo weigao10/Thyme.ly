@@ -31,7 +31,6 @@ const collect = (connect, monitor) => {
   }
 }
 
-//stylizing the "suggested by thyme.ly" line
 const insertColorIntoStyle = (category) => {
   let color = {
     'productive': '#43A047',
@@ -47,7 +46,6 @@ const insertColorIntoStyle = (category) => {
   return style;
 }
 
-//make long pieces of text shorter and end with '...' 
 const prettifier = (text) => {
   let results = text;
 
@@ -75,7 +73,6 @@ const ActivityCard = (props) => {
   }
   else {  
     return connectDragSource(
-      //React DnD requires components to be wrapped in a <div> and not <Paper>
       <div> 
         <Paper
           key={activity.title + index}
@@ -106,18 +103,11 @@ const ActivityCard = (props) => {
             {activity.productivity.source === 'ml' 
             ? <div>
                 <i style={insertColorIntoStyle(category)}>Suggested By Thyme.ly</i>&nbsp;
-                {/* <button onClick={() => {affirmCategorization(activity, category, isTracked, user)}}>✔️
-                </button> */}
                 <CheckMarkIcon style={{position: 'relative', top: '5'}} onClick={() => {affirmCategorization(activity, category, isTracked, user)}}/>
               </div> 
             : <div>&nbsp;<br/></div>}
-            {/* {activity.productivity.source === 'ml' ? (
-          <button onClick={() => {affirmCategorization(activity, category, isTracked, user)}}>✔️
-          </button>) : null} */}
           </div>
 
-          {/* <button onClick={() => {deleteActivity(activity, category, isTracked, user)}}>🗑️</button> */}
-            
         </Paper>
       </div>
     )
@@ -127,7 +117,6 @@ const ActivityCard = (props) => {
 ActivityCard.propTypes = {
   activity: (props, propName, componentName) => {
     if (typeof props.activity.productivity !== 'object') {
-      console.log('custom error incoming for activity', props.activity)
       return new Error(`
         Required prop "productivity" was not an object, instead it was ${props.activity.productivity}
       `)

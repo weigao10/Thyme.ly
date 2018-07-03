@@ -98,7 +98,6 @@ const ActivityGroup = props => {
               textAlign: "center",
               color: "white",
               fontWeight: "bolder",
-              // fontSize: "115%",
               onMouseOver: "#FFF",
               borderRadius: "0px 0px 15px 15px"
             }
