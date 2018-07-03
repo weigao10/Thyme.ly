@@ -39,7 +39,8 @@ const ActivityGroup = props => {
     style,
     preferences,
     user,
-    affirmCategorization
+    affirmCategorization,
+    toggleActivityView
   } = props;
   const sortedActivities = [...activities].sort(
     (a, b) => b.duration - a.duration
@@ -65,6 +66,8 @@ const ActivityGroup = props => {
           >
             <br/>
             {getTotalDuration(activities)}
+            <div onClick={() => toggleActivityView(0, category)}>Clear</div>
+            <div onClick={() => toggleActivityView(1, category)}>Show All</div>
           </span>
         </Paper>  
                                 

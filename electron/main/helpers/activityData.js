@@ -63,7 +63,7 @@ const assembleActivity = (activeWinObj) => {
     app,
     title, 
     startTime: timestamp(),
-    toShow: true
+    toShow: 1 //sqlite3 does not support booleans, use 0 and 1 instead
   };
 };
 

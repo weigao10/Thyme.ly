@@ -1,4 +1,4 @@
-import { ADD_ACTIVITY, PATCH_ACTIVITY, CATEGORIZE_ACTIVITY,
+import { ADD_ACTIVITY, PATCH_ACTIVITY, CATEGORIZE_ACTIVITY, TOGGLE_ACTIVITY_VIEW,
         DELETE_ACTIVITY, SET_ALL_ACTIVITIES, AFFIRM_CATEGORIZATION } from '../actions/types'; 
 import moment from 'moment';
 
@@ -10,10 +10,8 @@ const initialState = {
 }
 
 const activities = (state = initialState, action) => {
-
   switch (action.type) {
     case ADD_ACTIVITY: {
-      // console.log('action payload', action.payload)
       const { app, title, startTime, endTime, productivity, toShow } = action.payload
       const duration = getDuration(startTime, endTime)
       const convertedProd = {
@@ -84,6 +82,20 @@ const activities = (state = initialState, action) => {
         [oldCatName]: updatedOldCategoryActivities,
         [newCatName]: updatedNewCategoryActivities
       };
+    }
+
+    case TOGGLE_ACTIVITY_VIEW: {
+      // console.log('in activity reducer', action.payload)
+      const { toShow, category } = action.payload;
+
+      let updatedCategory = state[category].map((el) => {
+        el.toShow = toShow ? 1 : 0
+        return el;
+      })
+      return {
+        ...state,
+        [category] : updatedCategory
+      }
     }
 
     case AFFIRM_CATEGORIZATION: {

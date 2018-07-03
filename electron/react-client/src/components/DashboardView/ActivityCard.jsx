@@ -69,7 +69,11 @@ const ActivityCard = (props) => {
   coreStyle.background = (index % 2 === 0) ? colorMap[category]['tick'] : colorMap[category]['tock']
   let isTracked = preferences.trackedApps.includes(activity.app) ? true : false
 
-  if(activity.toShow){  
+  if(!activity.toShow) {
+    console.log('dont show!')
+    return null;
+  }
+  else {  
     return connectDragSource(
       //React DnD requires components to be wrapped in a <div> and not <Paper>
       <div> 

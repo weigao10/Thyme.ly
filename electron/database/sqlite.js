@@ -11,15 +11,15 @@ let date = moment().format('YYYY-MM-DD')
 //PRODUCTIVITY NOW IS AN OBJ LIKE THIS
 //{ class: 'productive', source: 'user' }
 const createTable = () => {
-  db.run("CREATE TABLE IF NOT EXISTS activities (id INT, date DATE, productivity TEXT, source TEXT, app TEXT, title TEXT, duration INT)")
+  db.run("CREATE TABLE IF NOT EXISTS activities (id INT, date DATE, productivity TEXT, source TEXT, app TEXT, title TEXT, duration INT, toShow INT)")
   db.run("CREATE TABLE IF NOT EXISTS preferences (category TEXT, data TEXT)")
   db.run("CREATE TABLE IF NOT EXISTS spurts (id INT, date DATE, productivity TEXT, app TEXT, title TEXT, startTime TEXT, endTime TEXT)")
 }
 
-const insertActivities = ({id, productivity, app, title, duration}) => {
+const insertActivities = ({ id, productivity, app, title, duration, toShow }) => {
   if (typeof productivity !== 'object') console.log(`productivity for ${app} and ${title} was not an object!`)
-  let query = `INSERT INTO activities(id, date, productivity, source, app, title, duration) VALUES(?, ?, ?, ?, ?, ?, ?)`;
-  let params = [id, date, productivity.class, productivity.source, app, title, duration];
+  let query = `INSERT INTO activities(id, date, productivity, source, app, title, duration, toShow) VALUES(?, ?, ?, ?, ?, ?, ?, ?)`;
+  let params = [id, date, productivity.class, productivity.source, app, title, duration, toShow];
   return new Promise ((resolve, reject) => {
     db.run(query, params, (err, result) => {
       if (err) reject(err)
@@ -54,7 +54,7 @@ const insertSpurts = ({id, productivity, app, title}, {startTime, endTime}) => {
 const getActivities = () => {
   // console.log('in get activities', date)
   // let query = `SELECT id, date, productivity, source, app, title, duration FROM activities WHERE date=date(${date})`;
-  let query = `SELECT id, date, productivity, source, app, title, duration FROM activities`
+  let query = `SELECT id, date, productivity, source, app, title, duration, toShow FROM activities`
   return new Promise ((resolve, reject) => {
     db.all(query, [], (err, result) => {
       if (err) reject(err)

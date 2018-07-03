@@ -1,4 +1,4 @@
-import { ADD_ACTIVITY, PATCH_ACTIVITY, CATEGORIZE_ACTIVITY, DELETE_ACTIVITY, SET_ALL_ACTIVITIES, AFFIRM_CATEGORIZATION } from './types'; 
+import { ADD_ACTIVITY, PATCH_ACTIVITY, CATEGORIZE_ACTIVITY, DELETE_ACTIVITY, SET_ALL_ACTIVITIES, TOGGLE_ACTIVITY_VIEW, AFFIRM_CATEGORIZATION } from './types'; 
 import moment from 'moment';
 import axios from 'axios';
 import { serverURL } from '../../config.js';
@@ -95,3 +95,13 @@ export const setAllActivities = (data) => {
   }
 }
 
+
+export const toggleActivityView = (toShow, category) => {
+  return {
+    type: TOGGLE_ACTIVITY_VIEW,
+    payload: {
+      toShow,
+      category
+    }
+  }
+}
