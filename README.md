@@ -1,6 +1,6 @@
 # Thymely
 
-> Because there's no time like the present
+> Because there's no time like the present. Demos and download available here: www.thymely.co
 
 
 ## Table of Contents
